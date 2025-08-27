@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27018
+      database: budgeter-test
+
+logging:
+  level:
+    com.radomskyi.budgeter: DEBUG

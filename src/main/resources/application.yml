@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: budgeter-backend
+  
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: budgeter
+      auto-index-creation: true
+
+server:
+  port: 8080
+
+# OpenAPI/Swagger Configuration
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    doc-expansion: none
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
+
+logging:
+  level:
+    com.radomskyi.budgeter: DEBUG
+    org.springframework.data.mongodb: DEBUG
