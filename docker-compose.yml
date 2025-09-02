@@ -1,0 +1,12 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: budgeter-db
+    environment:
+      POSTGRES_USER: budgeter
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: budgeter
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
