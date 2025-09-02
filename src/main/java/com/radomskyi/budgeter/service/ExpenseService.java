@@ -3,9 +3,12 @@ package com.radomskyi.budgeter.service;
 import com.radomskyi.budgeter.domain.Expense;
 import com.radomskyi.budgeter.dto.ExpenseRequest;
 import com.radomskyi.budgeter.dto.ExpenseResponse;
+import com.radomskyi.budgeter.exception.ExpenseNotFoundException;
 import com.radomskyi.budgeter.repository.ExpenseRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,7 +49,7 @@ public class ExpenseService {
         log.info("Fetching expense with id: {}", id);
         
         Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found with id: " + id));
+                .orElseThrow(() -> new ExpenseNotFoundException("Expense not found with id: " + id));
         
         return mapToResponse(expense);
     }
@@ -69,7 +72,7 @@ public class ExpenseService {
         log.info("Updating expense with id: {}", id);
         
         Expense existingExpense = expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found with id: " + id));
+                .orElseThrow(() -> new ExpenseNotFoundException("Expense not found with id: " + id));
         
         existingExpense.setAmount(request.getAmount());
         existingExpense.setCategory(request.getCategory());
@@ -90,7 +93,7 @@ public class ExpenseService {
         log.info("Deleting expense with id: {}", id);
         
         if (!expenseRepository.existsById(id)) {
-            throw new RuntimeException("Expense not found with id: " + id);
+            throw new ExpenseNotFoundException("Expense not found with id: " + id);
         }
         
         expenseRepository.deleteById(id);
