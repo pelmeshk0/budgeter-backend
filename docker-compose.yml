@@ -1,12 +1,42 @@
 services:
-  postgres:
-    image: postgres:15
-    container_name: budgeter-db
+  budgeter-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
     environment:
-      POSTGRES_USER: budgeter
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: budgeter
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/budgeter
+      - SPRING_DATASOURCE_USERNAME=budgeter
+      - SPRING_DATASOURCE_PASSWORD=password
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - budgeter-network
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=budgeter
+      - POSTGRES_USER=budgeter
+      - POSTGRES_PASSWORD=password
     ports:
       - "5432:5432"
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U budgeter -d budgeter"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - budgeter-network
+
+volumes:
+  postgres_data:
+
+networks:
+  budgeter-network:
+    driver: bridge
