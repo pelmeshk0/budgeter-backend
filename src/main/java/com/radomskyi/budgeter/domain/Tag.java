@@ -32,10 +32,10 @@ public enum Tag {
     @Schema(description = "For those fancy sneakers")
     CLOTHING,
     
-    @Schema(description = "Utility and service expenses")
+    @Schema(description = "Your electricity, gas and other utility bills")
     UTILITIES,
     
-    @Schema(description = "Insurance")
+    @Schema(description = "Hopefully you won't need this")
     INSURANCE,
 
     @Schema(description = "Pet expenses")
@@ -64,6 +64,9 @@ public enum Tag {
 
     @Schema(description = "Fun stuff")
     VICES,
+
+    @Schema(description = "Debts and loans")
+    DEBT,
     
     @Schema(description = "Other miscellaneous expenses")
     OTHER
