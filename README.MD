@@ -8,7 +8,7 @@ REST API for expense tracking and budgeting.
 
 - Java 17 or higher
 - Maven 3.6+
-- Docker & Docker Compose (for containerized setup)
+- PostgreSQL or Docker for a containerized DB setup
 
 ### Local Development
   ```bash
