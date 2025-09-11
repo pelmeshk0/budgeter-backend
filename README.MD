@@ -11,28 +11,13 @@ REST API for expense tracking and budgeting.
 - Docker & Docker Compose (for containerized setup)
 
 ### Local Development
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd budgeter-backend
-   ```
-
-2. **Run with Maven**
-   ```bash
-   # Start PostgreSQL (if not already running)
-   docker-compose up postgres -d
-   
-   # Run the application
-   mvn spring-boot:run
-   ```
-
-3. **Run with Docker Compose**
-   ```bash
-   docker-compose up --build
-   ```
-
-The application will be available at `http://localhost:8080`
+  ```bash
+  # Start PostgreSQL (if not already running)
+  docker-compose up postgres -d
+  
+  # Run the application
+  mvn spring-boot:run
+  ```
 
 ### Testing
 
@@ -73,7 +58,7 @@ The application supports different configuration profiles:
 - **`default`**: Local development with H2 database
 - **`test`**: Testing with H2 database
 - **`docker`**: Containerized environment with PostgreSQL
-- **`production`**: Production environment with PostgreSQL
+- **`production`**: Production environment with AWS RDS
 
 ### Why Separate Docker and Production Configs?
 
