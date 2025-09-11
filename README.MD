@@ -53,27 +53,10 @@ POST /api/expenses
 
 ## Configuration Profiles
 
-The application supports different configuration profiles:
+Supported configuration profiles:
 
-- **`default`**: Local development with H2 database
-- **`test`**: Testing with H2 database
-- **`docker`**: Containerized environment with PostgreSQL
-- **`production`**: Production environment with AWS RDS
-
-### Why Separate Docker and Production Configs?
-
-- **Docker Config** (`application-docker.properties`):
-  - Optimized for containerized environments
-  - Uses container networking (e.g., `postgres:5432`)
-  - More verbose logging for debugging
-  - Health checks exposed for container orchestration
-
-- **Production Config** (`application-production.properties`):
-  - Environment variable-based configuration
-  - Strict database validation (`ddl-auto=validate`)
-  - Minimal logging for performance
-  - Security-focused actuator endpoints
-  - External database connections
+- **`default`**: Used for local development
+- **`production`**: Production environment with a stricter configuration
 
 ## Monitoring
 
