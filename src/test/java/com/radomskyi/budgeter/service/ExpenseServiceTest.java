@@ -1,6 +1,6 @@
 package com.radomskyi.budgeter.service;
 
-import com.radomskyi.budgeter.domain.Category;
+import com.radomskyi.budgeter.domain.ExpenseCategory;
 import com.radomskyi.budgeter.domain.Expense;
 import com.radomskyi.budgeter.domain.Tag;
 import com.radomskyi.budgeter.dto.ExpenseRequest;
@@ -46,7 +46,7 @@ class ExpenseServiceTest {
         testExpense = Expense.builder()
                 .id(1L)
                 .amount(new BigDecimal("25.50"))
-                .category(Category.WANTS)
+                .category(ExpenseCategory.WANTS)
                 .description("Test expense")
                 .tags(Arrays.asList(Tag.FOOD, Tag.BARS_AND_RESTAURANTS))
                 .createdAt(LocalDateTime.now())
@@ -55,7 +55,7 @@ class ExpenseServiceTest {
         
         testExpenseRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("25.50"))
-                .category(Category.WANTS)
+                .category(ExpenseCategory.WANTS)
                 .description("Test expense")
                 .tags(Arrays.asList(Tag.FOOD, Tag.BARS_AND_RESTAURANTS))
                 .build();
@@ -73,7 +73,7 @@ class ExpenseServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getAmount()).isEqualTo(new BigDecimal("25.50"));
-        assertThat(result.getCategory()).isEqualTo(Category.WANTS);
+        assertThat(result.getCategory()).isEqualTo(ExpenseCategory.WANTS);
         assertThat(result.getDescription()).isEqualTo("Test expense");
         assertThat(result.getTags()).containsExactly(Tag.FOOD, Tag.BARS_AND_RESTAURANTS);
         
@@ -92,7 +92,7 @@ class ExpenseServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getAmount()).isEqualTo(new BigDecimal("25.50"));
-        assertThat(result.getCategory()).isEqualTo(Category.WANTS);
+        assertThat(result.getCategory()).isEqualTo(ExpenseCategory.WANTS);
         assertThat(result.getDescription()).isEqualTo("Test expense");
         assertThat(result.getTags()).containsExactly(Tag.FOOD, Tag.BARS_AND_RESTAURANTS);
         
@@ -140,7 +140,7 @@ class ExpenseServiceTest {
         // Given
         ExpenseRequest updateRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("30.00"))
-                .category(Category.NEEDS)
+                .category(ExpenseCategory.NEEDS)
                 .description("Updated expense")
                 .tags(Arrays.asList(Tag.TRANSPORT))
                 .build();
@@ -148,7 +148,7 @@ class ExpenseServiceTest {
         Expense updatedExpense = Expense.builder()
                 .id(1L)
                 .amount(new BigDecimal("30.00"))
-                .category(Category.NEEDS)
+                .category(ExpenseCategory.NEEDS)
                 .description("Updated expense")
                 .tags(Arrays.asList(Tag.TRANSPORT))
                 .createdAt(testExpense.getCreatedAt())
@@ -165,7 +165,7 @@ class ExpenseServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getAmount()).isEqualTo(new BigDecimal("30.00"));
-        assertThat(result.getCategory()).isEqualTo(Category.NEEDS);
+        assertThat(result.getCategory()).isEqualTo(ExpenseCategory.NEEDS);
         assertThat(result.getDescription()).isEqualTo("Updated expense");
         assertThat(result.getTags()).containsExactly(Tag.TRANSPORT);
         

@@ -1,6 +1,6 @@
 package com.radomskyi.budgeter.repository;
 
-import com.radomskyi.budgeter.domain.Category;
+import com.radomskyi.budgeter.domain.ExpenseCategory;
 import com.radomskyi.budgeter.domain.Expense;
 import com.radomskyi.budgeter.domain.Tag;
 import org.springframework.data.domain.Page;
@@ -18,10 +18,10 @@ import java.util.List;
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     
     // Find expenses by category
-    List<Expense> findByCategory(Category category);
+    List<Expense> findByCategory(ExpenseCategory category);
     
     // Find expenses by category with pagination
-    Page<Expense> findByCategory(Category category, Pageable pageable);
+    Page<Expense> findByCategory(ExpenseCategory category, Pageable pageable);
     
     // Find expenses within a date range
     List<Expense> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
@@ -30,10 +30,10 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     Page<Expense> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
     
     // Find expenses by category and date range
-    List<Expense> findByCategoryAndCreatedAtBetween(Category category, LocalDateTime startDate, LocalDateTime endDate);
+    List<Expense> findByCategoryAndCreatedAtBetween(ExpenseCategory category, LocalDateTime startDate, LocalDateTime endDate);
     
     // Find expenses by category and date range with pagination
-    Page<Expense> findByCategoryAndCreatedAtBetween(Category category, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+    Page<Expense> findByCategoryAndCreatedAtBetween(ExpenseCategory category, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
     
     // Find expenses with amount greater than specified amount
     List<Expense> findByAmountGreaterThan(BigDecimal amount);
@@ -58,11 +58,11 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     
     // Calculate total expenses by category
     @Query("SELECT SUM(e.amount) FROM Expense e WHERE e.category = :category")
-    BigDecimal sumByCategory(@Param("category") Category category);
+    BigDecimal sumByCategory(@Param("category") ExpenseCategory category);
     
     // Calculate total expenses by category within date range
     @Query("SELECT SUM(e.amount) FROM Expense e WHERE e.category = :category AND e.createdAt BETWEEN :startDate AND :endDate")
-    BigDecimal sumByCategoryAndDateRange(@Param("category") Category category, 
+    BigDecimal sumByCategoryAndDateRange(@Param("category") ExpenseCategory category, 
                                         @Param("startDate") LocalDateTime startDate, 
                                         @Param("endDate") LocalDateTime endDate);
     

@@ -35,7 +35,7 @@ public class Expense {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, length = 20)
-    private Category category;
+    private ExpenseCategory category;
     
     @Column(name = "description", length = 333)
     private String description;
@@ -55,7 +55,7 @@ public class Expense {
     private LocalDateTime updatedAt;
     
     // Custom constructor for required fields
-    public Expense(BigDecimal amount, Category category) {
+    public Expense(BigDecimal amount, ExpenseCategory category) {
         this.amount = amount;
         this.category = category;
     }

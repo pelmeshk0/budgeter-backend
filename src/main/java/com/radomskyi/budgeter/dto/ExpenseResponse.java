@@ -1,6 +1,6 @@
 package com.radomskyi.budgeter.dto;
 
-import com.radomskyi.budgeter.domain.Category;
+import com.radomskyi.budgeter.domain.ExpenseCategory;
 import com.radomskyi.budgeter.domain.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,7 @@ public class ExpenseResponse {
     private BigDecimal amount;
     
     @Schema(description = "Expense category")
-    private Category category;
+    private ExpenseCategory category;
     
     @Schema(description = "Expense description", example = "Lunch at restaurant")
     private String description;

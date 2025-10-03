@@ -1,6 +1,6 @@
 package com.radomskyi.budgeter.controller;
 
-import com.radomskyi.budgeter.domain.Category;
+import com.radomskyi.budgeter.domain.ExpenseCategory;
 import com.radomskyi.budgeter.domain.Tag;
 import com.radomskyi.budgeter.dto.ExpenseRequest;
 import com.radomskyi.budgeter.dto.ExpenseResponse;
@@ -57,7 +57,7 @@ class ExpenseControllerIntegrationTest {
         // Given
         ExpenseRequest request = ExpenseRequest.builder()
                 .amount(new BigDecimal("25.50"))
-                .category(Category.WANTS)
+                .category(ExpenseCategory.WANTS)
                 .description("Test expense")
                 .tags(Arrays.asList(Tag.FOOD, Tag.BARS_AND_RESTAURANTS))
                 .build();
@@ -87,7 +87,7 @@ class ExpenseControllerIntegrationTest {
         // Given
         ExpenseRequest invalidRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("-10.00")) // Invalid negative amount
-                .category(Category.WANTS)
+                .category(ExpenseCategory.WANTS)
                 .build();
 
         // When & Then
@@ -105,7 +105,7 @@ class ExpenseControllerIntegrationTest {
         // Given - Create an expense first
         ExpenseRequest request = ExpenseRequest.builder()
                 .amount(new BigDecimal("15.75"))
-                .category(Category.NEEDS)
+                .category(ExpenseCategory.NEEDS)
                 .description("Integration test expense")
                 .tags(Arrays.asList(Tag.TRANSPORT))
                 .build();
@@ -141,9 +141,9 @@ class ExpenseControllerIntegrationTest {
     @Test
     void getAllExpenses_ShouldReturnPageOfExpenses_WhenExpensesExist() throws Exception {
         // Given - Create multiple expenses
-        createTestExpense("Expense 1", new BigDecimal("10.00"), Category.WANTS);
-        createTestExpense("Expense 2", new BigDecimal("20.00"), Category.NEEDS);
-        createTestExpense("Expense 3", new BigDecimal("30.00"), Category.FIXED);
+        createTestExpense("Expense 1", new BigDecimal("10.00"), ExpenseCategory.WANTS);
+        createTestExpense("Expense 2", new BigDecimal("20.00"), ExpenseCategory.NEEDS);
+        createTestExpense("Expense 3", new BigDecimal("30.00"), ExpenseCategory.FIXED);
 
         // When & Then
         mockMvc.perform(get("/api/expenses"))
@@ -173,7 +173,7 @@ class ExpenseControllerIntegrationTest {
     void getAllExpenses_ShouldSupportPagination_WhenRequested() throws Exception {
         // Given - Create 5 expenses
         for (int i = 1; i <= 5; i++) {
-            createTestExpense("Expense " + i, new BigDecimal(i * 10), Category.WANTS);
+            createTestExpense("Expense " + i, new BigDecimal(i * 10), ExpenseCategory.WANTS);
         }
 
         // When & Then - Request first page with size 2
@@ -205,7 +205,7 @@ class ExpenseControllerIntegrationTest {
         // Given - Create an expense first
         ExpenseRequest createRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("25.00"))
-                .category(Category.WANTS)
+                .category(ExpenseCategory.WANTS)
                 .description("Original expense")
                 .tags(Arrays.asList(Tag.FOOD))
                 .build();
@@ -223,7 +223,7 @@ class ExpenseControllerIntegrationTest {
         // Given - Update request
         ExpenseRequest updateRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("35.00"))
-                .category(Category.NEEDS)
+                .category(ExpenseCategory.NEEDS)
                 .description("Updated expense")
                 .tags(Arrays.asList(Tag.TRANSPORT, Tag.HEALTH))
                 .build();
@@ -251,7 +251,7 @@ class ExpenseControllerIntegrationTest {
         // Given
         ExpenseRequest updateRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("35.00"))
-                .category(Category.NEEDS)
+                .category(ExpenseCategory.NEEDS)
                 .description("Updated expense")
                 .build();
 
@@ -267,7 +267,7 @@ class ExpenseControllerIntegrationTest {
         // Given - Create an expense first
         ExpenseRequest request = ExpenseRequest.builder()
                 .amount(new BigDecimal("15.00"))
-                .category(Category.WANTS)
+                .category(ExpenseCategory.WANTS)
                 .description("To be deleted")
                 .build();
 
@@ -304,7 +304,7 @@ class ExpenseControllerIntegrationTest {
         // 1. Create an expense
         ExpenseRequest createRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("50.00"))
-                .category(Category.WANTS)
+                .category(ExpenseCategory.WANTS)
                 .description("Full workflow test")
                 .tags(Arrays.asList(Tag.ENTERTAINMENT))
                 .build();
@@ -328,7 +328,7 @@ class ExpenseControllerIntegrationTest {
         // 3. Update the expense
         ExpenseRequest updateRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("75.00"))
-                .category(Category.NEEDS)
+                .category(ExpenseCategory.NEEDS)
                 .description("Updated workflow test")
                 .tags(Arrays.asList(Tag.HEALTH, Tag.EDUCATION))
                 .build();
@@ -356,7 +356,7 @@ class ExpenseControllerIntegrationTest {
                 .andExpect(jsonPath("$.totalElements").value(0));
     }
 
-    private void createTestExpense(String description, BigDecimal amount, Category category) throws Exception {
+    private void createTestExpense(String description, BigDecimal amount, ExpenseCategory category) throws Exception {
         ExpenseRequest request = ExpenseRequest.builder()
                 .amount(amount)
                 .category(category)

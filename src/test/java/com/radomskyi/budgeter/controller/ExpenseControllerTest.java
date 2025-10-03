@@ -1,7 +1,7 @@
 package com.radomskyi.budgeter.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.radomskyi.budgeter.domain.Category;
+import com.radomskyi.budgeter.domain.ExpenseCategory;
 import com.radomskyi.budgeter.domain.Tag;
 import com.radomskyi.budgeter.dto.ExpenseRequest;
 import com.radomskyi.budgeter.dto.ExpenseResponse;
@@ -55,7 +55,7 @@ class ExpenseControllerTest {
         
         testExpenseRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("25.50"))
-                .category(Category.WANTS)
+                .category(ExpenseCategory.WANTS)
                 .description("Test expense")
                 .tags(Arrays.asList(Tag.FOOD, Tag.BARS_AND_RESTAURANTS))
                 .build();
@@ -63,7 +63,7 @@ class ExpenseControllerTest {
         testExpenseResponse = ExpenseResponse.builder()
                 .id(1L)
                 .amount(new BigDecimal("25.50"))
-                .category(Category.WANTS)
+                .category(ExpenseCategory.WANTS)
                 .description("Test expense")
                 .tags(Arrays.asList(Tag.FOOD, Tag.BARS_AND_RESTAURANTS))
                 .createdAt(LocalDateTime.now())
@@ -95,7 +95,7 @@ class ExpenseControllerTest {
         // Given
         ExpenseRequest invalidRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("-10.00")) // Invalid negative amount
-                .category(Category.WANTS)
+                .category(ExpenseCategory.WANTS)
                 .build();
         
         // When & Then
@@ -157,7 +157,7 @@ class ExpenseControllerTest {
         // Given
         ExpenseRequest updateRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("30.00"))
-                .category(Category.NEEDS)
+                .category(ExpenseCategory.NEEDS)
                 .description("Updated expense")
                 .tags(Arrays.asList(Tag.TRANSPORT))
                 .build();
@@ -165,7 +165,7 @@ class ExpenseControllerTest {
         ExpenseResponse updatedResponse = ExpenseResponse.builder()
                 .id(1L)
                 .amount(new BigDecimal("30.00"))
-                .category(Category.NEEDS)
+                .category(ExpenseCategory.NEEDS)
                 .description("Updated expense")
                 .tags(Arrays.asList(Tag.TRANSPORT))
                 .createdAt(LocalDateTime.now())
@@ -192,7 +192,7 @@ class ExpenseControllerTest {
         // Given
         ExpenseRequest invalidRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("-10.00")) // Invalid negative amount
-                .category(Category.WANTS)
+                .category(ExpenseCategory.WANTS)
                 .build();
         
         // When & Then

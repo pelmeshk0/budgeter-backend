@@ -1,6 +1,6 @@
 package com.radomskyi.budgeter.repository;
 
-import com.radomskyi.budgeter.domain.Category;
+import com.radomskyi.budgeter.domain.ExpenseCategory;
 import com.radomskyi.budgeter.domain.Expense;
 import com.radomskyi.budgeter.domain.Tag;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,21 +35,21 @@ class ExpenseRepositoryTest {
         // Create test expenses
         expense1 = Expense.builder()
                 .amount(new BigDecimal("100.00"))
-                .category(Category.FIXED)
+                .category(ExpenseCategory.FIXED)
                 .description("Rent payment")
                 .tags(Arrays.asList(Tag.HOUSING))
                 .build();
 
         expense2 = Expense.builder()
                 .amount(new BigDecimal("50.00"))
-                .category(Category.NEEDS)
+                .category(ExpenseCategory.NEEDS)
                 .description("Grocery shopping")
                 .tags(Arrays.asList(Tag.FOOD))
                 .build();
 
         expense3 = Expense.builder()
                 .amount(new BigDecimal("25.00"))
-                .category(Category.WANTS)
+                .category(ExpenseCategory.WANTS)
                 .description("Movie tickets")
                 .tags(Arrays.asList(Tag.ENTERTAINMENT))
                 .build();
@@ -62,11 +62,11 @@ class ExpenseRepositoryTest {
 
     @Test
     void testFindByCategory() {
-        List<Expense> fixedExpenses = expenseRepository.findByCategory(Category.FIXED);
+        List<Expense> fixedExpenses = expenseRepository.findByCategory(ExpenseCategory.FIXED);
         assertThat(fixedExpenses).hasSize(1);
         assertThat(fixedExpenses.get(0).getDescription()).isEqualTo("Rent payment");
 
-        List<Expense> needsExpenses = expenseRepository.findByCategory(Category.NEEDS);
+        List<Expense> needsExpenses = expenseRepository.findByCategory(ExpenseCategory.NEEDS);
         assertThat(needsExpenses).hasSize(1);
         assertThat(needsExpenses.get(0).getDescription()).isEqualTo("Grocery shopping");
     }
@@ -105,13 +105,13 @@ class ExpenseRepositoryTest {
 
     @Test
     void testSumByCategory() {
-        BigDecimal totalFixed = expenseRepository.sumByCategory(Category.FIXED);
+        BigDecimal totalFixed = expenseRepository.sumByCategory(ExpenseCategory.FIXED);
         assertThat(totalFixed).isEqualTo(new BigDecimal("100.00"));
 
-        BigDecimal totalNeeds = expenseRepository.sumByCategory(Category.NEEDS);
+        BigDecimal totalNeeds = expenseRepository.sumByCategory(ExpenseCategory.NEEDS);
         assertThat(totalNeeds).isEqualTo(new BigDecimal("50.00"));
 
-        BigDecimal totalWants = expenseRepository.sumByCategory(Category.WANTS);
+        BigDecimal totalWants = expenseRepository.sumByCategory(ExpenseCategory.WANTS);
         assertThat(totalWants).isEqualTo(new BigDecimal("25.00"));
     }
 
