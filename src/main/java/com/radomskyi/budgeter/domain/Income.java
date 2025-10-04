@@ -20,11 +20,13 @@ import java.util.List;
 @AllArgsConstructor
 public class Income extends Transaction {
 
+    // todo review if I want to allow categories to be empty
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, length = 20)
     private IncomeCategory category;
 
+    // todo review I want to split tags too
     @ElementCollection(targetClass = Tag.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "income_tags", joinColumns = @JoinColumn(name = "income_id"))
