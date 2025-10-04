@@ -77,7 +77,7 @@ class ExpenseControllerTest {
         when(expenseService.createExpense(any(ExpenseRequest.class))).thenReturn(testExpenseResponse);
         
         // When & Then
-        mockMvc.perform(post("/api/expenses")
+        mockMvc.perform(post("/api/expense")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testExpenseRequest)))
                 .andExpect(status().isCreated())
@@ -99,7 +99,7 @@ class ExpenseControllerTest {
                 .build();
         
         // When & Then
-        mockMvc.perform(post("/api/expenses")
+        mockMvc.perform(post("/api/expense")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
@@ -113,7 +113,7 @@ class ExpenseControllerTest {
                 .build();
         
         // When & Then
-        mockMvc.perform(post("/api/expenses")
+        mockMvc.perform(post("/api/expense")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
@@ -125,7 +125,7 @@ class ExpenseControllerTest {
         when(expenseService.getExpenseById(1L)).thenReturn(testExpenseResponse);
         
         // When & Then
-        mockMvc.perform(get("/api/expenses/1"))
+        mockMvc.perform(get("/api/expense/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1))
@@ -142,7 +142,7 @@ class ExpenseControllerTest {
         when(expenseService.getAllExpenses(any())).thenReturn(expensePage);
         
         // When & Then
-        mockMvc.perform(get("/api/expenses"))
+        mockMvc.perform(get("/api/expense"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content").isArray())
@@ -175,7 +175,7 @@ class ExpenseControllerTest {
         when(expenseService.updateExpense(1L, updateRequest)).thenReturn(updatedResponse);
         
         // When & Then
-        mockMvc.perform(put("/api/expenses/1")
+        mockMvc.perform(put("/api/expense/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk())
@@ -196,7 +196,7 @@ class ExpenseControllerTest {
                 .build();
         
         // When & Then
-        mockMvc.perform(put("/api/expenses/1")
+        mockMvc.perform(put("/api/expense/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
@@ -205,7 +205,7 @@ class ExpenseControllerTest {
     @Test
     void deleteExpense_ShouldReturnNoContent_WhenExpenseExists() throws Exception {
         // When & Then
-        mockMvc.perform(delete("/api/expenses/1"))
+        mockMvc.perform(delete("/api/expense/1"))
                 .andExpect(status().isNoContent());
     }
 }

@@ -63,7 +63,7 @@ class ExpenseControllerIntegrationTest {
                 .build();
 
         // When & Then
-        mockMvc.perform(post("/api/expenses")
+        mockMvc.perform(post("/api/expense")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -91,7 +91,7 @@ class ExpenseControllerIntegrationTest {
                 .build();
 
         // When & Then
-        mockMvc.perform(post("/api/expenses")
+        mockMvc.perform(post("/api/expense")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
@@ -110,7 +110,7 @@ class ExpenseControllerIntegrationTest {
                 .tags(Arrays.asList(Tag.TRANSPORT))
                 .build();
 
-        MvcResult createResult = mockMvc.perform(post("/api/expenses")
+        MvcResult createResult = mockMvc.perform(post("/api/expense")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -121,7 +121,7 @@ class ExpenseControllerIntegrationTest {
         Long expenseId = createdExpense.getId();
 
         // When & Then
-        mockMvc.perform(get("/api/expenses/" + expenseId))
+        mockMvc.perform(get("/api/expense/" + expenseId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(expenseId))
@@ -134,7 +134,7 @@ class ExpenseControllerIntegrationTest {
     @Test
     void getExpenseById_ShouldReturnNotFound_WhenExpenseDoesNotExist() throws Exception {
         // When & Then
-        mockMvc.perform(get("/api/expenses/999"))
+        mockMvc.perform(get("/api/expense/999"))
                 .andExpect(status().isNotFound());
     }
 
@@ -146,7 +146,7 @@ class ExpenseControllerIntegrationTest {
         createTestExpense("Expense 3", new BigDecimal("30.00"), ExpenseCategory.FIXED);
 
         // When & Then
-        mockMvc.perform(get("/api/expenses"))
+        mockMvc.perform(get("/api/expense"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content").isArray())
@@ -160,7 +160,7 @@ class ExpenseControllerIntegrationTest {
     @Test
     void getAllExpenses_ShouldReturnEmptyPage_WhenNoExpensesExist() throws Exception {
         // When & Then
-        mockMvc.perform(get("/api/expenses"))
+        mockMvc.perform(get("/api/expense"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content").isArray())
@@ -177,7 +177,7 @@ class ExpenseControllerIntegrationTest {
         }
 
         // When & Then - Request first page with size 2
-        mockMvc.perform(get("/api/expenses?page=0&size=2"))
+        mockMvc.perform(get("/api/expense?page=0&size=2"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content").isArray())
@@ -188,13 +188,13 @@ class ExpenseControllerIntegrationTest {
                 .andExpect(jsonPath("$.number").value(0));
 
         // When & Then - Request second page
-        mockMvc.perform(get("/api/expenses?page=1&size=2"))
+        mockMvc.perform(get("/api/expense?page=1&size=2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(2))
                 .andExpect(jsonPath("$.number").value(1));
 
         // When & Then - Request third page
-        mockMvc.perform(get("/api/expenses?page=2&size=2"))
+        mockMvc.perform(get("/api/expense?page=2&size=2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(1))
                 .andExpect(jsonPath("$.number").value(2));
@@ -210,7 +210,7 @@ class ExpenseControllerIntegrationTest {
                 .tags(Arrays.asList(Tag.FOOD))
                 .build();
 
-        MvcResult createResult = mockMvc.perform(post("/api/expenses")
+        MvcResult createResult = mockMvc.perform(post("/api/expense")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createRequest)))
                 .andExpect(status().isCreated())
@@ -229,7 +229,7 @@ class ExpenseControllerIntegrationTest {
                 .build();
 
         // When & Then
-        mockMvc.perform(put("/api/expenses/" + expenseId)
+        mockMvc.perform(put("/api/expense/" + expenseId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk())
@@ -256,7 +256,7 @@ class ExpenseControllerIntegrationTest {
                 .build();
 
         // When & Then
-        mockMvc.perform(put("/api/expenses/999")
+        mockMvc.perform(put("/api/expense/999")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isNotFound());
@@ -271,7 +271,7 @@ class ExpenseControllerIntegrationTest {
                 .description("To be deleted")
                 .build();
 
-        MvcResult createResult = mockMvc.perform(post("/api/expenses")
+        MvcResult createResult = mockMvc.perform(post("/api/expense")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -285,7 +285,7 @@ class ExpenseControllerIntegrationTest {
         assertThat(expenseRepository.count()).isEqualTo(1);
 
         // When & Then
-        mockMvc.perform(delete("/api/expenses/" + expenseId))
+        mockMvc.perform(delete("/api/expense/" + expenseId))
                 .andExpect(status().isNoContent());
 
         // Verify the expense was actually deleted from the database
@@ -295,7 +295,7 @@ class ExpenseControllerIntegrationTest {
     @Test
     void deleteExpense_ShouldReturnNotFound_WhenExpenseDoesNotExist() throws Exception {
         // When & Then
-        mockMvc.perform(delete("/api/expenses/999"))
+        mockMvc.perform(delete("/api/expense/999"))
                 .andExpect(status().isNotFound());
     }
 
@@ -309,7 +309,7 @@ class ExpenseControllerIntegrationTest {
                 .tags(Arrays.asList(Tag.ENTERTAINMENT))
                 .build();
 
-        MvcResult createResult = mockMvc.perform(post("/api/expenses")
+        MvcResult createResult = mockMvc.perform(post("/api/expense")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createRequest)))
                 .andExpect(status().isCreated())
@@ -320,7 +320,7 @@ class ExpenseControllerIntegrationTest {
         Long expenseId = createdExpense.getId();
 
         // 2. Read the expense
-        mockMvc.perform(get("/api/expenses/" + expenseId))
+        mockMvc.perform(get("/api/expense/" + expenseId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.amount").value(50.00))
                 .andExpect(jsonPath("$.description").value("Full workflow test"));
@@ -333,7 +333,7 @@ class ExpenseControllerIntegrationTest {
                 .tags(Arrays.asList(Tag.HEALTH, Tag.EDUCATION))
                 .build();
 
-        mockMvc.perform(put("/api/expenses/" + expenseId)
+        mockMvc.perform(put("/api/expense/" + expenseId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk())
@@ -341,17 +341,17 @@ class ExpenseControllerIntegrationTest {
                 .andExpect(jsonPath("$.description").value("Updated workflow test"));
 
         // 4. Verify in list
-        mockMvc.perform(get("/api/expenses"))
+        mockMvc.perform(get("/api/expense"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.content[0].amount").value(75.00));
 
         // 5. Delete the expense
-        mockMvc.perform(delete("/api/expenses/" + expenseId))
+        mockMvc.perform(delete("/api/expense/" + expenseId))
                 .andExpect(status().isNoContent());
 
         // 6. Verify deletion
-        mockMvc.perform(get("/api/expenses"))
+        mockMvc.perform(get("/api/expense"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(0));
     }
@@ -364,7 +364,7 @@ class ExpenseControllerIntegrationTest {
                 .tags(Arrays.asList(Tag.OTHER))
                 .build();
 
-        mockMvc.perform(post("/api/expenses")
+        mockMvc.perform(post("/api/expense")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());

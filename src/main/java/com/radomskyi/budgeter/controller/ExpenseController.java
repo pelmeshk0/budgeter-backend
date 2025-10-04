@@ -19,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/expenses")
+@RequestMapping("/api/expense")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Expenses", description = "API for managing expenses")
