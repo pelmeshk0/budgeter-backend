@@ -29,27 +29,14 @@ mvn test
 mvn test jacoco:report
 ```
 
-## API Endpoints
+## API Documentation
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/expenses` | Create a new expense |
-| GET | `/api/expenses/{id}` | Get expense by ID |
-| GET | `/api/expenses` | Get all expenses (paginated) |
-| PUT | `/api/expenses/{id}` | Update an expense |
-| DELETE | `/api/expenses/{id}` | Delete an expense |
+The API includes interactive Swagger documentation:
 
-### Example Request
+- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **OpenAPI JSON**: `http://localhost:8080/v3/api-docs`
 
-```json
-POST /api/expenses
-{
-  "amount": 25.50,
-  "category": "WANTS",
-  "description": "Coffee grinder",
-  "tags": ["FOOD", "SHOPPING"]
-}
-```
+Start the application and visit the Swagger UI to explore all available endpoints, request/response schemas, and test the API directly.
 
 ## Configuration Profiles
 
