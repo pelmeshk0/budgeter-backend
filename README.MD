@@ -69,7 +69,6 @@ The application includes Spring Boot Actuator for monitoring:
 ## CI/CD
 
 - **Basic CI**: `basic-ci.yml` - Run tests on pull requests
-- **Docker Deploy**: `docker-deploy.yml` - Build and deploy Docker images
 
 ## Project Structure
 
