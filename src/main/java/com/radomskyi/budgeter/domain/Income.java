@@ -12,33 +12,33 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "expense")
+@Table(name = "income")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Expense extends Transaction {
+public class Income extends Transaction {
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, length = 20)
-    private ExpenseCategory category;
+    private IncomeCategory category;
 
     @ElementCollection(targetClass = Tag.class)
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "expense_tags", joinColumns = @JoinColumn(name = "expense_id"))
+    @CollectionTable(name = "income_tags", joinColumns = @JoinColumn(name = "income_id"))
     @Column(name = "tag", length = 30)
     private List<Tag> tags;
 
     // Custom constructor for required fields
-    public Expense(BigDecimal amount, ExpenseCategory category) {
+    public Income(BigDecimal amount, IncomeCategory category) {
         super.amount = amount;
         this.category = category;
     }
 
     // Constructor with description
-    public Expense(BigDecimal amount, ExpenseCategory category, String description) {
+    public Income(BigDecimal amount, IncomeCategory category, String description) {
         super.amount = amount;
         super.description = description;
         this.category = category;
