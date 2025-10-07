@@ -64,12 +64,12 @@ class ExpenseServiceTest {
     }
     
     @Test
-    void createExpense_ShouldReturnExpenseResponse_WhenValidRequest() {
+    void create_ShouldReturnExpenseResponse_WhenValidRequest() {
         // Given
         when(expenseRepository.save(any(Expense.class))).thenReturn(testExpense);
 
         // When
-        ExpenseResponse result = expenseService.createExpense(testExpenseRequest);
+        ExpenseResponse result = expenseService.create(testExpenseRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -84,12 +84,12 @@ class ExpenseServiceTest {
     }
     
     @Test
-    void getExpenseById_ShouldReturnExpenseResponse_WhenExpenseExists() {
+    void getById_ShouldReturnExpenseResponse_WhenExpenseExists() {
         // Given
         when(expenseRepository.findById(1L)).thenReturn(Optional.of(testExpense));
 
         // When
-        ExpenseResponse result = expenseService.getExpenseById(1L);
+        ExpenseResponse result = expenseService.getById(1L);
 
         // Then
         assertThat(result).isNotNull();
@@ -104,12 +104,12 @@ class ExpenseServiceTest {
     }
     
     @Test
-    void getExpenseById_ShouldThrowException_WhenExpenseNotFound() {
+    void getById_ShouldThrowException_WhenExpenseNotFound() {
         // Given
         when(expenseRepository.findById(999L)).thenReturn(Optional.empty());
         
         // When & Then
-        assertThatThrownBy(() -> expenseService.getExpenseById(999L))
+        assertThatThrownBy(() -> expenseService.getById(999L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Expense not found with id: 999");
         
@@ -117,7 +117,7 @@ class ExpenseServiceTest {
     }
     
     @Test
-    void getAllExpenses_ShouldReturnPageOfExpenseResponses_WhenExpensesExist() {
+    void getAll_ShouldReturnPageOfExpenseResponses_WhenExpensesExist() {
         // Given
         List<Expense> expenses = Arrays.asList(testExpense);
         Page<Expense> expensePage = new PageImpl<>(expenses);
@@ -126,7 +126,7 @@ class ExpenseServiceTest {
         when(expenseRepository.findAll(pageable)).thenReturn(expensePage);
         
         // When
-        Page<ExpenseResponse> result = expenseService.getAllExpenses(pageable);
+        Page<ExpenseResponse> result = expenseService.getAll(pageable);
         
         // Then
         assertThat(result).isNotNull();
@@ -140,7 +140,7 @@ class ExpenseServiceTest {
 
     
     @Test
-    void updateExpense_ShouldReturnUpdatedExpenseResponse_WhenExpenseExists() {
+    void update_ShouldReturnUpdatedExpenseResponse_WhenExpenseExists() {
         // Given
         ExpenseRequest updateRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("30.00"))
@@ -165,7 +165,7 @@ class ExpenseServiceTest {
         when(expenseRepository.save(any(Expense.class))).thenReturn(updatedExpense);
         
         // When
-        ExpenseResponse result = expenseService.updateExpense(1L, updateRequest);
+        ExpenseResponse result = expenseService.update(1L, updateRequest);
         
         // Then
         assertThat(result).isNotNull();
@@ -181,12 +181,12 @@ class ExpenseServiceTest {
     }
     
     @Test
-    void updateExpense_ShouldThrowException_WhenExpenseNotFound() {
+    void update_ShouldThrowException_WhenExpenseNotFound() {
         // Given
         when(expenseRepository.findById(999L)).thenReturn(Optional.empty());
         
         // When & Then
-        assertThatThrownBy(() -> expenseService.updateExpense(999L, testExpenseRequest))
+        assertThatThrownBy(() -> expenseService.update(999L, testExpenseRequest))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Expense not found with id: 999");
         
@@ -195,12 +195,12 @@ class ExpenseServiceTest {
     }
     
     @Test
-    void deleteExpense_ShouldDeleteExpense_WhenExpenseExists() {
+    void delete_ShouldDeleteExpense_WhenExpenseExists() {
         // Given
         when(expenseRepository.existsById(1L)).thenReturn(true);
         
         // When
-        expenseService.deleteExpense(1L);
+        expenseService.delete(1L);
         
         // Then
         verify(expenseRepository).existsById(1L);
@@ -208,12 +208,12 @@ class ExpenseServiceTest {
     }
     
     @Test
-    void deleteExpense_ShouldThrowException_WhenExpenseNotFound() {
+    void delete_ShouldThrowException_WhenExpenseNotFound() {
         // Given
         when(expenseRepository.existsById(999L)).thenReturn(false);
         
         // When & Then
-        assertThatThrownBy(() -> expenseService.deleteExpense(999L))
+        assertThatThrownBy(() -> expenseService.delete(999L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Expense not found with id: 999");
         

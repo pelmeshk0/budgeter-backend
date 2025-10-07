@@ -74,9 +74,9 @@ class ExpenseControllerTest {
     }
     
     @Test
-    void createExpense_ShouldReturnCreatedExpense_WhenValidRequest() throws Exception {
+    void create_ShouldReturnCreatedExpense_WhenValidRequest() throws Exception {
         // Given
-        when(expenseService.createExpense(any(ExpenseRequest.class))).thenReturn(testExpenseResponse);
+        when(expenseService.create(any(ExpenseRequest.class))).thenReturn(testExpenseResponse);
         
         // When & Then
         mockMvc.perform(post("/api/expense")
@@ -93,7 +93,7 @@ class ExpenseControllerTest {
     }
     
     @Test
-    void createExpense_ShouldReturnBadRequest_WhenInvalidRequest() throws Exception {
+    void create_ShouldReturnBadRequest_WhenInvalidRequest() throws Exception {
         // Given
         ExpenseRequest invalidRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("-10.00")) // Invalid negative amount
@@ -109,7 +109,7 @@ class ExpenseControllerTest {
     }
     
     @Test
-    void createExpense_ShouldReturnBadRequest_WhenRequiredFieldsMissing() throws Exception {
+    void create_ShouldReturnBadRequest_WhenRequiredFieldsMissing() throws Exception {
         // Given
         ExpenseRequest invalidRequest = ExpenseRequest.builder()
                 .name("Missing Required Fields")
@@ -124,9 +124,9 @@ class ExpenseControllerTest {
     }
     
     @Test
-    void getExpenseById_ShouldReturnExpense_WhenExpenseExists() throws Exception {
+    void getById_ShouldReturnExpense_WhenExpenseExists() throws Exception {
         // Given
-        when(expenseService.getExpenseById(1L)).thenReturn(testExpenseResponse);
+        when(expenseService.getById(1L)).thenReturn(testExpenseResponse);
         
         // When & Then
         mockMvc.perform(get("/api/expense/1"))
@@ -139,11 +139,11 @@ class ExpenseControllerTest {
     }
     
     @Test
-    void getAllExpenses_ShouldReturnPageOfExpenses_WhenExpensesExist() throws Exception {
+    void getAll_ShouldReturnPageOfExpenses_WhenExpensesExist() throws Exception {
         // Given
         List<ExpenseResponse> expenses = Arrays.asList(testExpenseResponse);
         Page<ExpenseResponse> expensePage = new PageImpl<>(expenses, PageRequest.of(0, 20), 1);
-        when(expenseService.getAllExpenses(any())).thenReturn(expensePage);
+        when(expenseService.getAll(any())).thenReturn(expensePage);
         
         // When & Then
         mockMvc.perform(get("/api/expense"))
@@ -157,7 +157,7 @@ class ExpenseControllerTest {
     }
     
     @Test
-    void updateExpense_ShouldReturnUpdatedExpense_WhenExpenseExists() throws Exception {
+    void update_ShouldReturnUpdatedExpense_WhenExpenseExists() throws Exception {
         // Given
         ExpenseRequest updateRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("30.00"))
@@ -178,7 +178,7 @@ class ExpenseControllerTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
         
-        when(expenseService.updateExpense(1L, updateRequest)).thenReturn(updatedResponse);
+        when(expenseService.update(1L, updateRequest)).thenReturn(updatedResponse);
         
         // When & Then
         mockMvc.perform(put("/api/expense/1")
@@ -195,7 +195,7 @@ class ExpenseControllerTest {
     }
     
     @Test
-    void updateExpense_ShouldReturnBadRequest_WhenInvalidRequest() throws Exception {
+    void update_ShouldReturnBadRequest_WhenInvalidRequest() throws Exception {
         // Given
         ExpenseRequest invalidRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("-10.00")) // Invalid negative amount

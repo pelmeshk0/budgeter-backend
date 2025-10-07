@@ -77,12 +77,12 @@ class IncomeServiceTest {
     }
 
     @Test
-    void createIncome_ShouldReturnCreatedIncomeResponse() {
+    void create_ShouldReturnCreatedIncomeResponse() {
         // Given
         when(incomeRepository.save(any(Income.class))).thenReturn(testIncome);
 
         // When
-        IncomeResponse result = incomeService.createIncome(testIncomeRequest);
+        IncomeResponse result = incomeService.create(testIncomeRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -97,12 +97,12 @@ class IncomeServiceTest {
     }
 
     @Test
-    void getIncomeById_WhenIncomeExists_ShouldReturnIncomeResponse() {
+    void getById_WhenIncomeExists_ShouldReturnIncomeResponse() {
         // Given
         when(incomeRepository.findById(1L)).thenReturn(Optional.of(testIncome));
 
         // When
-        IncomeResponse result = incomeService.getIncomeById(1L);
+        IncomeResponse result = incomeService.getById(1L);
 
         // Then
         assertThat(result).isNotNull();
@@ -115,12 +115,12 @@ class IncomeServiceTest {
     }
 
     @Test
-    void getIncomeById_WhenIncomeDoesNotExist_ShouldThrowException() {
+    void getById_WhenIncomeDoesNotExist_ShouldThrowException() {
         // Given
         when(incomeRepository.findById(999L)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> incomeService.getIncomeById(999L))
+        assertThatThrownBy(() -> incomeService.getById(999L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Income not found with id: 999");
 
@@ -128,14 +128,14 @@ class IncomeServiceTest {
     }
 
     @Test
-    void getAllIncomes_ShouldReturnPageOfIncomeResponses() {
+    void getAll_ShouldReturnPageOfIncomeResponses() {
         // Given
         List<Income> incomes = Arrays.asList(testIncome);
         Page<Income> incomePage = new PageImpl<>(incomes, PageRequest.of(0, 10), 1);
         when(incomeRepository.findAll(any(Pageable.class))).thenReturn(incomePage);
 
         // When
-        Page<IncomeResponse> result = incomeService.getAllIncomes(PageRequest.of(0, 10));
+        Page<IncomeResponse> result = incomeService.getAll(PageRequest.of(0, 10));
 
         // Then
         assertThat(result).isNotNull();
@@ -147,7 +147,7 @@ class IncomeServiceTest {
     }
 
     @Test
-    void updateIncome_WhenIncomeExists_ShouldReturnUpdatedIncomeResponse() {
+    void update_WhenIncomeExists_ShouldReturnUpdatedIncomeResponse() {
         // Given
         Income updatedIncome = Income.builder()
                 .id(1L)
@@ -172,7 +172,7 @@ class IncomeServiceTest {
                 .build();
 
         // When
-        IncomeResponse result = incomeService.updateIncome(1L, updateRequest);
+        IncomeResponse result = incomeService.update(1L, updateRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -185,12 +185,12 @@ class IncomeServiceTest {
     }
 
     @Test
-    void updateIncome_WhenIncomeDoesNotExist_ShouldThrowException() {
+    void update_WhenIncomeDoesNotExist_ShouldThrowException() {
         // Given
         when(incomeRepository.findById(999L)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> incomeService.updateIncome(999L, testIncomeRequest))
+        assertThatThrownBy(() -> incomeService.update(999L, testIncomeRequest))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Income not found with id: 999");
 
@@ -199,12 +199,12 @@ class IncomeServiceTest {
     }
 
     @Test
-    void deleteIncome_WhenIncomeExists_ShouldDeleteSuccessfully() {
+    void delete_WhenIncomeExists_ShouldDeleteSuccessfully() {
         // Given
         when(incomeRepository.existsById(1L)).thenReturn(true);
 
         // When
-        incomeService.deleteIncome(1L);
+        incomeService.delete(1L);
 
         // Then
         verify(incomeRepository).existsById(1L);
@@ -213,12 +213,12 @@ class IncomeServiceTest {
     }
 
     @Test
-    void deleteIncome_WhenIncomeDoesNotExist_ShouldThrowException() {
+    void delete_WhenIncomeDoesNotExist_ShouldThrowException() {
         // Given
         when(incomeRepository.existsById(999L)).thenReturn(false);
 
         // When & Then
-        assertThatThrownBy(() -> incomeService.deleteIncome(999L))
+        assertThatThrownBy(() -> incomeService.delete(999L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Income not found with id: 999");
 
@@ -227,14 +227,14 @@ class IncomeServiceTest {
     }
 
     @Test
-    void getAllIncomes_ShouldReturnMultipleIncomes_WhenMultipleIncomesExist() {
+    void getAll_ShouldReturnMultipleIncomes_WhenMultipleIncomesExist() {
         // Given
         List<Income> incomes = Arrays.asList(testIncome, testIncome2);
         Page<Income> incomePage = new PageImpl<>(incomes, PageRequest.of(0, 10), 2);
         when(incomeRepository.findAll(any(Pageable.class))).thenReturn(incomePage);
 
         // When
-        Page<IncomeResponse> result = incomeService.getAllIncomes(PageRequest.of(0, 10));
+        Page<IncomeResponse> result = incomeService.getAll(PageRequest.of(0, 10));
 
         // Then
         assertThat(result).isNotNull();
@@ -248,13 +248,13 @@ class IncomeServiceTest {
     }
 
     @Test
-    void deleteIncome_ShouldActuallyRemoveIncome() {
+    void delete_ShouldActuallyRemoveIncome() {
         // Given
         when(incomeRepository.existsById(1L)).thenReturn(true);
         when(incomeRepository.findById(1L)).thenReturn(Optional.of(testIncome));
 
         // When
-        incomeService.deleteIncome(1L);
+        incomeService.delete(1L);
 
         // Then
         verify(incomeRepository).existsById(1L);
@@ -262,7 +262,7 @@ class IncomeServiceTest {
 
         // Verify the income is actually gone by checking findById returns empty
         when(incomeRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> incomeService.getIncomeById(1L))
+        assertThatThrownBy(() -> incomeService.getById(1L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Income not found with id: 1");
     }

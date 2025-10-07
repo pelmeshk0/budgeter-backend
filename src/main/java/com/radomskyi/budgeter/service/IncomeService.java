@@ -1,6 +1,7 @@
 package com.radomskyi.budgeter.service;
 
 import com.radomskyi.budgeter.domain.entity.budgeting.Income;
+import com.radomskyi.budgeter.domain.service.IncomeServiceInterface;
 import com.radomskyi.budgeter.dto.IncomeRequest;
 import com.radomskyi.budgeter.dto.IncomeResponse;
 import com.radomskyi.budgeter.exception.IncomeNotFoundException;
@@ -18,15 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
-public class IncomeService {
+public class IncomeService implements IncomeServiceInterface {
 
     private final IncomeRepository incomeRepository;
 
     /**
      * Create a new income
      */
+    @Override
     @Transactional
-    public IncomeResponse createIncome(IncomeRequest request) {
+    public IncomeResponse create(IncomeRequest request) {
         log.info("Creating new income with amount: {} and category: {}", request.getAmount(), request.getCategory());
 
         Income income = Income.builder()
@@ -46,7 +48,8 @@ public class IncomeService {
     /**
      * Get income by ID
      */
-    public IncomeResponse getIncomeById(Long id) {
+    @Override
+    public IncomeResponse getById(Long id) {
         log.info("Fetching income with id: {}", id);
 
         Income income = incomeRepository.findById(id)
@@ -58,7 +61,8 @@ public class IncomeService {
     /**
      * Get all incomes with pagination
      */
-    public Page<IncomeResponse> getAllIncomes(Pageable pageable) {
+    @Override
+    public Page<IncomeResponse> getAll(Pageable pageable) {
         log.info("Fetching all incomes with pagination: {}", pageable);
 
         Page<Income> incomes = incomeRepository.findAll(pageable);
@@ -68,8 +72,9 @@ public class IncomeService {
     /**
      * Update an existing income
      */
+    @Override
     @Transactional
-    public IncomeResponse updateIncome(Long id, IncomeRequest request) {
+    public IncomeResponse update(Long id, IncomeRequest request) {
         log.info("Updating income with id: {}", id);
 
         Income existingIncome = incomeRepository.findById(id)
@@ -90,8 +95,9 @@ public class IncomeService {
     /**
      * Delete an income by ID
      */
+    @Override
     @Transactional
-    public void deleteIncome(Long id) {
+    public void delete(Long id) {
         log.info("Deleting income with id: {}", id);
 
         if (!incomeRepository.existsById(id)) {

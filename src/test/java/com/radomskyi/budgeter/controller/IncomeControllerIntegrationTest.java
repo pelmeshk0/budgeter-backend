@@ -53,7 +53,7 @@ class IncomeControllerIntegrationTest {
     }
 
     @Test
-    void createIncome_ShouldCreateAndReturnIncome_WhenValidRequest() throws Exception {
+    void create_ShouldCreateAndReturnIncome_WhenValidRequest() throws Exception {
         // Given
         IncomeRequest request = IncomeRequest.builder()
                 .amount(new BigDecimal("3500.00"))
@@ -84,7 +84,7 @@ class IncomeControllerIntegrationTest {
     }
 
     @Test
-    void createIncome_ShouldReturnBadRequest_WhenInvalidRequest() throws Exception {
+    void create_ShouldReturnBadRequest_WhenInvalidRequest() throws Exception {
         // Given
         IncomeRequest invalidRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("-100.00")) // Invalid negative amount
@@ -102,7 +102,7 @@ class IncomeControllerIntegrationTest {
     }
 
     @Test
-    void createIncome_ShouldReturnBadRequest_WhenMissingAmount() throws Exception {
+    void create_ShouldReturnBadRequest_WhenMissingAmount() throws Exception {
         // Given
         IncomeRequest invalidRequest = IncomeRequest.builder()
                 .amount(null)
@@ -122,7 +122,7 @@ class IncomeControllerIntegrationTest {
     }
 
     @Test
-    void createIncome_ShouldReturnBadRequest_WhenMissingCategory() throws Exception {
+    void create_ShouldReturnBadRequest_WhenMissingCategory() throws Exception {
         // Given
         IncomeRequest invalidRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("3500.00"))
@@ -141,7 +141,7 @@ class IncomeControllerIntegrationTest {
     }
 
     @Test
-    void getIncomeById_ShouldReturnIncome_WhenIncomeExists() throws Exception {
+    void getById_ShouldReturnIncome_WhenIncomeExists() throws Exception {
         // Given
         IncomeRequest request = IncomeRequest.builder()
                 .amount(new BigDecimal("2500.00"))
@@ -173,14 +173,14 @@ class IncomeControllerIntegrationTest {
     }
 
     @Test
-    void getIncomeById_ShouldReturnNotFound_WhenIncomeDoesNotExist() throws Exception {
+    void getById_ShouldReturnNotFound_WhenIncomeDoesNotExist() throws Exception {
         // When & Then
         mockMvc.perform(get("/api/income/999"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void getAllIncomes_ShouldReturnEmptyPage_WhenNoIncomesExist() throws Exception {
+    void getAll_ShouldReturnEmptyPage_WhenNoIncomesExist() throws Exception {
         // When & Then
         mockMvc.perform(get("/api/income"))
                 .andExpect(status().isOk())
@@ -190,7 +190,7 @@ class IncomeControllerIntegrationTest {
     }
 
     @Test
-    void getAllIncomes_ShouldReturnAllIncomes_WithPagination() throws Exception {
+    void getAll_ShouldReturnAllIncomes_WithPagination() throws Exception {
         // Given - Create multiple incomes
         createTestIncome("Income 1", new BigDecimal("1000.00"), IncomeCategory.SALARY);
         createTestIncome("Income 2", new BigDecimal("2000.00"), IncomeCategory.FREELANCE);
@@ -214,7 +214,7 @@ class IncomeControllerIntegrationTest {
     }
 
     @Test
-    void updateIncome_ShouldUpdateAndReturnIncome_WhenIncomeExists() throws Exception {
+    void update_ShouldUpdateAndReturnIncome_WhenIncomeExists() throws Exception {
         // Given
         IncomeRequest createRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("1500.00"))
@@ -259,7 +259,7 @@ class IncomeControllerIntegrationTest {
     }
 
     @Test
-    void updateIncome_ShouldReturnNotFound_WhenIncomeDoesNotExist() throws Exception {
+    void update_ShouldReturnNotFound_WhenIncomeDoesNotExist() throws Exception {
         // Given
         IncomeRequest updateRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("2000.00"))

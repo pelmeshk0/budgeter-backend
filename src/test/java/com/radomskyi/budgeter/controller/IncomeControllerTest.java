@@ -76,9 +76,9 @@ class IncomeControllerTest {
     }
 
     @Test
-    void createIncome_ShouldReturnCreatedIncome() throws Exception {
+    void create_ShouldReturnCreatedIncome() throws Exception {
         // Given
-        when(incomeService.createIncome(any(IncomeRequest.class))).thenReturn(testIncomeResponse);
+        when(incomeService.create(any(IncomeRequest.class))).thenReturn(testIncomeResponse);
 
         // When & Then
         mockMvc.perform(post("/api/income")
@@ -92,7 +92,7 @@ class IncomeControllerTest {
     }
 
     @Test
-    void createIncome_WithMissingAmount_ShouldReturnBadRequest() throws Exception {
+    void create_WithMissingAmount_ShouldReturnBadRequest() throws Exception {
         // Given
         IncomeRequest invalidRequest = IncomeRequest.builder()
                 .amount(null) // Invalid: amount is required
@@ -109,7 +109,7 @@ class IncomeControllerTest {
     }
 
     @Test
-    void createIncome_WithMissingCategory_ShouldReturnBadRequest() throws Exception {
+    void create_WithMissingCategory_ShouldReturnBadRequest() throws Exception {
         // Given
         IncomeRequest invalidRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("3500.00")) // Amount provided
@@ -125,9 +125,9 @@ class IncomeControllerTest {
     }
 
     @Test
-    void getIncomeById_ShouldReturnIncome() throws Exception {
+    void getById_ShouldReturnIncome() throws Exception {
         // Given
-        when(incomeService.getIncomeById(1L)).thenReturn(testIncomeResponse);
+        when(incomeService.getById(1L)).thenReturn(testIncomeResponse);
 
         // When & Then
         mockMvc.perform(get("/api/income/1"))
@@ -138,11 +138,11 @@ class IncomeControllerTest {
     }
 
     @Test
-    void getAllIncomes_ShouldReturnPageOfIncomes() throws Exception {
+    void getAll_ShouldReturnPageOfIncomes() throws Exception {
         // Given
         List<IncomeResponse> incomes = Arrays.asList(testIncomeResponse);
         Page<IncomeResponse> incomePage = new PageImpl<>(incomes, PageRequest.of(0, 20), 1);
-        when(incomeService.getAllIncomes(any())).thenReturn(incomePage);
+        when(incomeService.getAll(any())).thenReturn(incomePage);
 
         // When & Then
         mockMvc.perform(get("/api/income"))
@@ -153,7 +153,7 @@ class IncomeControllerTest {
     }
 
     @Test
-    void updateIncome_ShouldReturnUpdatedIncome() throws Exception {
+    void update_ShouldReturnUpdatedIncome() throws Exception {
         // Given
         IncomeRequest updateRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("4000.00"))
@@ -174,7 +174,7 @@ class IncomeControllerTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        when(incomeService.updateIncome(any(Long.class), any(IncomeRequest.class))).thenReturn(updatedResponse);
+        when(incomeService.update(any(Long.class), any(IncomeRequest.class))).thenReturn(updatedResponse);
 
         // When & Then
         mockMvc.perform(put("/api/income/1")
@@ -187,7 +187,7 @@ class IncomeControllerTest {
     }
 
     @Test
-    void updateIncome_WithInvalidData_ShouldReturnBadRequest() throws Exception {
+    void update_WithInvalidData_ShouldReturnBadRequest() throws Exception {
         // Given
         IncomeRequest invalidRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("-100.00")) // Invalid: amount must be positive

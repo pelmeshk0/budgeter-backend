@@ -1,6 +1,7 @@
 package com.radomskyi.budgeter.service;
 
 import com.radomskyi.budgeter.domain.entity.budgeting.Expense;
+import com.radomskyi.budgeter.domain.service.ExpenseServiceInterface;
 import com.radomskyi.budgeter.dto.ExpenseRequest;
 import com.radomskyi.budgeter.dto.ExpenseResponse;
 import com.radomskyi.budgeter.exception.ExpenseNotFoundException;
@@ -18,15 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
-public class ExpenseService {
+public class ExpenseService implements ExpenseServiceInterface {
     
     private final ExpenseRepository expenseRepository;
     
     /**
      * Create a new expense
      */
+    @Override
     @Transactional
-    public ExpenseResponse createExpense(ExpenseRequest request) {
+    public ExpenseResponse create(ExpenseRequest request) {
         log.info("Creating new expense with amount: {} and category: {}", request.getAmount(), request.getCategory());
         
         Expense expense = Expense.builder()
@@ -46,7 +48,8 @@ public class ExpenseService {
     /**
      * Get expense by ID
      */
-    public ExpenseResponse getExpenseById(Long id) {
+    @Override
+    public ExpenseResponse getById(Long id) {
         log.info("Fetching expense with id: {}", id);
         
         Expense expense = expenseRepository.findById(id)
@@ -58,7 +61,8 @@ public class ExpenseService {
     /**
      * Get all expenses with pagination
      */
-    public Page<ExpenseResponse> getAllExpenses(Pageable pageable) {
+    @Override
+    public Page<ExpenseResponse> getAll(Pageable pageable) {
         log.info("Fetching all expenses with pagination: {}", pageable);
         
         Page<Expense> expenses = expenseRepository.findAll(pageable);
@@ -68,8 +72,9 @@ public class ExpenseService {
     /**
      * Update an existing expense
      */
+    @Override
     @Transactional
-    public ExpenseResponse updateExpense(Long id, ExpenseRequest request) {
+    public ExpenseResponse update(Long id, ExpenseRequest request) {
         log.info("Updating expense with id: {}", id);
         
         Expense existingExpense = expenseRepository.findById(id)
@@ -90,8 +95,9 @@ public class ExpenseService {
     /**
      * Delete an expense by ID
      */
+    @Override
     @Transactional
-    public void deleteExpense(Long id) {
+    public void delete(Long id) {
         log.info("Deleting expense with id: {}", id);
         
         if (!expenseRepository.existsById(id)) {

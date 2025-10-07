@@ -26,7 +26,7 @@ public class ExpenseController implements ExpenseControllerInterface {
     @Override
     public ResponseEntity<ExpenseResponse> create(@Valid @RequestBody ExpenseRequest request) {
         log.info("Received request to create expense: {}", request);
-        ExpenseResponse response = expenseService.createExpense(request);
+        ExpenseResponse response = expenseService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
@@ -34,7 +34,7 @@ public class ExpenseController implements ExpenseControllerInterface {
     @Override
     public ResponseEntity<ExpenseResponse> getById(@PathVariable Long id) {
         log.info("Received request to get expense with id: {}", id);
-        ExpenseResponse response = expenseService.getExpenseById(id);
+        ExpenseResponse response = expenseService.getById(id);
         return ResponseEntity.ok(response);
     }
     
@@ -43,7 +43,7 @@ public class ExpenseController implements ExpenseControllerInterface {
     public ResponseEntity<Page<ExpenseResponse>> getAll(
             @PageableDefault(size = 20) Pageable pageable) {
         log.info("Received request to get all expenses with pagination: {}", pageable);
-        Page<ExpenseResponse> response = expenseService.getAllExpenses(pageable);
+        Page<ExpenseResponse> response = expenseService.getAll(pageable);
         return ResponseEntity.ok(response);
     }
     
@@ -53,7 +53,7 @@ public class ExpenseController implements ExpenseControllerInterface {
             @PathVariable Long id,
             @Valid @RequestBody ExpenseRequest request) {
         log.info("Received request to update expense with id: {} and data: {}", id, request);
-        ExpenseResponse response = expenseService.updateExpense(id, request);
+        ExpenseResponse response = expenseService.update(id, request);
         return ResponseEntity.ok(response);
     }
     
@@ -61,7 +61,7 @@ public class ExpenseController implements ExpenseControllerInterface {
     @Override
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("Received request to delete expense with id: {}", id);
-        expenseService.deleteExpense(id);
+        expenseService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

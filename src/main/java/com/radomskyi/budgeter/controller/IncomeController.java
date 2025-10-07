@@ -26,7 +26,7 @@ public class IncomeController implements IncomeControllerInterface {
     @Override
     public ResponseEntity<IncomeResponse> create(@Valid @RequestBody IncomeRequest request) {
         log.info("Received request to create income: {}", request);
-        IncomeResponse response = incomeService.createIncome(request);
+        IncomeResponse response = incomeService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -34,7 +34,7 @@ public class IncomeController implements IncomeControllerInterface {
     @Override
     public ResponseEntity<IncomeResponse> getById(@PathVariable Long id) {
         log.info("Received request to get income with id: {}", id);
-        IncomeResponse response = incomeService.getIncomeById(id);
+        IncomeResponse response = incomeService.getById(id);
         return ResponseEntity.ok(response);
     }
 
@@ -43,7 +43,7 @@ public class IncomeController implements IncomeControllerInterface {
     public ResponseEntity<Page<IncomeResponse>> getAll(
             @PageableDefault(size = 20) Pageable pageable) {
         log.info("Received request to get all incomes with pagination: {}", pageable);
-        Page<IncomeResponse> response = incomeService.getAllIncomes(pageable);
+        Page<IncomeResponse> response = incomeService.getAll(pageable);
         return ResponseEntity.ok(response);
     }
 
@@ -53,7 +53,7 @@ public class IncomeController implements IncomeControllerInterface {
             @PathVariable Long id,
             @Valid @RequestBody IncomeRequest request) {
         log.info("Received request to update income with id: {} and data: {}", id, request);
-        IncomeResponse response = incomeService.updateIncome(id, request);
+        IncomeResponse response = incomeService.update(id, request);
         return ResponseEntity.ok(response);
     }
 
@@ -61,7 +61,7 @@ public class IncomeController implements IncomeControllerInterface {
     @Override
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("Received request to delete income with id: {}", id);
-        incomeService.deleteIncome(id);
+        incomeService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

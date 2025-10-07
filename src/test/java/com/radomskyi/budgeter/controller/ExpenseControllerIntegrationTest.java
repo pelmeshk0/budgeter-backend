@@ -53,7 +53,7 @@ class ExpenseControllerIntegrationTest {
     }
 
     @Test
-    void createExpense_ShouldCreateAndReturnExpense_WhenValidRequest() throws Exception {
+    void create_ShouldCreateAndReturnExpense_WhenValidRequest() throws Exception {
         // Given
         ExpenseRequest request = ExpenseRequest.builder()
                 .amount(new BigDecimal("25.50"))
@@ -85,7 +85,7 @@ class ExpenseControllerIntegrationTest {
     }
 
     @Test
-    void createExpense_ShouldReturnBadRequest_WhenInvalidRequest() throws Exception {
+    void create_ShouldReturnBadRequest_WhenInvalidRequest() throws Exception {
         // Given
         ExpenseRequest invalidRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("-10.00")) // Invalid negative amount
@@ -104,7 +104,7 @@ class ExpenseControllerIntegrationTest {
     }
 
     @Test
-    void getExpenseById_ShouldReturnExpense_WhenExpenseExists() throws Exception {
+    void getById_ShouldReturnExpense_WhenExpenseExists() throws Exception {
         // Given - Create an expense first
         ExpenseRequest request = ExpenseRequest.builder()
                 .amount(new BigDecimal("15.75"))
@@ -137,14 +137,14 @@ class ExpenseControllerIntegrationTest {
     }
 
     @Test
-    void getExpenseById_ShouldReturnNotFound_WhenExpenseDoesNotExist() throws Exception {
+    void getById_ShouldReturnNotFound_WhenExpenseDoesNotExist() throws Exception {
         // When & Then
         mockMvc.perform(get("/api/expense/999"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void getAllExpenses_ShouldReturnPageOfExpenses_WhenExpensesExist() throws Exception {
+    void getAll_ShouldReturnPageOfExpenses_WhenExpensesExist() throws Exception {
         // Given - Create multiple expenses
         createTestExpense("Expense 1", new BigDecimal("10.00"), ExpenseCategory.WANTS);
         createTestExpense("Expense 2", new BigDecimal("20.00"), ExpenseCategory.NEEDS);
@@ -163,7 +163,7 @@ class ExpenseControllerIntegrationTest {
     }
 
     @Test
-    void getAllExpenses_ShouldReturnEmptyPage_WhenNoExpensesExist() throws Exception {
+    void getAll_ShouldReturnEmptyPage_WhenNoExpensesExist() throws Exception {
         // When & Then
         mockMvc.perform(get("/api/expense"))
                 .andExpect(status().isOk())
@@ -175,7 +175,7 @@ class ExpenseControllerIntegrationTest {
     }
 
     @Test
-    void getAllExpenses_ShouldSupportPagination_WhenRequested() throws Exception {
+    void getAll_ShouldSupportPagination_WhenRequested() throws Exception {
         // Given - Create 5 expenses
         for (int i = 1; i <= 5; i++) {
             createTestExpense("Expense " + i, new BigDecimal(i * 10), ExpenseCategory.WANTS);
@@ -206,7 +206,7 @@ class ExpenseControllerIntegrationTest {
     }
 
     @Test
-    void updateExpense_ShouldUpdateAndReturnExpense_WhenExpenseExists() throws Exception {
+    void update_ShouldUpdateAndReturnExpense_WhenExpenseExists() throws Exception {
         // Given - Create an expense first
         ExpenseRequest createRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("25.00"))
@@ -255,7 +255,7 @@ class ExpenseControllerIntegrationTest {
     }
 
     @Test
-    void updateExpense_ShouldReturnNotFound_WhenExpenseDoesNotExist() throws Exception {
+    void update_ShouldReturnNotFound_WhenExpenseDoesNotExist() throws Exception {
         // Given
         ExpenseRequest updateRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("35.00"))
