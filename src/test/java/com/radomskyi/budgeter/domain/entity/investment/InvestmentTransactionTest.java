@@ -2,8 +2,6 @@ package com.radomskyi.budgeter.domain.entity.investment;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import com.radomskyi.budgeter.domain.entity.investment.*;
-import com.radomskyi.budgeter.domain.entity.budgeting.Transaction;
 
 import java.math.BigDecimal;
 

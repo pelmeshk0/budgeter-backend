@@ -3,7 +3,6 @@ package com.radomskyi.budgeter.service;
 import com.radomskyi.budgeter.domain.entity.investment.*;
 import com.radomskyi.budgeter.domain.service.InvestmentServiceInterface;
 import com.radomskyi.budgeter.dto.InvestmentTransactionRequest;
-import com.radomskyi.budgeter.dto.InvestmentTransactionResponse;
 import com.radomskyi.budgeter.exception.InvestmentTransactionNotFoundException;
 import com.radomskyi.budgeter.repository.AssetRepository;
 import com.radomskyi.budgeter.repository.InvestmentTransactionRepository;
