@@ -86,7 +86,7 @@ public class InvestmentTransaction extends Transaction {
     }
 
     // Calculate total amount based on units, price per unit, fees, and exchange rate
-    private void calculateAmount() {
+    public void calculateAmount() {
         BigDecimal grossAmount = units.multiply(pricePerUnit);
 
         // Convert to EUR if currency is not EUR
