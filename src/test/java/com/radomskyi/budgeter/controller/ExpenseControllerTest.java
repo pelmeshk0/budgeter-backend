@@ -55,6 +55,7 @@ class ExpenseControllerTest {
         
         testExpenseRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("25.50"))
+                .name("Test Expense")
                 .category(ExpenseCategory.WANTS)
                 .description("Test expense")
                 .tags(Arrays.asList(Tag.FOOD, Tag.BARS_AND_RESTAURANTS))
@@ -63,6 +64,7 @@ class ExpenseControllerTest {
         testExpenseResponse = ExpenseResponse.builder()
                 .id(1L)
                 .amount(new BigDecimal("25.50"))
+                .name("Test Expense")
                 .category(ExpenseCategory.WANTS)
                 .description("Test expense")
                 .tags(Arrays.asList(Tag.FOOD, Tag.BARS_AND_RESTAURANTS))
@@ -95,6 +97,7 @@ class ExpenseControllerTest {
         // Given
         ExpenseRequest invalidRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("-10.00")) // Invalid negative amount
+                .name("Invalid Expense")
                 .category(ExpenseCategory.WANTS)
                 .build();
         
@@ -109,6 +112,7 @@ class ExpenseControllerTest {
     void createExpense_ShouldReturnBadRequest_WhenRequiredFieldsMissing() throws Exception {
         // Given
         ExpenseRequest invalidRequest = ExpenseRequest.builder()
+                .name("Missing Required Fields")
                 .description("Missing required fields")
                 .build();
         
@@ -157,6 +161,7 @@ class ExpenseControllerTest {
         // Given
         ExpenseRequest updateRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("30.00"))
+                .name("Updated Expense")
                 .category(ExpenseCategory.NEEDS)
                 .description("Updated expense")
                 .tags(Arrays.asList(Tag.TRANSPORT))
@@ -165,6 +170,7 @@ class ExpenseControllerTest {
         ExpenseResponse updatedResponse = ExpenseResponse.builder()
                 .id(1L)
                 .amount(new BigDecimal("30.00"))
+                .name("Updated Expense")
                 .category(ExpenseCategory.NEEDS)
                 .description("Updated expense")
                 .tags(Arrays.asList(Tag.TRANSPORT))
@@ -181,6 +187,7 @@ class ExpenseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Updated Expense"))
                 .andExpect(jsonPath("$.amount").value(30.00))
                 .andExpect(jsonPath("$.category").value("NEEDS"))
                 .andExpect(jsonPath("$.description").value("Updated expense"))
@@ -192,6 +199,7 @@ class ExpenseControllerTest {
         // Given
         ExpenseRequest invalidRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("-10.00")) // Invalid negative amount
+                .name("Invalid Update")
                 .category(ExpenseCategory.WANTS)
                 .build();
         

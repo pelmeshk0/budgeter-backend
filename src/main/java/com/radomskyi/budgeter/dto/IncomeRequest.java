@@ -5,6 +5,7 @@ import com.radomskyi.budgeter.domain.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,11 @@ import java.util.List;
 @AllArgsConstructor
 @Schema(description = "Request DTO for creating or updating an income")
 public class IncomeRequest {
+
+    @NotNull(message = "Name is required")
+    @Size(max = 50, message = "Name must not exceed 50 characters")
+    @Schema(description = "Income name", example = "Salary", maxLength = 50)
+    private String name;
 
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be positive")

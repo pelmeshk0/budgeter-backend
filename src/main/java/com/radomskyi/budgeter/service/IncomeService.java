@@ -31,6 +31,7 @@ public class IncomeService {
 
         Income income = Income.builder()
                 .amount(request.getAmount())
+                .name(request.getName())
                 .category(request.getCategory())
                 .description(request.getDescription())
                 .tags(request.getTags())
@@ -75,6 +76,7 @@ public class IncomeService {
                 .orElseThrow(() -> new IncomeNotFoundException("Income not found with id: " + id));
 
         existingIncome.setAmount(request.getAmount());
+        existingIncome.setName(request.getName());
         existingIncome.setCategory(request.getCategory());
         existingIncome.setDescription(request.getDescription());
         existingIncome.setTags(request.getTags());
@@ -106,6 +108,7 @@ public class IncomeService {
     private IncomeResponse mapToResponse(Income income) {
         return IncomeResponse.builder()
                 .id(income.getId())
+                .name(income.getName())
                 .amount(income.getAmount())
                 .category(income.getCategory())
                 .description(income.getDescription())

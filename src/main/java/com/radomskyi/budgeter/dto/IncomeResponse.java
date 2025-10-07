@@ -22,6 +22,9 @@ public class IncomeResponse {
     @Schema(description = "Unique identifier of the income", example = "1")
     private Long id;
 
+    @Schema(description = "Income name", example = "Salary")
+    private String name;
+
     @Schema(description = "Income amount", example = "3500.00")
     private BigDecimal amount;
 

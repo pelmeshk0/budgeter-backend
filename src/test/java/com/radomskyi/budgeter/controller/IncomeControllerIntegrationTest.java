@@ -57,6 +57,7 @@ class IncomeControllerIntegrationTest {
         // Given
         IncomeRequest request = IncomeRequest.builder()
                 .amount(new BigDecimal("3500.00"))
+                .name("Monthly Salary")
                 .category(IncomeCategory.SALARY)
                 .description("Monthly salary")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES))
@@ -69,6 +70,7 @@ class IncomeControllerIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.name").value("Monthly Salary"))
                 .andExpect(jsonPath("$.amount").value(3500.00))
                 .andExpect(jsonPath("$.category").value("SALARY"))
                 .andExpect(jsonPath("$.description").value("Monthly salary"))
@@ -104,6 +106,7 @@ class IncomeControllerIntegrationTest {
         // Given
         IncomeRequest invalidRequest = IncomeRequest.builder()
                 .amount(null)
+                .name("Test Income")
                 .category(IncomeCategory.SALARY)
                 .description("Test income")
                 .build();
@@ -142,6 +145,7 @@ class IncomeControllerIntegrationTest {
         // Given
         IncomeRequest request = IncomeRequest.builder()
                 .amount(new BigDecimal("2500.00"))
+                .name("Freelance Income")
                 .category(IncomeCategory.FREELANCE)
                 .description("Freelance project")
                 .tags(Arrays.asList(Tag.OTHER))
@@ -162,6 +166,7 @@ class IncomeControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(incomeId))
                 .andExpect(jsonPath("$.amount").value(2500.00))
+                .andExpect(jsonPath("$.name").value("Freelance Income"))
                 .andExpect(jsonPath("$.category").value("FREELANCE"))
                 .andExpect(jsonPath("$.description").value("Freelance project"))
                 .andExpect(jsonPath("$.tags[0]").value("OTHER"));
@@ -213,6 +218,7 @@ class IncomeControllerIntegrationTest {
         // Given
         IncomeRequest createRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("1500.00"))
+                .name("Original Salary")
                 .category(IncomeCategory.SALARY)
                 .description("Original salary")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES))
@@ -231,6 +237,7 @@ class IncomeControllerIntegrationTest {
         // Update request
         IncomeRequest updateRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("1800.00"))
+                .name("Salary Income")
                 .category(IncomeCategory.SALARY)
                 .description("Updated salary")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES, Tag.OTHER))
@@ -242,6 +249,7 @@ class IncomeControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(incomeId))
+                .andExpect(jsonPath("$.name").value("Salary Income"))
                 .andExpect(jsonPath("$.amount").value(1800.00))
                 .andExpect(jsonPath("$.description").value("Updated salary"))
                 .andExpect(jsonPath("$.tags.length()").value(2));
@@ -255,6 +263,7 @@ class IncomeControllerIntegrationTest {
         // Given
         IncomeRequest updateRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("2000.00"))
+                .name("Updated Income")
                 .category(IncomeCategory.SALARY)
                 .description("Updated income")
                 .build();
@@ -271,6 +280,7 @@ class IncomeControllerIntegrationTest {
         // Given
         IncomeRequest request = IncomeRequest.builder()
                 .amount(new BigDecimal("1200.00"))
+                .name("Income To Be Deleted")
                 .category(IncomeCategory.SALARY)
                 .description("Income to be deleted")
                 .build();
@@ -308,6 +318,7 @@ class IncomeControllerIntegrationTest {
         // Create
         IncomeRequest createRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("2200.00"))
+                .name("Full Workflow Test")
                 .category(IncomeCategory.SALARY)
                 .description("Full workflow test")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES))
@@ -327,11 +338,13 @@ class IncomeControllerIntegrationTest {
         mockMvc.perform(get("/api/income/" + incomeId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(incomeId))
+                .andExpect(jsonPath("$.name").value("Full Workflow Test"))
                 .andExpect(jsonPath("$.amount").value(2200.00));
 
         // Update
         IncomeRequest updateRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("2500.00"))
+                .name("Updated Workflow Test")
                 .category(IncomeCategory.SALARY)
                 .description("Updated workflow test")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES, Tag.OTHER))
@@ -341,6 +354,7 @@ class IncomeControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Updated Workflow Test"))
                 .andExpect(jsonPath("$.amount").value(2500.00))
                 .andExpect(jsonPath("$.description").value("Updated workflow test"));
 
@@ -362,6 +376,7 @@ class IncomeControllerIntegrationTest {
     private void createTestIncome(String description, BigDecimal amount, IncomeCategory category) throws Exception {
         IncomeRequest request = IncomeRequest.builder()
                 .amount(amount)
+                .name("Test Income")
                 .category(category)
                 .description(description)
                 .tags(Arrays.asList(Tag.OTHER))

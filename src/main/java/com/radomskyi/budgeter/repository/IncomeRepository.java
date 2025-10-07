@@ -44,6 +44,12 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
     // Find incomes by description containing text (case insensitive)
     List<Income> findByDescriptionContainingIgnoreCase(String description);
 
+    // Find incomes by name containing text (case insensitive)
+    List<Income> findByNameContainingIgnoreCase(String name);
+
+    // Find incomes by name containing text with pagination
+    Page<Income> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
     // Find incomes by tag
     @Query("SELECT i FROM Income i WHERE :tag MEMBER OF i.tags")
     List<Income> findByTag(@Param("tag") Tag tag);

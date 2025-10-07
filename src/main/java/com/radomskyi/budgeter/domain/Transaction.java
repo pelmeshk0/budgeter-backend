@@ -31,6 +31,9 @@ public abstract class Transaction {
     @Column(nullable = false, precision = 10, scale = 2)
     protected BigDecimal amount;
 
+    @Column(name = "name", length = 50)
+    protected String name;
+
     @Column(name = "description", length = 200)
     protected String description;
 

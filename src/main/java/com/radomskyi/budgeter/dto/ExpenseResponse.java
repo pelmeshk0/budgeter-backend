@@ -21,7 +21,10 @@ public class ExpenseResponse {
     
     @Schema(description = "Unique identifier of the expense", example = "1")
     private Long id;
-    
+
+    @Schema(description = "Expense name", example = "Lunch")
+    private String name;
+
     @Schema(description = "Expense amount", example = "25.50")
     private BigDecimal amount;
     

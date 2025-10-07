@@ -57,6 +57,7 @@ class ExpenseControllerIntegrationTest {
         // Given
         ExpenseRequest request = ExpenseRequest.builder()
                 .amount(new BigDecimal("25.50"))
+                .name("Test Expense")
                 .category(ExpenseCategory.WANTS)
                 .description("Test expense")
                 .tags(Arrays.asList(Tag.FOOD, Tag.BARS_AND_RESTAURANTS))
@@ -69,6 +70,7 @@ class ExpenseControllerIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.name").value("Test Expense"))
                 .andExpect(jsonPath("$.amount").value(25.50))
                 .andExpect(jsonPath("$.category").value("WANTS"))
                 .andExpect(jsonPath("$.description").value("Test expense"))
@@ -87,6 +89,7 @@ class ExpenseControllerIntegrationTest {
         // Given
         ExpenseRequest invalidRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("-10.00")) // Invalid negative amount
+                .name("Invalid Expense")
                 .category(ExpenseCategory.WANTS)
                 .build();
 
@@ -105,8 +108,9 @@ class ExpenseControllerIntegrationTest {
         // Given - Create an expense first
         ExpenseRequest request = ExpenseRequest.builder()
                 .amount(new BigDecimal("15.75"))
+                .name("Test Expense")
                 .category(ExpenseCategory.NEEDS)
-                .description("Integration test expense")
+                .description("Test expense description")
                 .tags(Arrays.asList(Tag.TRANSPORT))
                 .build();
 
@@ -126,8 +130,9 @@ class ExpenseControllerIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(expenseId))
                 .andExpect(jsonPath("$.amount").value(15.75))
+                .andExpect(jsonPath("$.name").value("Test Expense"))
                 .andExpect(jsonPath("$.category").value("NEEDS"))
-                .andExpect(jsonPath("$.description").value("Integration test expense"))
+                .andExpect(jsonPath("$.description").value("Test expense description"))
                 .andExpect(jsonPath("$.tags[0]").value("TRANSPORT"));
     }
 
@@ -205,6 +210,7 @@ class ExpenseControllerIntegrationTest {
         // Given - Create an expense first
         ExpenseRequest createRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("25.00"))
+                .name("Original Expense")
                 .category(ExpenseCategory.WANTS)
                 .description("Original expense")
                 .tags(Arrays.asList(Tag.FOOD))
@@ -223,8 +229,9 @@ class ExpenseControllerIntegrationTest {
         // Given - Update request
         ExpenseRequest updateRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("35.00"))
+                .name("Updated Expense")
                 .category(ExpenseCategory.NEEDS)
-                .description("Updated expense")
+                .description("Updated expense description")
                 .tags(Arrays.asList(Tag.TRANSPORT, Tag.HEALTH))
                 .build();
 
@@ -236,8 +243,9 @@ class ExpenseControllerIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(expenseId))
                 .andExpect(jsonPath("$.amount").value(35.00))
+                .andExpect(jsonPath("$.name").value("Updated Expense"))
                 .andExpect(jsonPath("$.category").value("NEEDS"))
-                .andExpect(jsonPath("$.description").value("Updated expense"))
+                .andExpect(jsonPath("$.description").value("Updated expense description"))
                 .andExpect(jsonPath("$.tags[0]").value("TRANSPORT"))
                 .andExpect(jsonPath("$.tags[1]").value("HEALTH"))
                 .andExpect(jsonPath("$.updatedAt").isNotEmpty());
@@ -251,6 +259,7 @@ class ExpenseControllerIntegrationTest {
         // Given
         ExpenseRequest updateRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("35.00"))
+                .name("Test Expense")
                 .category(ExpenseCategory.NEEDS)
                 .description("Updated expense")
                 .build();
@@ -267,6 +276,7 @@ class ExpenseControllerIntegrationTest {
         // Given - Create an expense first
         ExpenseRequest request = ExpenseRequest.builder()
                 .amount(new BigDecimal("15.00"))
+                .name("Test Expense")
                 .category(ExpenseCategory.WANTS)
                 .description("To be deleted")
                 .build();
@@ -304,6 +314,7 @@ class ExpenseControllerIntegrationTest {
         // 1. Create an expense
         ExpenseRequest createRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("50.00"))
+                .name("Full Workflow Test")
                 .category(ExpenseCategory.WANTS)
                 .description("Full workflow test")
                 .tags(Arrays.asList(Tag.ENTERTAINMENT))
@@ -322,12 +333,14 @@ class ExpenseControllerIntegrationTest {
         // 2. Read the expense
         mockMvc.perform(get("/api/expense/" + expenseId))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Full Workflow Test"))
                 .andExpect(jsonPath("$.amount").value(50.00))
                 .andExpect(jsonPath("$.description").value("Full workflow test"));
 
         // 3. Update the expense
         ExpenseRequest updateRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("75.00"))
+                .name("Updated Workflow Test")
                 .category(ExpenseCategory.NEEDS)
                 .description("Updated workflow test")
                 .tags(Arrays.asList(Tag.HEALTH, Tag.EDUCATION))
@@ -337,6 +350,7 @@ class ExpenseControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Updated Workflow Test"))
                 .andExpect(jsonPath("$.amount").value(75.00))
                 .andExpect(jsonPath("$.description").value("Updated workflow test"));
 
@@ -359,6 +373,7 @@ class ExpenseControllerIntegrationTest {
     private void createTestExpense(String description, BigDecimal amount, ExpenseCategory category) throws Exception {
         ExpenseRequest request = ExpenseRequest.builder()
                 .amount(amount)
+                .name("Test Expense")
                 .category(category)
                 .description(description)
                 .tags(Arrays.asList(Tag.OTHER))

@@ -43,6 +43,12 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     
     // Find expenses by description containing text (case insensitive)
     List<Expense> findByDescriptionContainingIgnoreCase(String description);
+
+    // Find expenses by name containing text (case insensitive)
+    List<Expense> findByNameContainingIgnoreCase(String name);
+
+    // Find expenses by name containing text with pagination
+    Page<Expense> findByNameContainingIgnoreCase(String name, Pageable pageable);
     
     // Find expenses by tag
     @Query("SELECT e FROM Expense e WHERE :tag MEMBER OF e.tags")

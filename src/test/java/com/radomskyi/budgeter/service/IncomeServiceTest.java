@@ -49,6 +49,7 @@ class IncomeServiceTest {
         testIncome = Income.builder()
                 .id(1L)
                 .amount(new BigDecimal("3500.00"))
+                .name("Monthly Salary")
                 .category(IncomeCategory.SALARY)
                 .description("Monthly salary")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES))
@@ -59,6 +60,7 @@ class IncomeServiceTest {
         testIncome2 = Income.builder()
                 .id(2L)
                 .amount(new BigDecimal("1500.00"))
+                .name("Freelance Project")
                 .category(IncomeCategory.FREELANCE)
                 .description("Freelance project")
                 .tags(Arrays.asList(Tag.OTHER))
@@ -68,6 +70,7 @@ class IncomeServiceTest {
 
         testIncomeRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("3500.00"))
+                .name("Monthly Salary")
                 .category(IncomeCategory.SALARY)
                 .description("Monthly salary")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES))
@@ -75,6 +78,7 @@ class IncomeServiceTest {
 
         testIncomeRequest2 = IncomeRequest.builder()
                 .amount(new BigDecimal("1500.00"))
+                .name("Freelance Project")
                 .category(IncomeCategory.FREELANCE)
                 .description("Freelance project")
                 .tags(Arrays.asList(Tag.OTHER))
@@ -92,6 +96,7 @@ class IncomeServiceTest {
         // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getName()).isEqualTo("Monthly Salary");
         assertThat(result.getAmount()).isEqualTo(new BigDecimal("3500.00"));
         assertThat(result.getCategory()).isEqualTo(IncomeCategory.SALARY);
         assertThat(result.getDescription()).isEqualTo("Monthly salary");
@@ -111,6 +116,7 @@ class IncomeServiceTest {
         // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getName()).isEqualTo("Monthly Salary");
         assertThat(result.getAmount()).isEqualTo(new BigDecimal("3500.00"));
         assertThat(result.getCategory()).isEqualTo(IncomeCategory.SALARY);
 
@@ -155,6 +161,7 @@ class IncomeServiceTest {
         Income updatedIncome = Income.builder()
                 .id(1L)
                 .amount(new BigDecimal("4000.00"))
+                .name("Updated Salary")
                 .category(IncomeCategory.SALARY)
                 .description("Updated salary")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES))
@@ -167,6 +174,7 @@ class IncomeServiceTest {
 
         IncomeRequest updateRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("4000.00"))
+                .name("Updated Salary")
                 .category(IncomeCategory.SALARY)
                 .description("Updated salary")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES))
@@ -177,6 +185,7 @@ class IncomeServiceTest {
 
         // Then
         assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo("Updated Salary");
         assertThat(result.getAmount()).isEqualTo(new BigDecimal("4000.00"));
         assertThat(result.getDescription()).isEqualTo("Updated salary");
 

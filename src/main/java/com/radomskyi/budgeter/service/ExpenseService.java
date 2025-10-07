@@ -31,6 +31,7 @@ public class ExpenseService {
         
         Expense expense = Expense.builder()
                 .amount(request.getAmount())
+                .name(request.getName())
                 .category(request.getCategory())
                 .description(request.getDescription())
                 .tags(request.getTags())
@@ -75,6 +76,7 @@ public class ExpenseService {
                 .orElseThrow(() -> new ExpenseNotFoundException("Expense not found with id: " + id));
         
         existingExpense.setAmount(request.getAmount());
+        existingExpense.setName(request.getName());
         existingExpense.setCategory(request.getCategory());
         existingExpense.setDescription(request.getDescription());
         existingExpense.setTags(request.getTags());
@@ -106,6 +108,7 @@ public class ExpenseService {
     private ExpenseResponse mapToResponse(Expense expense) {
         return ExpenseResponse.builder()
                 .id(expense.getId())
+                .name(expense.getName())
                 .amount(expense.getAmount())
                 .category(expense.getCategory())
                 .description(expense.getDescription())

@@ -34,14 +34,16 @@ public class Income extends Transaction {
     private List<Tag> tags;
 
     // Custom constructor for required fields
-    public Income(BigDecimal amount, IncomeCategory category) {
+    public Income(BigDecimal amount, IncomeCategory category, String name) {
         super.amount = amount;
+        super.name = name;
         this.category = category;
     }
 
     // Constructor with description
-    public Income(BigDecimal amount, IncomeCategory category, String description) {
+    public Income(BigDecimal amount, IncomeCategory category, String name, String description) {
         super.amount = amount;
+        super.name = name;
         super.description = description;
         this.category = category;
     }

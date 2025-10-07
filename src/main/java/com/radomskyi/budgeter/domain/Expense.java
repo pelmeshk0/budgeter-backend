@@ -32,14 +32,16 @@ public class Expense extends Transaction {
     private List<Tag> tags;
 
     // Custom constructor for required fields
-    public Expense(BigDecimal amount, ExpenseCategory category) {
+    public Expense(BigDecimal amount, ExpenseCategory category, String name) {
         super.amount = amount;
+        super.name = name;
         this.category = category;
     }
 
     // Constructor with description
-    public Expense(BigDecimal amount, ExpenseCategory category, String description) {
+    public Expense(BigDecimal amount, ExpenseCategory category, String name, String description) {
         super.amount = amount;
+        super.name = name;
         super.description = description;
         this.category = category;
     }

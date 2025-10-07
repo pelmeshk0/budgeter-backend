@@ -53,6 +53,7 @@ class IncomeControllerTest {
 
         testIncomeRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("3500.00"))
+                .name("Monthly Salary")
                 .category(IncomeCategory.SALARY)
                 .description("Monthly salary")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES))
@@ -61,6 +62,7 @@ class IncomeControllerTest {
         testIncomeResponse = IncomeResponse.builder()
                 .id(1L)
                 .amount(new BigDecimal("3500.00"))
+                .name("Monthly Salary")
                 .category(IncomeCategory.SALARY)
                 .description("Monthly salary")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES))
@@ -94,6 +96,7 @@ class IncomeControllerTest {
         // Given
         IncomeRequest invalidRequest = IncomeRequest.builder()
                 .amount(null) // Invalid: amount is required
+                .name("Missing Amount")
                 .category(IncomeCategory.SALARY) // Category provided
                 .description("Missing amount")
                 .build();
@@ -154,6 +157,7 @@ class IncomeControllerTest {
         // Given
         IncomeRequest updateRequest = IncomeRequest.builder()
                 .amount(new BigDecimal("4000.00"))
+                .name("Updated Salary")
                 .category(IncomeCategory.SALARY)
                 .description("Updated salary")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES))
@@ -162,6 +166,7 @@ class IncomeControllerTest {
         IncomeResponse updatedResponse = IncomeResponse.builder()
                 .id(1L)
                 .amount(new BigDecimal("4000.00"))
+                .name("Updated Salary")
                 .category(IncomeCategory.SALARY)
                 .description("Updated salary")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES))
