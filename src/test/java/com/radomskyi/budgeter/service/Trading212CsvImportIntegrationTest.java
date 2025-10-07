@@ -2,7 +2,6 @@ package com.radomskyi.budgeter.service;
 
 import com.radomskyi.budgeter.domain.entity.investment.*;
 import com.opencsv.exceptions.CsvException;
-import com.radomskyi.budgeter.dto.InvestmentTransactionResponse;
 import com.radomskyi.budgeter.repository.AssetRepository;
 import com.radomskyi.budgeter.repository.InvestmentTransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +56,7 @@ class Trading212CsvImportIntegrationTest {
         );
 
         // When
-        List<InvestmentTransactionResponse> importedTransactions = csvImportService.importCsvFile(file);
+        List<InvestmentTransaction> importedTransactions = csvImportService.importCsvFile(file);
 
         // Then
         assertThat(importedTransactions).isNotNull();
@@ -119,7 +118,7 @@ class Trading212CsvImportIntegrationTest {
         );
 
         // When
-        List<InvestmentTransactionResponse> importedTransactions = csvImportService.importCsvFile(file);
+        List<InvestmentTransaction> importedTransactions = csvImportService.importCsvFile(file);
 
         // Then
         assertThat(importedTransactions).isNotNull();
@@ -164,7 +163,7 @@ class Trading212CsvImportIntegrationTest {
         );
 
         // When
-        List<InvestmentTransactionResponse> importedTransactions = csvImportService.importCsvFile(file);
+        List<InvestmentTransaction> importedTransactions = csvImportService.importCsvFile(file);
 
         // Then
         assertThat(importedTransactions).isNotNull();
@@ -196,7 +195,7 @@ class Trading212CsvImportIntegrationTest {
         );
 
         // When
-        List<InvestmentTransactionResponse> importedTransactions = csvImportService.importCsvFile(file);
+        List<InvestmentTransaction> importedTransactions = csvImportService.importCsvFile(file);
 
         // Then
         assertThat(importedTransactions).isNotNull();
@@ -243,7 +242,7 @@ class Trading212CsvImportIntegrationTest {
         );
 
         // When
-        List<InvestmentTransactionResponse> importedTransactions = csvImportService.importCsvFile(file);
+        List<InvestmentTransaction> importedTransactions = csvImportService.importCsvFile(file);
 
         // Then
         assertThat(importedTransactions).isNotNull();
@@ -277,7 +276,7 @@ class Trading212CsvImportIntegrationTest {
         );
 
         // When
-        List<InvestmentTransactionResponse> importedTransactions = csvImportService.importCsvFile(file);
+        List<InvestmentTransaction> importedTransactions = csvImportService.importCsvFile(file);
 
         // Then
         assertThat(importedTransactions).isNotNull();

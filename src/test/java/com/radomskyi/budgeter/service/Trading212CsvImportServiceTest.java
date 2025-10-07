@@ -2,7 +2,6 @@ package com.radomskyi.budgeter.service;
 
 import com.opencsv.exceptions.CsvException;
 import com.radomskyi.budgeter.domain.entity.investment.*;
-import com.radomskyi.budgeter.dto.InvestmentTransactionResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,16 +29,23 @@ class Trading212CsvImportServiceTest {
     @InjectMocks
     private Trading212CsvImportService csvImportService;
 
-    private InvestmentTransactionResponse mockTransactionResponse;
+    private InvestmentTransaction mockTransaction;
 
     @BeforeEach
     void setUp() {
-        mockTransactionResponse = InvestmentTransactionResponse.builder()
+        Asset mockAsset = Asset.builder()
+                .id(1L)
+                .ticker("AAPL")
+                .name("Apple Inc.")
+                .isin("US0378331005")
+                .assetType(AssetType.STOCK)
+                .investmentStyle(InvestmentStyle.GROWTH)
+                .build();
+
+        mockTransaction = InvestmentTransaction.builder()
                 .id(1L)
                 .transactionType(InvestmentTransactionType.BUY)
-                .assetTicker("AAPL")
-                .assetName("Apple Inc.")
-                .assetIsin("US0378331005")
+                .asset(mockAsset)
                 .units(new BigDecimal("10.0"))
                 .pricePerUnit(new BigDecimal("150.25"))
                 .amount(new BigDecimal("1502.50"))
@@ -63,10 +69,10 @@ class Trading212CsvImportServiceTest {
                 csvContent.getBytes()
         );
 
-        when(investmentService.create(any())).thenReturn(mockTransactionResponse);
+        when(investmentService.create(any())).thenReturn(mockTransaction);
 
         // When
-        List<InvestmentTransactionResponse> result = csvImportService.importCsvFile(file);
+        List<InvestmentTransaction> result = csvImportService.importCsvFile(file);
 
         // Then
         assertThat(result).isNotNull();
@@ -106,10 +112,10 @@ class Trading212CsvImportServiceTest {
                 csvContent.getBytes()
         );
 
-        when(investmentService.create(any())).thenReturn(mockTransactionResponse);
+        when(investmentService.create(any())).thenReturn(mockTransaction);
 
         // When
-        List<InvestmentTransactionResponse> result = csvImportService.importCsvFile(file);
+        List<InvestmentTransaction> result = csvImportService.importCsvFile(file);
 
         // Then
         assertThat(result).isNotNull();
@@ -130,12 +136,19 @@ class Trading212CsvImportServiceTest {
                 csvContent.getBytes()
         );
 
-        InvestmentTransactionResponse dividendResponse = InvestmentTransactionResponse.builder()
+        Asset dividendAsset = Asset.builder()
+                .id(2L)
+                .ticker("AAPL")
+                .name("Apple Inc.")
+                .isin("US0378331005")
+                .assetType(AssetType.STOCK)
+                .investmentStyle(InvestmentStyle.GROWTH)
+                .build();
+
+        InvestmentTransaction dividendResponse = InvestmentTransaction.builder()
                 .id(2L)
                 .transactionType(InvestmentTransactionType.DIVIDEND)
-                .assetTicker("AAPL")
-                .assetName("Apple Inc.")
-                .assetIsin("US0378331005")
+                .asset(dividendAsset)
                 .units(new BigDecimal("0.0253888000"))
                 .pricePerUnit(new BigDecimal("0.816000"))
                 .amount(new BigDecimal("0.02"))
@@ -147,7 +160,7 @@ class Trading212CsvImportServiceTest {
         when(investmentService.create(any())).thenReturn(dividendResponse);
 
         // When
-        List<InvestmentTransactionResponse> result = csvImportService.importCsvFile(file);
+        List<InvestmentTransaction> result = csvImportService.importCsvFile(file);
 
         // Then
         assertThat(result).isNotNull();
@@ -169,10 +182,10 @@ class Trading212CsvImportServiceTest {
                 csvContent.getBytes()
         );
 
-        when(investmentService.create(any())).thenReturn(mockTransactionResponse);
+        when(investmentService.create(any())).thenReturn(mockTransaction);
 
         // When
-        List<InvestmentTransactionResponse> result = csvImportService.importCsvFile(file);
+        List<InvestmentTransaction> result = csvImportService.importCsvFile(file);
 
         // Then
         assertThat(result).isNotNull();
@@ -196,12 +209,37 @@ class Trading212CsvImportServiceTest {
         );
 
         // Setup mocks for different transaction types
-        InvestmentTransactionResponse buyResponse = InvestmentTransactionResponse.builder()
+        Asset buyAsset = Asset.builder()
+                .id(1L)
+                .ticker("AAPL")
+                .name("Apple Inc.")
+                .isin("US0378331005")
+                .assetType(AssetType.STOCK)
+                .investmentStyle(InvestmentStyle.GROWTH)
+                .build();
+
+        Asset sellAsset = Asset.builder()
+                .id(2L)
+                .ticker("AAPL")
+                .name("Apple Inc.")
+                .isin("US0378331005")
+                .assetType(AssetType.STOCK)
+                .investmentStyle(InvestmentStyle.GROWTH)
+                .build();
+
+        Asset dividendAsset = Asset.builder()
+                .id(3L)
+                .ticker("AAPL")
+                .name("Apple Inc.")
+                .isin("US0378331005")
+                .assetType(AssetType.STOCK)
+                .investmentStyle(InvestmentStyle.GROWTH)
+                .build();
+
+        InvestmentTransaction buyResponse = InvestmentTransaction.builder()
                 .id(1L)
                 .transactionType(InvestmentTransactionType.BUY)
-                .assetTicker("AAPL")
-                .assetName("Apple Inc.")
-                .assetIsin("US0378331005")
+                .asset(buyAsset)
                 .units(new BigDecimal("10.0"))
                 .pricePerUnit(new BigDecimal("150.25"))
                 .amount(new BigDecimal("1502.50"))
@@ -210,12 +248,10 @@ class Trading212CsvImportServiceTest {
                 .description("Imported from Trading212 CSV: Market buy")
                 .build();
 
-        InvestmentTransactionResponse sellResponse = InvestmentTransactionResponse.builder()
+        InvestmentTransaction sellResponse = InvestmentTransaction.builder()
                 .id(2L)
                 .transactionType(InvestmentTransactionType.SELL)
-                .assetTicker("AAPL")
-                .assetName("Apple Inc.")
-                .assetIsin("US0378331005")
+                .asset(sellAsset)
                 .units(new BigDecimal("5.0"))
                 .pricePerUnit(new BigDecimal("155.00"))
                 .amount(new BigDecimal("775.00"))
@@ -224,12 +260,10 @@ class Trading212CsvImportServiceTest {
                 .description("Imported from Trading212 CSV: Market sell")
                 .build();
 
-        InvestmentTransactionResponse dividendResponse = InvestmentTransactionResponse.builder()
+        InvestmentTransaction dividendResponse = InvestmentTransaction.builder()
                 .id(3L)
                 .transactionType(InvestmentTransactionType.DIVIDEND)
-                .assetTicker("AAPL")
-                .assetName("Apple Inc.")
-                .assetIsin("US0378331005")
+                .asset(dividendAsset)
                 .units(new BigDecimal("0.0253888000"))
                 .pricePerUnit(new BigDecimal("0.816000"))
                 .amount(new BigDecimal("0.02"))
@@ -241,7 +275,7 @@ class Trading212CsvImportServiceTest {
         when(investmentService.create(any())).thenReturn(buyResponse, sellResponse, dividendResponse);
 
         // When
-        List<InvestmentTransactionResponse> result = csvImportService.importCsvFile(file);
+        List<InvestmentTransaction> result = csvImportService.importCsvFile(file);
 
         // Then
         assertThat(result).isNotNull();

@@ -2,7 +2,7 @@ package com.radomskyi.budgeter.controller;
 
 import com.opencsv.exceptions.CsvException;
 import com.radomskyi.budgeter.domain.controller.ImportControllerInterface;
-import com.radomskyi.budgeter.dto.InvestmentTransactionResponse;
+import com.radomskyi.budgeter.domain.entity.investment.InvestmentTransaction;
 import com.radomskyi.budgeter.service.Trading212CsvImportService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class ImportController implements ImportControllerInterface {
         log.info("Received request to import CSV file: {}", file.getOriginalFilename());
 
         try {
-            List<InvestmentTransactionResponse> importedTransactions = csvImportService.importCsvFile(file);
+            List<InvestmentTransaction> importedTransactions = csvImportService.importCsvFile(file);
 
             String message = String.format("Successfully imported %d investment transactions from CSV file '%s'",
                     importedTransactions.size(), file.getOriginalFilename());
@@ -52,4 +52,5 @@ public class ImportController implements ImportControllerInterface {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
     }
+
 }

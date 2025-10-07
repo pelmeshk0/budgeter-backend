@@ -1,6 +1,7 @@
 package com.radomskyi.budgeter.dto;
 
 import com.radomskyi.budgeter.domain.entity.investment.Currency;
+import com.radomskyi.budgeter.domain.entity.investment.InvestmentTransaction;
 import com.radomskyi.budgeter.domain.entity.investment.InvestmentTransactionType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -65,4 +66,28 @@ public class InvestmentTransactionResponse {
 
     @Schema(description = "Date and time when the transaction was last updated")
     private LocalDateTime updatedAt;
+
+    /**
+     * Creates an InvestmentTransactionResponse from an InvestmentTransaction entity
+     */
+    public static InvestmentTransactionResponse fromTransaction(InvestmentTransaction transaction) {
+        return InvestmentTransactionResponse.builder()
+                .id(transaction.getId())
+                .transactionType(transaction.getTransactionType())
+                .assetTicker(transaction.getAsset().getTicker())
+                .assetName(transaction.getAsset().getName())
+                .assetIsin(transaction.getAsset().getIsin())
+                .units(transaction.getUnits())
+                .pricePerUnit(transaction.getPricePerUnit())
+                .fees(transaction.getFees())
+                .currency(transaction.getCurrency())
+                .exchangeRate(transaction.getExchangeRate())
+                .realizedGainLoss(transaction.getRealizedGainLoss())
+                .amount(transaction.getAmount())
+                .name(transaction.getName())
+                .description(transaction.getDescription())
+                .createdAt(transaction.getCreatedAt())
+                .updatedAt(transaction.getUpdatedAt())
+                .build();
+    }
 }

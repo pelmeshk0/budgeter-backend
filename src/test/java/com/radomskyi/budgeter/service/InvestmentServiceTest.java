@@ -2,7 +2,6 @@ package com.radomskyi.budgeter.service;
 
 import com.radomskyi.budgeter.domain.entity.investment.*;
 import com.radomskyi.budgeter.dto.InvestmentTransactionRequest;
-import com.radomskyi.budgeter.dto.InvestmentTransactionResponse;
 import com.radomskyi.budgeter.exception.InvestmentTransactionNotFoundException;
 import com.radomskyi.budgeter.repository.AssetRepository;
 import com.radomskyi.budgeter.repository.InvestmentTransactionRepository;
@@ -94,14 +93,14 @@ class InvestmentServiceTest {
         when(investmentTransactionRepository.save(any(InvestmentTransaction.class))).thenReturn(testTransaction);
 
         // When
-        InvestmentTransactionResponse result = investmentService.create(testRequest);
+        InvestmentTransaction result = investmentService.create(testRequest);
 
         // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getTransactionType()).isEqualTo(InvestmentTransactionType.BUY);
-        assertThat(result.getAssetTicker()).isEqualTo("AAPL");
-        assertThat(result.getAssetName()).isEqualTo("Apple Inc.");
+        assertThat(result.getAsset().getTicker()).isEqualTo("AAPL");
+        assertThat(result.getAsset().getName()).isEqualTo("Apple Inc.");
         assertThat(result.getUnits()).isEqualTo(new BigDecimal("10.0"));
         assertThat(result.getPricePerUnit()).isEqualTo(new BigDecimal("150.25"));
         assertThat(result.getAmount()).isEqualTo(new BigDecimal("1502.50"));
@@ -119,7 +118,7 @@ class InvestmentServiceTest {
         when(investmentTransactionRepository.save(any(InvestmentTransaction.class))).thenReturn(testTransaction);
 
         // When
-        InvestmentTransactionResponse result = investmentService.create(testRequest);
+        InvestmentTransaction result = investmentService.create(testRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -137,14 +136,14 @@ class InvestmentServiceTest {
         when(investmentTransactionRepository.findById(1L)).thenReturn(Optional.of(testTransaction));
 
         // When
-        InvestmentTransactionResponse result = investmentService.getById(1L);
+        InvestmentTransaction result = investmentService.getById(1L);
 
         // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getTransactionType()).isEqualTo(InvestmentTransactionType.BUY);
-        assertThat(result.getAssetTicker()).isEqualTo("AAPL");
-        assertThat(result.getAssetName()).isEqualTo("Apple Inc.");
+        assertThat(result.getAsset().getTicker()).isEqualTo("AAPL");
+        assertThat(result.getAsset().getName()).isEqualTo("Apple Inc.");
 
         verify(investmentTransactionRepository).findById(1L);
     }
@@ -172,13 +171,13 @@ class InvestmentServiceTest {
         when(investmentTransactionRepository.findAll(pageable)).thenReturn(transactionPage);
 
         // When
-        Page<InvestmentTransactionResponse> result = investmentService.getAll(pageable);
+        Page<InvestmentTransaction> result = investmentService.getAll(pageable);
 
         // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getId()).isEqualTo(1L);
-        assertThat(result.getContent().get(0).getAssetTicker()).isEqualTo("AAPL");
+        assertThat(result.getContent().get(0).getAsset().getTicker()).isEqualTo("AAPL");
 
         verify(investmentTransactionRepository).findAll(pageable);
     }
@@ -221,7 +220,7 @@ class InvestmentServiceTest {
         when(investmentTransactionRepository.save(any(InvestmentTransaction.class))).thenReturn(updatedTransaction);
 
         // When
-        InvestmentTransactionResponse result = investmentService.update(1L, updateRequest);
+        InvestmentTransaction result = investmentService.update(1L, updateRequest);
 
         // Then
         assertThat(result).isNotNull();

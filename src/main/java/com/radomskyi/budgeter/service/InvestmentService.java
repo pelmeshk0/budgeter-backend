@@ -30,7 +30,7 @@ public class InvestmentService implements InvestmentServiceInterface {
      */
     @Override
     @Transactional
-    public InvestmentTransactionResponse create(InvestmentTransactionRequest request) {
+    public InvestmentTransaction create(InvestmentTransactionRequest request) {
         log.info("Creating new investment transaction for asset: {} with amount: {}",
                 request.getAssetName(), request.getUnits().multiply(request.getPricePerUnit()));
 
@@ -56,33 +56,29 @@ public class InvestmentService implements InvestmentServiceInterface {
         InvestmentTransaction savedTransaction = investmentTransactionRepository.save(transaction);
         log.info("Successfully created investment transaction with id: {}", savedTransaction.getId());
 
-        // todo here and everywhere perform mapping to InvestmentTransactionResponse at controller level
-        //  service layer should only be responsible for business logic and operate with entities as return type
-        return mapToResponse(savedTransaction);
+        return savedTransaction;
     }
+
 
     /**
      * Get investment transaction by ID
      */
     @Override
-    public InvestmentTransactionResponse getById(Long id) {
+    public InvestmentTransaction getById(Long id) {
         log.info("Fetching investment transaction with id: {}", id);
 
-        InvestmentTransaction transaction = investmentTransactionRepository.findById(id)
+        return investmentTransactionRepository.findById(id)
                 .orElseThrow(() -> new InvestmentTransactionNotFoundException("Investment transaction not found with id: " + id));
-
-        return mapToResponse(transaction);
     }
 
     /**
      * Get all investment transactions with pagination
      */
     @Override
-    public Page<InvestmentTransactionResponse> getAll(Pageable pageable) {
+    public Page<InvestmentTransaction> getAll(Pageable pageable) {
         log.info("Fetching all investment transactions with pagination: {}", pageable);
 
-        Page<InvestmentTransaction> transactions = investmentTransactionRepository.findAll(pageable);
-        return transactions.map(this::mapToResponse);
+        return investmentTransactionRepository.findAll(pageable);
     }
 
     /**
@@ -90,7 +86,7 @@ public class InvestmentService implements InvestmentServiceInterface {
      */
     @Override
     @Transactional
-    public InvestmentTransactionResponse update(Long id, InvestmentTransactionRequest request) {
+    public InvestmentTransaction update(Long id, InvestmentTransactionRequest request) {
         log.info("Updating investment transaction with id: {}", id);
 
         InvestmentTransaction existingTransaction = investmentTransactionRepository.findById(id)
@@ -115,7 +111,7 @@ public class InvestmentService implements InvestmentServiceInterface {
         InvestmentTransaction updatedTransaction = investmentTransactionRepository.save(existingTransaction);
         log.info("Successfully updated investment transaction with id: {}", updatedTransaction.getId());
 
-        return mapToResponse(updatedTransaction);
+        return updatedTransaction;
     }
 
     /**
@@ -174,28 +170,4 @@ public class InvestmentService implements InvestmentServiceInterface {
         transaction.calculateAmount();
     }
 
-    /**
-     * Map InvestmentTransaction entity to InvestmentTransactionResponse DTO
-     */
-    // todo as a part of working with entities at the service layer, move these helper functions to the controller level
-    private InvestmentTransactionResponse mapToResponse(InvestmentTransaction transaction) {
-        return InvestmentTransactionResponse.builder()
-                .id(transaction.getId())
-                .transactionType(transaction.getTransactionType())
-                .assetTicker(transaction.getAsset().getTicker())
-                .assetName(transaction.getAsset().getName())
-                .assetIsin(transaction.getAsset().getIsin())
-                .units(transaction.getUnits())
-                .pricePerUnit(transaction.getPricePerUnit())
-                .fees(transaction.getFees())
-                .currency(transaction.getCurrency())
-                .exchangeRate(transaction.getExchangeRate())
-                .realizedGainLoss(transaction.getRealizedGainLoss())
-                .amount(transaction.getAmount())
-                .name(transaction.getName())
-                .description(transaction.getDescription())
-                .createdAt(transaction.getCreatedAt())
-                .updatedAt(transaction.getUpdatedAt())
-                .build();
-    }
 }

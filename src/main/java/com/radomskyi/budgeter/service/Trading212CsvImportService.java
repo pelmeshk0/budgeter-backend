@@ -4,8 +4,8 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import com.radomskyi.budgeter.domain.entity.investment.Currency;
 import com.radomskyi.budgeter.domain.entity.investment.InvestmentTransactionType;
+import com.radomskyi.budgeter.domain.entity.investment.InvestmentTransaction;
 import com.radomskyi.budgeter.dto.InvestmentTransactionRequest;
-import com.radomskyi.budgeter.dto.InvestmentTransactionResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,14 +54,11 @@ public class Trading212CsvImportService {
     /**
      * Import Trading212 CSV file and create investment transactions
      */
-    // fixme as a part of working with entities at the service layer,
-    //  change return type here to be List<InvestmentTransaction> instead of List<InvestmentTransactionResponse>
-    //  but also adjust tests, controllers and any other classes to still work as expected
     @Transactional
-    public List<InvestmentTransactionResponse> importCsvFile(MultipartFile file) throws IOException, CsvException {
+    public List<InvestmentTransaction> importCsvFile(MultipartFile file) throws IOException, CsvException {
         log.info("Starting CSV import for file: {}", file.getOriginalFilename());
 
-        List<InvestmentTransactionResponse> importedTransactions = new ArrayList<>();
+        List<InvestmentTransaction> importedTransactions = new ArrayList<>();
 
         try (CSVReader csvReader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
             List<String[]> rows = csvReader.readAll();
@@ -80,9 +77,9 @@ public class Trading212CsvImportService {
                 }
 
                 try {
-                    InvestmentTransactionResponse response = processCsvRow(row);
-                    if (response != null) {
-                        importedTransactions.add(response);
+                    InvestmentTransaction transaction = processCsvRow(row);
+                    if (transaction != null) {
+                        importedTransactions.add(transaction);
                     }
                 } catch (Exception e) {
                     log.error("Error processing row {}: {}", i, e.getMessage());
@@ -98,10 +95,7 @@ public class Trading212CsvImportService {
     /**
      * Process a single CSV row and create an investment transaction
      */
-    // fixme as a part of working with entities at the service layer,
-    //  change return type here to be InvestmentTransaction instead of InvestmentTransactionResponse
-    //  but also adjust tests, controllers and any other classes to still work as expected
-    private InvestmentTransactionResponse processCsvRow(String[] row) {
+    private InvestmentTransaction processCsvRow(String[] row) {
         try {
             // Parse basic transaction data
             String action = row[ACTION_INDEX].trim();
