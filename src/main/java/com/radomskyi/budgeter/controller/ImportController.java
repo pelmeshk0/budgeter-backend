@@ -1,7 +1,7 @@
 package com.radomskyi.budgeter.controller;
 
 import com.opencsv.exceptions.CsvException;
-import com.radomskyi.budgeter.domain.controller.InvestmentControllerInterface;
+import com.radomskyi.budgeter.domain.controller.ImportControllerInterface;
 import com.radomskyi.budgeter.dto.InvestmentTransactionResponse;
 import com.radomskyi.budgeter.service.Trading212CsvImportService;
 
@@ -19,14 +19,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-// todo change this to import controller (related to todo in InvestmentControllerInterface)
-public class InvestmentTransactionController implements InvestmentControllerInterface {
+public class ImportController implements ImportControllerInterface {
 
     private final Trading212CsvImportService csvImportService; // rename this variable (and the class) to trading212ImportService/Trading212ImportService.java
 
-    @PostMapping("/import-csv")
     @Override
-    public ResponseEntity<String> importCsv(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> importCsv(MultipartFile file) {
         log.info("Received request to import CSV file: {}", file.getOriginalFilename());
 
         try {
