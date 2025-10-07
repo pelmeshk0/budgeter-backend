@@ -1,7 +1,6 @@
 package com.radomskyi.budgeter.repository;
 
 import com.radomskyi.budgeter.domain.entity.investment.*;
-import com.radomskyi.budgeter.domain.entity.budgeting.Transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

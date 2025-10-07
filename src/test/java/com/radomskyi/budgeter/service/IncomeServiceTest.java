@@ -42,7 +42,6 @@ class IncomeServiceTest {
     private Income testIncome;
     private Income testIncome2;
     private IncomeRequest testIncomeRequest;
-    private IncomeRequest testIncomeRequest2;
 
     @BeforeEach
     void setUp() {
@@ -74,14 +73,6 @@ class IncomeServiceTest {
                 .category(IncomeCategory.SALARY)
                 .description("Monthly salary")
                 .tags(Arrays.asList(Tag.BANKING_AND_TAXES))
-                .build();
-
-        testIncomeRequest2 = IncomeRequest.builder()
-                .amount(new BigDecimal("1500.00"))
-                .name("Freelance Project")
-                .category(IncomeCategory.FREELANCE)
-                .description("Freelance project")
-                .tags(Arrays.asList(Tag.OTHER))
                 .build();
     }
 

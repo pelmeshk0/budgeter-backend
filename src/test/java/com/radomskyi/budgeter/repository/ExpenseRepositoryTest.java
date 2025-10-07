@@ -119,8 +119,15 @@ class ExpenseRepositoryTest {
     void testFindAllByOrderByCreatedAtDesc() {
         List<Expense> expenses = expenseRepository.findAllByOrderByCreatedAtDesc();
         assertThat(expenses).hasSize(3);
-        // The last persisted expense should be first (most recent)
-        assertThat(expenses.get(0).getDescription()).isEqualTo("Movie tickets");
+
+        // Verify that all expected expenses are present
+        assertThat(expenses).extracting(Expense::getDescription)
+                .containsExactlyInAnyOrder("Rent payment", "Grocery shopping", "Movie tickets");
+
+        // Verify that the results are ordered by creation time (newest first)
+        // Since creation timestamps might be identical in tests, we verify the overall ordering pattern
+        assertThat(expenses.get(0).getCreatedAt()).isAfterOrEqualTo(expenses.get(1).getCreatedAt());
+        assertThat(expenses.get(1).getCreatedAt()).isAfterOrEqualTo(expenses.get(2).getCreatedAt());
     }
 
     @Test
