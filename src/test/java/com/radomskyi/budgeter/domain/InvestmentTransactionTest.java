@@ -19,7 +19,7 @@ class InvestmentTransactionTest {
                 .ticker("AAPL")
                 .name("Apple Inc.")
                 .isin("US0378331005")
-                .assetTypeCategory(AssetTypeCategory.STOCK)
+                .assetType(AssetType.STOCK)
                 .investmentStyle(InvestmentStyle.GROWTH)
                 .build();
 
@@ -31,7 +31,7 @@ class InvestmentTransactionTest {
                 .fees(new BigDecimal("1.50"))
                 .currency(Currency.USD)
                 .exchangeRate(new BigDecimal("0.85"))
-                .amount(new BigDecimal("1275.00")) // 10 * 150 * 0.85 + 1.50 * 0.85 (converted fees)
+                .amount(new BigDecimal("1276.50")) // (10 * 150 * 0.85) + 1.50 (fees added after conversion)
                 .name("Apple Inc. AAPL")
                 .description("Test buy transaction")
                 .build();
@@ -60,7 +60,7 @@ class InvestmentTransactionTest {
         assertThat(buyTransaction.getFees()).isEqualTo(new BigDecimal("1.50"));
         assertThat(buyTransaction.getCurrency()).isEqualTo(Currency.USD);
         assertThat(buyTransaction.getExchangeRate()).isEqualTo(new BigDecimal("0.85"));
-        assertThat(buyTransaction.getAmount()).isEqualTo(new BigDecimal("1275.00"));
+        assertThat(buyTransaction.getAmount()).isEqualTo(new BigDecimal("1276.50"));
         assertThat(buyTransaction.getName()).isEqualTo("Apple Inc. AAPL");
         assertThat(buyTransaction.getDescription()).isEqualTo("Test buy transaction");
     }
@@ -121,7 +121,7 @@ class InvestmentTransactionTest {
 
     @Test
     void testFromCsvDataBuy() {
-        InvestmentTransaction csvTransaction = InvestmentTransaction.fromCsvData(
+        InvestmentTransaction csvTransaction = InvestmentTransaction.fromTrading212CsvData(
                 "Market buy", "AAPL", "Apple Inc.", "US0378331005",
                 new BigDecimal("10.0"), new BigDecimal("150.00"), "USD",
                 new BigDecimal("0.85"), new BigDecimal("1.50"), new BigDecimal("1275.00"));
@@ -140,7 +140,7 @@ class InvestmentTransactionTest {
 
     @Test
     void testFromCsvDataSell() {
-        InvestmentTransaction csvTransaction = InvestmentTransaction.fromCsvData(
+        InvestmentTransaction csvTransaction = InvestmentTransaction.fromTrading212CsvData(
                 "Market sell", "AAPL", "Apple Inc.", "US0378331005",
                 new BigDecimal("5.0"), new BigDecimal("160.00"), "EUR",
                 null, new BigDecimal("2.00"), new BigDecimal("798.00"));
@@ -155,10 +155,28 @@ class InvestmentTransactionTest {
     }
 
     @Test
+    void testFromCsvDataDividend() {
+        InvestmentTransaction csvTransaction = InvestmentTransaction.fromTrading212CsvData(
+                "Dividend", "AAPL", "Apple Inc.", "US0378331005",
+                new BigDecimal("10.0"), new BigDecimal("0.50"), "EUR",
+                null, new BigDecimal("0.00"), new BigDecimal("5.00"));
+
+        assertThat(csvTransaction.getTransactionType()).isEqualTo(InvestmentTransactionType.DIVIDEND);
+        assertThat(csvTransaction.getUnits()).isEqualTo(new BigDecimal("10.0"));
+        assertThat(csvTransaction.getPricePerUnit()).isEqualTo(new BigDecimal("0.50"));
+        assertThat(csvTransaction.getCurrency()).isEqualTo(Currency.EUR);
+        assertThat(csvTransaction.getExchangeRate()).isNull();
+        assertThat(csvTransaction.getFees()).isEqualTo(new BigDecimal("0.00"));
+        assertThat(csvTransaction.getAmount()).isEqualTo(new BigDecimal("5.00"));
+        assertThat(csvTransaction.getDescription()).isEqualTo("Imported from CSV: Dividend (Dividend)");
+    }
+
+    @Test
     void testTransactionTypeEnum() {
-        assertThat(InvestmentTransactionType.values()).hasSize(2);
+        assertThat(InvestmentTransactionType.values()).hasSize(3);
         assertThat(InvestmentTransactionType.valueOf("BUY")).isEqualTo(InvestmentTransactionType.BUY);
         assertThat(InvestmentTransactionType.valueOf("SELL")).isEqualTo(InvestmentTransactionType.SELL);
+        assertThat(InvestmentTransactionType.valueOf("DIVIDEND")).isEqualTo(InvestmentTransactionType.DIVIDEND);
     }
 
     @Test

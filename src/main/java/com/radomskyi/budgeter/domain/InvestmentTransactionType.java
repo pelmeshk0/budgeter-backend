@@ -9,7 +9,8 @@ public enum InvestmentTransactionType {
     BUY,
 
     @Schema(description = "Sale of investment assets")
-    SELL
+    SELL,
 
-    // todo add dividend type (to track dividends), extend/adjust tests as needed
+    @Schema(description = "Dividend payment received")
+    DIVIDEND
 }

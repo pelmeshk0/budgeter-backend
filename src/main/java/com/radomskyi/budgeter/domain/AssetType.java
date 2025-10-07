@@ -1,9 +1,8 @@
 package com.radomskyi.budgeter.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-// fixme rename this to AssetType
 @Schema(description = "Categories for investment asset types")
-public enum AssetTypeCategory {
+public enum AssetType {
 
     @Schema(description = "Index funds and Exchange Traded Funds")
     INDEX_ETF,

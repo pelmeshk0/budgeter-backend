@@ -88,28 +88,34 @@ public class InvestmentTransaction extends Transaction {
     private void calculateAmount() {
         BigDecimal grossAmount = units.multiply(pricePerUnit);
 
-        if (fees != null) {
-            // fixme fees are always in EUR for now, so add it after the exchange rate is applied
-            //  also adjust the affected tests
-            grossAmount = grossAmount.add(fees);
-        }
-
         // Convert to EUR if currency is not EUR
         if (currency != Currency.EUR && exchangeRate != null) {
-            super.amount = grossAmount.multiply(exchangeRate);
+            grossAmount = grossAmount.multiply(exchangeRate);
+        }
+
+        // Add fees (fees are always in EUR)
+        if (fees != null) {
+            super.amount = grossAmount.add(fees);
         } else {
             super.amount = grossAmount;
         }
     }
 
-    // Custom constructor for CSV import
-    // fixme specify this to be Trading212OrderCsv, since there will be multiple CSV parsers
-    //  maybe it even makes sense to keep this separately from InvestmentTransaction, so that it's easier to add new CSV parsers
-    public static InvestmentTransaction fromCsvData(String action, String ticker, String name, String isin,
-                                                   BigDecimal units, BigDecimal pricePerUnit, String currencyStr,
-                                                   BigDecimal exchangeRate, BigDecimal fees, BigDecimal grossTotal) {
-        InvestmentTransactionType type = "Market buy".equals(action) || "buy".equalsIgnoreCase(action)
-            ? InvestmentTransactionType.BUY : InvestmentTransactionType.SELL;
+    // Custom constructor for Trading212 CSV import
+    // TODO: Consider moving to a separate CsvImportService class for better separation of concerns
+    public static InvestmentTransaction fromTrading212CsvData(String action, String ticker, String name, String isin,
+                                                             BigDecimal units, BigDecimal pricePerUnit, String currencyStr,
+                                                             BigDecimal exchangeRate, BigDecimal fees, BigDecimal grossTotal) {
+        InvestmentTransactionType type;
+        if ("Market buy".equals(action) || "buy".equalsIgnoreCase(action)) {
+            type = InvestmentTransactionType.BUY;
+        } else if ("Market sell".equals(action) || "sell".equalsIgnoreCase(action)) {
+            type = InvestmentTransactionType.SELL;
+        } else if ("dividend".equalsIgnoreCase(action) || action.toLowerCase().contains("dividend")) {
+            type = InvestmentTransactionType.DIVIDEND;
+        } else {
+            type = InvestmentTransactionType.BUY; // Default fallback
+        }
 
         Currency currency = "EUR".equals(currencyStr) ? Currency.EUR : Currency.USD;
 
@@ -118,7 +124,7 @@ public class InvestmentTransaction extends Transaction {
             .ticker(ticker)
             .name(name)
             .isin(isin)
-            .assetTypeCategory(AssetTypeCategory.STOCK) // Default, should be determined from ISIN or other data
+            .assetType(AssetType.STOCK) // Default, should be determined from ISIN or other data
             .investmentStyle(InvestmentStyle.GROWTH) // Default
             .build();
 
@@ -132,7 +138,7 @@ public class InvestmentTransaction extends Transaction {
             .exchangeRate(exchangeRate)
             .amount(grossTotal) // Use provided gross total
             .name(name + " " + ticker)
-            .description("Imported from CSV: " + action)
+            .description("Imported from CSV: " + action + (type == InvestmentTransactionType.DIVIDEND ? " (Dividend)" : ""))
             .build();
     }
 }

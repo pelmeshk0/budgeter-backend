@@ -49,9 +49,9 @@ public interface InvestmentTransactionRepository extends JpaRepository<Investmen
     // Find transactions within a date range with pagination
     Page<InvestmentTransaction> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
-    // Find transactions by asset type category
-    @Query("SELECT it FROM InvestmentTransaction it WHERE it.asset.assetTypeCategory = :assetType")
-    List<InvestmentTransaction> findByAssetTypeCategory(@Param("assetType") AssetTypeCategory assetType);
+    // Find transactions by asset type
+    @Query("SELECT it FROM InvestmentTransaction it WHERE it.asset.assetType = :assetType")
+    List<InvestmentTransaction> findByAssetType(@Param("assetType") AssetType assetType);
 
     // Find transactions by investment style
     @Query("SELECT it FROM InvestmentTransaction it WHERE it.asset.investmentStyle = :investmentStyle")
@@ -72,9 +72,9 @@ public interface InvestmentTransactionRepository extends JpaRepository<Investmen
            "WHERE it.asset = :asset AND it.transactionType = 'SELL' AND it.realizedGainLoss IS NOT NULL")
     BigDecimal getTotalRealizedGainsForAsset(@Param("asset") Asset asset);
 
-    // Calculate total portfolio value by asset type category
-    @Query("SELECT it.asset.assetTypeCategory, SUM(it.amount) FROM InvestmentTransaction it " +
-           "WHERE it.transactionType = 'BUY' GROUP BY it.asset.assetTypeCategory")
+    // Calculate total portfolio value by asset type
+    @Query("SELECT it.asset.assetType, SUM(it.amount) FROM InvestmentTransaction it " +
+           "WHERE it.transactionType = 'BUY' GROUP BY it.asset.assetType")
     List<Object[]> getPortfolioValueByAssetType();
 
     // Calculate total portfolio value by investment style

@@ -15,7 +15,7 @@ class AssetTest {
                 .ticker("AAPL")
                 .name("Apple Inc.")
                 .isin("US0378331005")
-                .assetTypeCategory(AssetTypeCategory.STOCK)
+                .assetType(AssetType.STOCK)
                 .investmentStyle(InvestmentStyle.GROWTH)
                 .build();
     }
@@ -25,7 +25,7 @@ class AssetTest {
         assertThat(asset.getTicker()).isEqualTo("AAPL");
         assertThat(asset.getName()).isEqualTo("Apple Inc.");
         assertThat(asset.getIsin()).isEqualTo("US0378331005");
-        assertThat(asset.getAssetTypeCategory()).isEqualTo(AssetTypeCategory.STOCK);
+        assertThat(asset.getAssetType()).isEqualTo(AssetType.STOCK);
         assertThat(asset.getInvestmentStyle()).isEqualTo(InvestmentStyle.GROWTH);
     }
 
@@ -35,14 +35,14 @@ class AssetTest {
                 .ticker("MSFT")
                 .name("Microsoft Corporation")
                 .isin("US5949181045")
-                .assetTypeCategory(AssetTypeCategory.STOCK)
+                .assetType(AssetType.STOCK)
                 .investmentStyle(InvestmentStyle.VALUE)
                 .build();
 
         assertThat(newAsset.getTicker()).isEqualTo("MSFT");
         assertThat(newAsset.getName()).isEqualTo("Microsoft Corporation");
         assertThat(newAsset.getIsin()).isEqualTo("US5949181045");
-        assertThat(newAsset.getAssetTypeCategory()).isEqualTo(AssetTypeCategory.STOCK);
+        assertThat(newAsset.getAssetType()).isEqualTo(AssetType.STOCK);
         assertThat(newAsset.getInvestmentStyle()).isEqualTo(InvestmentStyle.VALUE);
     }
 
@@ -52,7 +52,7 @@ class AssetTest {
                 .ticker("AAPL")
                 .name("Apple Inc.")
                 .isin("US0378331005")
-                .assetTypeCategory(AssetTypeCategory.STOCK)
+                .assetType(AssetType.STOCK)
                 .investmentStyle(InvestmentStyle.GROWTH)
                 .build();
 
@@ -60,7 +60,7 @@ class AssetTest {
                 .ticker("AAPL")
                 .name("Apple Inc.")
                 .isin("US0378331005")
-                .assetTypeCategory(AssetTypeCategory.STOCK)
+                .assetType(AssetType.STOCK)
                 .investmentStyle(InvestmentStyle.GROWTH)
                 .build();
 
@@ -68,7 +68,7 @@ class AssetTest {
                 .ticker("MSFT")
                 .name("Microsoft Corporation")
                 .isin("US5949181045")
-                .assetTypeCategory(AssetTypeCategory.STOCK)
+                .assetType(AssetType.STOCK)
                 .investmentStyle(InvestmentStyle.VALUE)
                 .build();
 
@@ -93,26 +93,26 @@ class AssetTest {
         Asset assetWithoutIsin = Asset.builder()
                 .ticker("TSLA")
                 .name("Tesla Inc.")
-                .assetTypeCategory(AssetTypeCategory.STOCK)
+                .assetType(AssetType.STOCK)
                 .investmentStyle(InvestmentStyle.GROWTH)
                 .build();
 
         assertThat(assetWithoutIsin.getTicker()).isEqualTo("TSLA");
         assertThat(assetWithoutIsin.getName()).isEqualTo("Tesla Inc.");
         assertThat(assetWithoutIsin.getIsin()).isNull();
-        assertThat(assetWithoutIsin.getAssetTypeCategory()).isEqualTo(AssetTypeCategory.STOCK);
+        assertThat(assetWithoutIsin.getAssetType()).isEqualTo(AssetType.STOCK);
         assertThat(assetWithoutIsin.getInvestmentStyle()).isEqualTo(InvestmentStyle.GROWTH);
     }
 
     @Test
-    void testAssetTypeCategoryEnum() {
-        assertThat(AssetTypeCategory.values()).hasSize(6);
-        assertThat(AssetTypeCategory.valueOf("STOCK")).isEqualTo(AssetTypeCategory.STOCK);
-        assertThat(AssetTypeCategory.valueOf("INDEX_ETF")).isEqualTo(AssetTypeCategory.INDEX_ETF);
-        assertThat(AssetTypeCategory.valueOf("BOND")).isEqualTo(AssetTypeCategory.BOND);
-        assertThat(AssetTypeCategory.valueOf("COMMODITY")).isEqualTo(AssetTypeCategory.COMMODITY);
-        assertThat(AssetTypeCategory.valueOf("CRYPTO")).isEqualTo(AssetTypeCategory.CRYPTO);
-        assertThat(AssetTypeCategory.valueOf("DERIVATIVE")).isEqualTo(AssetTypeCategory.DERIVATIVE);
+    void testAssetTypeEnum() {
+        assertThat(AssetType.values()).hasSize(6);
+        assertThat(AssetType.valueOf("STOCK")).isEqualTo(AssetType.STOCK);
+        assertThat(AssetType.valueOf("INDEX_ETF")).isEqualTo(AssetType.INDEX_ETF);
+        assertThat(AssetType.valueOf("BOND")).isEqualTo(AssetType.BOND);
+        assertThat(AssetType.valueOf("COMMODITY")).isEqualTo(AssetType.COMMODITY);
+        assertThat(AssetType.valueOf("CRYPTO")).isEqualTo(AssetType.CRYPTO);
+        assertThat(AssetType.valueOf("DERIVATIVE")).isEqualTo(AssetType.DERIVATIVE);
     }
 
     @Test

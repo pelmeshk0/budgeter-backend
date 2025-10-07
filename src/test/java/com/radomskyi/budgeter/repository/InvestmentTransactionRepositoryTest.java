@@ -40,7 +40,7 @@ class InvestmentTransactionRepositoryTest {
                 .ticker("AAPL")
                 .name("Apple Inc.")
                 .isin("US0378331005")
-                .assetTypeCategory(AssetTypeCategory.STOCK)
+                .assetType(AssetType.STOCK)
                 .investmentStyle(InvestmentStyle.GROWTH)
                 .build();
 
@@ -48,7 +48,7 @@ class InvestmentTransactionRepositoryTest {
                 .ticker("MSFT")
                 .name("Microsoft Corporation")
                 .isin("US5949181045")
-                .assetTypeCategory(AssetTypeCategory.STOCK)
+                .assetType(AssetType.STOCK)
                 .investmentStyle(InvestmentStyle.VALUE)
                 .build();
 
@@ -65,7 +65,7 @@ class InvestmentTransactionRepositoryTest {
                 .fees(new BigDecimal("1.50"))
                 .currency(Currency.USD)
                 .exchangeRate(new BigDecimal("0.85"))
-                .amount(new BigDecimal("1275.00")) // 10 * 150 * 0.85 + 1.50 * 0.85
+                .amount(new BigDecimal("1276.50")) // (10 * 150 * 0.85) + 1.50
                 .name("Apple Inc. AAPL Buy")
                 .description("Initial purchase")
                 .build();
@@ -105,7 +105,7 @@ class InvestmentTransactionRepositoryTest {
                 .fees(new BigDecimal("2.00"))
                 .currency(Currency.USD)
                 .exchangeRate(new BigDecimal("0.85"))
-                .amount(new BigDecimal("1700.00")) // 8 * 250 * 0.85 + 2 * 0.85
+                .amount(new BigDecimal("1702.00")) // (8 * 250 * 0.85) + 2
                 .name("Microsoft Corporation MSFT Buy")
                 .description("Initial purchase")
                 .build();
@@ -183,15 +183,15 @@ class InvestmentTransactionRepositoryTest {
     }
 
     @Test
-    void findByAssetTypeCategory_ShouldReturnTransactionsForGivenAssetType() {
+    void findByAssetType_ShouldReturnTransactionsForGivenAssetType() {
         // When
         List<InvestmentTransaction> stockTransactions = investmentTransactionRepository
-                .findByAssetTypeCategory(AssetTypeCategory.STOCK);
+                .findByAssetType(AssetType.STOCK);
 
         // Then
         assertThat(stockTransactions).hasSize(5); // All test transactions are for stocks
-        assertThat(stockTransactions).extracting(t -> t.getAsset().getAssetTypeCategory())
-                .allMatch(category -> category.equals(AssetTypeCategory.STOCK));
+        assertThat(stockTransactions).extracting(t -> t.getAsset().getAssetType())
+                .allMatch(assetType -> assetType.equals(AssetType.STOCK));
     }
 
     @Test
@@ -224,8 +224,8 @@ class InvestmentTransactionRepositoryTest {
         BigDecimal microsoftCostBasis = investmentTransactionRepository.getTotalCostBasisForAsset(microsoftAsset);
 
         // Then
-        assertThat(appleCostBasis).isEqualTo(new BigDecimal("2049.00")); // 1275 + 774
-        assertThat(microsoftCostBasis).isEqualTo(new BigDecimal("1700.00")); // Only one buy
+        assertThat(appleCostBasis).isEqualTo(new BigDecimal("2050.50")); // 1276.50 + 774
+        assertThat(microsoftCostBasis).isEqualTo(new BigDecimal("1702.00")); // Only one buy (with fees added after conversion)
     }
 
     @Test
@@ -247,8 +247,8 @@ class InvestmentTransactionRepositoryTest {
         // Then
         assertThat(portfolioByType).hasSize(1); // Only STOCK type in test data
         Object[] stockData = portfolioByType.get(0);
-        assertThat(stockData[0]).isEqualTo(AssetTypeCategory.STOCK);
-        assertThat(stockData[1]).isEqualTo(new BigDecimal("3749.00")); // 2049 + 1700
+        assertThat(stockData[0]).isEqualTo(AssetType.STOCK);
+        assertThat(stockData[1]).isEqualTo(new BigDecimal("3752.50")); // 2050.50 + 1702
     }
 
     @Test
@@ -269,9 +269,9 @@ class InvestmentTransactionRepositoryTest {
                 .orElse(null);
 
         assertThat(growthData).isNotNull();
-        assertThat(growthData[1]).isEqualTo(new BigDecimal("2049.00")); // Apple cost basis
+        assertThat(growthData[1]).isEqualTo(new BigDecimal("2050.50")); // Apple cost basis (with fees added after conversion)
         assertThat(valueData).isNotNull();
-        assertThat(valueData[1]).isEqualTo(new BigDecimal("1700.00")); // Microsoft cost basis
+        assertThat(valueData[1]).isEqualTo(new BigDecimal("1702.00")); // Microsoft cost basis (with fees added after conversion)
     }
 
     @Test
@@ -291,10 +291,10 @@ class InvestmentTransactionRepositoryTest {
         BigDecimal totalValue = investmentTransactionRepository.getTotalPortfolioValue();
 
         // Then
-        // Apple: 1275 + 774 - 478 = 1571
-        // Microsoft: 1700 - 518.50 = 1181.50
-        // Total: 1571 + 1181.50 = 2752.50
-        assertThat(totalValue).isEqualTo(new BigDecimal("2752.50"));
+        // Apple: 1276.50 + 774 - 478 = 1572.50
+        // Microsoft: 1702 - 518.50 = 1183.50
+        // Total: 1572.50 + 1183.50 = 2756.00
+        assertThat(totalValue).isEqualTo(new BigDecimal("2756.00"));
     }
 
     @Test
@@ -304,6 +304,8 @@ class InvestmentTransactionRepositoryTest {
                 .isEqualTo(3);
         assertThat(investmentTransactionRepository.countByTransactionType(InvestmentTransactionType.SELL))
                 .isEqualTo(2);
+        assertThat(investmentTransactionRepository.countByTransactionType(InvestmentTransactionType.DIVIDEND))
+                .isEqualTo(0); // No dividends in test data
     }
 
     @Test
@@ -330,13 +332,5 @@ class InvestmentTransactionRepositoryTest {
         assertThat(appleTransactions.getTotalPages()).isEqualTo(2);
     }
 
-    // fixme here and in other places, if tests is not implemented, just remove it, no need to leave it like this
-    @Test
-    void findByCreatedAtBetween_ShouldReturnTransactionsInDateRange() {
-        // Note: This test is currently disabled due to test setup complexity
-        // The functionality works correctly as evidenced by other tests
-        // but the test setup makes it difficult to isolate specific date ranges
-        // without affecting other test data
-    }
 
 }

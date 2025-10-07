@@ -32,8 +32,8 @@ public class Asset {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "asset_type_category", nullable = false, length = 20)
-    private AssetTypeCategory assetTypeCategory;
+    @Column(name = "asset_type", nullable = false, length = 20)
+    private AssetType assetType;
 
     @NotNull
     @Enumerated(EnumType.STRING)
