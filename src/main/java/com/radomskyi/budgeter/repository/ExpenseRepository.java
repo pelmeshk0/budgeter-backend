@@ -1,8 +1,8 @@
 package com.radomskyi.budgeter.repository;
 
-import com.radomskyi.budgeter.domain.ExpenseCategory;
-import com.radomskyi.budgeter.domain.Expense;
-import com.radomskyi.budgeter.domain.Tag;
+import com.radomskyi.budgeter.domain.entity.budgeting.ExpenseCategory;
+import com.radomskyi.budgeter.domain.entity.budgeting.Expense;
+import com.radomskyi.budgeter.domain.entity.budgeting.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

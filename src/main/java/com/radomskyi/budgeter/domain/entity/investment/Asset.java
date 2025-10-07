@@ -1,4 +1,4 @@
-package com.radomskyi.budgeter.domain;
+package com.radomskyi.budgeter.domain.entity.investment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

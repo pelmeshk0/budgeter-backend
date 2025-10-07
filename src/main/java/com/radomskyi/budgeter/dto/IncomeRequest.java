@@ -1,7 +1,7 @@
 package com.radomskyi.budgeter.dto;
 
-import com.radomskyi.budgeter.domain.IncomeCategory;
-import com.radomskyi.budgeter.domain.Tag;
+import com.radomskyi.budgeter.domain.entity.budgeting.IncomeCategory;
+import com.radomskyi.budgeter.domain.entity.budgeting.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

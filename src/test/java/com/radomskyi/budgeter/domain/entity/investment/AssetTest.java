@@ -1,7 +1,10 @@
-package com.radomskyi.budgeter.domain;
+package com.radomskyi.budgeter.domain.entity.investment;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import com.radomskyi.budgeter.domain.entity.investment.Asset;
+import com.radomskyi.budgeter.domain.entity.investment.AssetType;
+import com.radomskyi.budgeter.domain.entity.investment.InvestmentStyle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

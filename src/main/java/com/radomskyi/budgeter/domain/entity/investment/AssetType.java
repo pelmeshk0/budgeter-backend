@@ -1,4 +1,4 @@
-package com.radomskyi.budgeter.domain;
+package com.radomskyi.budgeter.domain.entity.investment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "Categories for investment asset types")

@@ -1,4 +1,4 @@
-package com.radomskyi.budgeter.domain;
+package com.radomskyi.budgeter.domain.entity.investment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.DecimalMin;
+import com.radomskyi.budgeter.domain.entity.budgeting.Transaction;
 
 import java.math.BigDecimal;
 

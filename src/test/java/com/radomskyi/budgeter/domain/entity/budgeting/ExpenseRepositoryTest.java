@@ -1,8 +1,9 @@
-package com.radomskyi.budgeter.repository;
+package com.radomskyi.budgeter.domain.entity.budgeting;
 
 import com.radomskyi.budgeter.domain.entity.budgeting.ExpenseCategory;
 import com.radomskyi.budgeter.domain.entity.budgeting.Expense;
 import com.radomskyi.budgeter.domain.entity.budgeting.Tag;
+import com.radomskyi.budgeter.repository.ExpenseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

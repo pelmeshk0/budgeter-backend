@@ -1,4 +1,4 @@
-package com.radomskyi.budgeter.domain;
+package com.radomskyi.budgeter.domain.entity.budgeting;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

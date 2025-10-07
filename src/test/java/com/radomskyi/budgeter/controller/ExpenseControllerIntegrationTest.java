@@ -1,7 +1,7 @@
 package com.radomskyi.budgeter.controller;
 
-import com.radomskyi.budgeter.domain.ExpenseCategory;
-import com.radomskyi.budgeter.domain.Tag;
+import com.radomskyi.budgeter.domain.entity.budgeting.ExpenseCategory;
+import com.radomskyi.budgeter.domain.entity.budgeting.Tag;
 import com.radomskyi.budgeter.dto.ExpenseRequest;
 import com.radomskyi.budgeter.dto.ExpenseResponse;
 import com.radomskyi.budgeter.repository.ExpenseRepository;

@@ -1,6 +1,7 @@
 package com.radomskyi.budgeter.repository;
 
-import com.radomskyi.budgeter.domain.*;
+import com.radomskyi.budgeter.domain.entity.investment.*;
+import com.radomskyi.budgeter.domain.entity.budgeting.Transaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

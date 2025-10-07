@@ -1,7 +1,7 @@
 package com.radomskyi.budgeter.controller;
 
-import com.radomskyi.budgeter.domain.IncomeCategory;
-import com.radomskyi.budgeter.domain.Tag;
+import com.radomskyi.budgeter.domain.entity.budgeting.IncomeCategory;
+import com.radomskyi.budgeter.domain.entity.budgeting.Tag;
 import com.radomskyi.budgeter.dto.IncomeRequest;
 import com.radomskyi.budgeter.dto.IncomeResponse;
 import com.radomskyi.budgeter.repository.IncomeRepository;

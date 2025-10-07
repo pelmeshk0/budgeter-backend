@@ -1,8 +1,9 @@
-package com.radomskyi.budgeter.repository;
+package com.radomskyi.budgeter.domain.entity.budgeting;
 
 import com.radomskyi.budgeter.domain.entity.budgeting.IncomeCategory;
 import com.radomskyi.budgeter.domain.entity.budgeting.Income;
 import com.radomskyi.budgeter.domain.entity.budgeting.Tag;
+import com.radomskyi.budgeter.repository.IncomeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.radomskyi.budgeter.service;
 
-import com.radomskyi.budgeter.domain.Expense;
+import com.radomskyi.budgeter.domain.entity.budgeting.Expense;
 import com.radomskyi.budgeter.dto.ExpenseRequest;
 import com.radomskyi.budgeter.dto.ExpenseResponse;
 import com.radomskyi.budgeter.exception.ExpenseNotFoundException;
