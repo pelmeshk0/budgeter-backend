@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 class InvestmentTransactionTest {
 
     private Asset asset;
+    private Investment investment;
     private InvestmentTransaction buyTransaction;
     private InvestmentTransaction sellTransaction;
 
@@ -22,9 +23,11 @@ class InvestmentTransactionTest {
                 .investmentStyle(InvestmentStyle.GROWTH)
                 .build();
 
+        investment = Investment.createNew(asset, Currency.USD);
+
         buyTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("10.0"))
                 .pricePerUnit(new BigDecimal("150.00"))
                 .fees(new BigDecimal("1.50"))
@@ -37,7 +40,7 @@ class InvestmentTransactionTest {
 
         sellTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("5.0"))
                 .pricePerUnit(new BigDecimal("160.00"))
                 .fees(new BigDecimal("2.00"))
@@ -89,7 +92,7 @@ class InvestmentTransactionTest {
     void testTransactionWithEurNoExchangeRate() {
         InvestmentTransaction eurTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("5.0"))
                 .pricePerUnit(new BigDecimal("100.00"))
                 .fees(new BigDecimal("1.00"))
@@ -107,7 +110,7 @@ class InvestmentTransactionTest {
     void testTransactionWithoutFees() {
         InvestmentTransaction noFeesTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("2.0"))
                 .pricePerUnit(new BigDecimal("200.00"))
                 .currency(Currency.EUR)
@@ -116,79 +119,6 @@ class InvestmentTransactionTest {
 
         assertThat(noFeesTransaction.getFees()).isNull();
         assertThat(noFeesTransaction.getAmount()).isEqualTo(new BigDecimal("400.00"));
-    }
-
-    @Test
-    void testFromCsvDataBuy() {
-        InvestmentTransaction csvTransaction = InvestmentTransaction.fromTrading212CsvData(
-                "Market buy",
-                "AAPL",
-                "Apple Inc.",
-                "US0378331005",
-                new BigDecimal("10.0"),
-                new BigDecimal("150.00"),
-                "USD",
-                new BigDecimal("0.85"),
-                new BigDecimal("1.50"),
-                new BigDecimal("1275.00"));
-
-        assertThat(csvTransaction.getTransactionType()).isEqualTo(InvestmentTransactionType.BUY);
-        assertThat(csvTransaction.getUnits()).isEqualTo(new BigDecimal("10.0"));
-        assertThat(csvTransaction.getPricePerUnit()).isEqualTo(new BigDecimal("150.00"));
-        assertThat(csvTransaction.getCurrency()).isEqualTo(Currency.USD);
-        assertThat(csvTransaction.getExchangeRate()).isEqualTo(new BigDecimal("0.85"));
-        assertThat(csvTransaction.getFees()).isEqualTo(new BigDecimal("1.50"));
-        assertThat(csvTransaction.getAmount()).isEqualTo(new BigDecimal("1275.00"));
-        assertThat(csvTransaction.getAsset().getTicker()).isEqualTo("AAPL");
-        assertThat(csvTransaction.getAsset().getName()).isEqualTo("Apple Inc.");
-        assertThat(csvTransaction.getAsset().getIsin()).isEqualTo("US0378331005");
-    }
-
-    @Test
-    void testFromCsvDataSell() {
-        InvestmentTransaction csvTransaction = InvestmentTransaction.fromTrading212CsvData(
-                "Market sell",
-                "AAPL",
-                "Apple Inc.",
-                "US0378331005",
-                new BigDecimal("5.0"),
-                new BigDecimal("160.00"),
-                "EUR",
-                null,
-                new BigDecimal("2.00"),
-                new BigDecimal("798.00"));
-
-        assertThat(csvTransaction.getTransactionType()).isEqualTo(InvestmentTransactionType.SELL);
-        assertThat(csvTransaction.getUnits()).isEqualTo(new BigDecimal("5.0"));
-        assertThat(csvTransaction.getPricePerUnit()).isEqualTo(new BigDecimal("160.00"));
-        assertThat(csvTransaction.getCurrency()).isEqualTo(Currency.EUR);
-        assertThat(csvTransaction.getExchangeRate()).isNull();
-        assertThat(csvTransaction.getFees()).isEqualTo(new BigDecimal("2.00"));
-        assertThat(csvTransaction.getAmount()).isEqualTo(new BigDecimal("798.00"));
-    }
-
-    @Test
-    void testFromCsvDataDividend() {
-        InvestmentTransaction csvTransaction = InvestmentTransaction.fromTrading212CsvData(
-                "Dividend",
-                "AAPL",
-                "Apple Inc.",
-                "US0378331005",
-                new BigDecimal("10.0"),
-                new BigDecimal("0.50"),
-                "EUR",
-                null,
-                new BigDecimal("0.00"),
-                new BigDecimal("5.00"));
-
-        assertThat(csvTransaction.getTransactionType()).isEqualTo(InvestmentTransactionType.DIVIDEND);
-        assertThat(csvTransaction.getUnits()).isEqualTo(new BigDecimal("10.0"));
-        assertThat(csvTransaction.getPricePerUnit()).isEqualTo(new BigDecimal("0.50"));
-        assertThat(csvTransaction.getCurrency()).isEqualTo(Currency.EUR);
-        assertThat(csvTransaction.getExchangeRate()).isNull();
-        assertThat(csvTransaction.getFees()).isEqualTo(new BigDecimal("0.00"));
-        assertThat(csvTransaction.getAmount()).isEqualTo(new BigDecimal("5.00"));
-        assertThat(csvTransaction.getDescription()).isEqualTo("Imported from CSV: Dividend (Dividend)");
     }
 
     @Test
@@ -210,7 +140,7 @@ class InvestmentTransactionTest {
     void testFractionalUnits() {
         InvestmentTransaction fractionalTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("0.5"))
                 .pricePerUnit(new BigDecimal("300.00"))
                 .currency(Currency.EUR)
@@ -226,7 +156,7 @@ class InvestmentTransactionTest {
     void testEqualsAndHashCode() {
         InvestmentTransaction transaction1 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("10.0"))
                 .pricePerUnit(new BigDecimal("150.00"))
                 .currency(Currency.USD)
@@ -235,7 +165,7 @@ class InvestmentTransactionTest {
 
         InvestmentTransaction transaction2 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("10.0"))
                 .pricePerUnit(new BigDecimal("150.00"))
                 .currency(Currency.USD)
@@ -244,7 +174,7 @@ class InvestmentTransactionTest {
 
         InvestmentTransaction transaction3 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("5.0"))
                 .pricePerUnit(new BigDecimal("160.00"))
                 .currency(Currency.EUR)

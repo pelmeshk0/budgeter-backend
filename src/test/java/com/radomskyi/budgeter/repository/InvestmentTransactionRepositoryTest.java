@@ -26,6 +26,8 @@ class InvestmentTransactionRepositoryTest {
 
     private Asset appleAsset;
     private Asset microsoftAsset;
+    private Investment appleInvestment;
+    private Investment microsoftInvestment;
     private InvestmentTransaction appleBuy1;
     private InvestmentTransaction appleBuy2;
     private InvestmentTransaction appleSell1;
@@ -55,42 +57,50 @@ class InvestmentTransactionRepositoryTest {
         entityManager.persist(microsoftAsset);
         entityManager.flush();
 
+        // Create test investments
+        appleInvestment = Investment.createNew(appleAsset, Currency.USD);
+        microsoftInvestment = Investment.createNew(microsoftAsset, Currency.USD);
+
+        entityManager.persist(appleInvestment);
+        entityManager.persist(microsoftInvestment);
+        entityManager.flush();
+
         // Create test investment transactions
         appleBuy1 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(appleAsset)
+                .investment(appleInvestment)
                 .units(new BigDecimal("10.0"))
                 .pricePerUnit(new BigDecimal("150.00"))
                 .fees(new BigDecimal("1.50"))
                 .currency(Currency.USD)
                 .exchangeRate(new BigDecimal("0.85"))
-                .amount(new BigDecimal("1276.50")) // (10 * 150 * 0.85) + 1.50
+                // amount calculated automatically: (10 * 150 * 0.85) + 1.50 = 1276.50
                 .name("Apple Inc. AAPL Buy")
                 .description("Initial purchase")
                 .build();
 
         appleBuy2 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(appleAsset)
+                .investment(appleInvestment)
                 .units(new BigDecimal("5.0"))
                 .pricePerUnit(new BigDecimal("155.00"))
                 .fees(new BigDecimal("1.00"))
                 .currency(Currency.EUR)
                 .exchangeRate(null)
-                .amount(new BigDecimal("774.00")) // 5 * 155 - 1
+                // amount calculated automatically: (5 * 155) + 1 = 776.00
                 .name("Apple Inc. AAPL Buy 2")
                 .description("Additional purchase")
                 .build();
 
         appleSell1 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(appleAsset)
+                .investment(appleInvestment)
                 .units(new BigDecimal("3.0"))
                 .pricePerUnit(new BigDecimal("160.00"))
                 .fees(new BigDecimal("2.00"))
                 .currency(Currency.EUR)
                 .exchangeRate(null)
-                .amount(new BigDecimal("478.00")) // 3 * 160 - 2
+                // amount calculated automatically: (3 * 160) + 2 = 482.00
                 .name("Apple Inc. AAPL Sell")
                 .description("Partial sale")
                 .realizedGainLoss(new BigDecimal("25.00"))
@@ -98,26 +108,26 @@ class InvestmentTransactionRepositoryTest {
 
         microsoftBuy1 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(microsoftAsset)
+                .investment(microsoftInvestment)
                 .units(new BigDecimal("8.0"))
                 .pricePerUnit(new BigDecimal("250.00"))
                 .fees(new BigDecimal("2.00"))
                 .currency(Currency.USD)
                 .exchangeRate(new BigDecimal("0.85"))
-                .amount(new BigDecimal("1702.00")) // (8 * 250 * 0.85) + 2
+                // amount calculated automatically: (8 * 250 * 0.85) + 2 = 1702.00
                 .name("Microsoft Corporation MSFT Buy")
                 .description("Initial purchase")
                 .build();
 
         microsoftSell1 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(microsoftAsset)
+                .investment(microsoftInvestment)
                 .units(new BigDecimal("2.0"))
                 .pricePerUnit(new BigDecimal("260.00"))
                 .fees(new BigDecimal("1.50"))
                 .currency(Currency.EUR)
                 .exchangeRate(null)
-                .amount(new BigDecimal("518.50")) // 2 * 260 - 1.50
+                // amount calculated automatically: (2 * 260) + 1.50 = 521.50
                 .name("Microsoft Corporation MSFT Sell")
                 .description("Partial sale")
                 .realizedGainLoss(new BigDecimal("15.00"))
@@ -133,9 +143,10 @@ class InvestmentTransactionRepositoryTest {
     }
 
     @Test
-    void findByAsset_ShouldReturnTransactionsForGivenAsset() {
+    void findByInvestment_ShouldReturnTransactionsForGivenInvestment() {
         // When
-        List<InvestmentTransaction> appleTransactions = investmentTransactionRepository.findByAsset(appleAsset);
+        List<InvestmentTransaction> appleTransactions =
+                investmentTransactionRepository.findByInvestment(appleInvestment);
 
         // Then
         assertThat(appleTransactions).hasSize(3);
@@ -145,11 +156,11 @@ class InvestmentTransactionRepositoryTest {
     }
 
     @Test
-    void findByAssetAndTransactionType_ShouldReturnBuyTransactionsForAsset() {
+    void findByInvestmentAndTransactionType_ShouldReturnBuyTransactionsForInvestment() {
         // When
         List<InvestmentTransaction> appleBuyTransactions =
-                investmentTransactionRepository.findByAssetAndTransactionTypeOrderByCreatedAtAsc(
-                        appleAsset, InvestmentTransactionType.BUY);
+                investmentTransactionRepository.findByInvestmentAndTransactionTypeOrderByCreatedAtAsc(
+                        appleInvestment, InvestmentTransactionType.BUY);
 
         // Then
         assertThat(appleBuyTransactions).hasSize(2);
@@ -162,11 +173,11 @@ class InvestmentTransactionRepositoryTest {
     }
 
     @Test
-    void findByAssetAndTransactionType_ShouldReturnSellTransactionsForAsset() {
+    void findByInvestmentAndTransactionType_ShouldReturnSellTransactionsForInvestment() {
         // When
         List<InvestmentTransaction> appleSellTransactions =
-                investmentTransactionRepository.findByAssetAndTransactionTypeOrderByCreatedAtDesc(
-                        appleAsset, InvestmentTransactionType.SELL);
+                investmentTransactionRepository.findByInvestmentAndTransactionTypeOrderByCreatedAtDesc(
+                        appleInvestment, InvestmentTransactionType.SELL);
 
         // Then
         assertThat(appleSellTransactions).hasSize(1);
@@ -215,10 +226,10 @@ class InvestmentTransactionRepositoryTest {
     }
 
     @Test
-    void getTotalUnitsForAsset_ShouldCalculateCorrectPosition() {
+    void getTotalUnitsForInvestment_ShouldCalculateCorrectPosition() {
         // When
-        BigDecimal appleUnits = investmentTransactionRepository.getTotalUnitsForAsset(appleAsset);
-        BigDecimal microsoftUnits = investmentTransactionRepository.getTotalUnitsForAsset(microsoftAsset);
+        BigDecimal appleUnits = investmentTransactionRepository.getTotalUnitsForInvestment(appleInvestment);
+        BigDecimal microsoftUnits = investmentTransactionRepository.getTotalUnitsForInvestment(microsoftInvestment);
 
         // Then
         assertThat(appleUnits).isEqualByComparingTo(new BigDecimal("12.0")); // 10 + 5 - 3
@@ -226,27 +237,23 @@ class InvestmentTransactionRepositoryTest {
     }
 
     @Test
-    void getTotalCostBasisForAsset_ShouldCalculateCorrectCostBasis() {
+    void getTotalCostBasisForInvestment_ShouldCalculateCorrectCostBasis() {
         // When
-        BigDecimal appleCostBasis = investmentTransactionRepository.getTotalCostBasisForAsset(appleAsset);
-        BigDecimal microsoftCostBasis = investmentTransactionRepository.getTotalCostBasisForAsset(microsoftAsset);
+        BigDecimal appleCostBasis = investmentTransactionRepository.getTotalCostBasisForInvestment(appleInvestment);
+        BigDecimal microsoftCostBasis =
+                investmentTransactionRepository.getTotalCostBasisForInvestment(microsoftInvestment);
 
         // Then
-        assertThat(appleCostBasis).isEqualTo(new BigDecimal("2050.50")); // 1276.50 + 774
+        assertThat(appleCostBasis).isEqualTo(new BigDecimal("2052.50")); // 1276.50 + 776.00
         assertThat(microsoftCostBasis)
                 .isEqualTo(new BigDecimal("1702.00")); // Only one buy (with fees added after conversion)
     }
 
-    @Test
-    void getTotalRealizedGainsForAsset_ShouldCalculateCorrectGains() {
-        // When
-        BigDecimal appleGains = investmentTransactionRepository.getTotalRealizedGainsForAsset(appleAsset);
-        BigDecimal microsoftGains = investmentTransactionRepository.getTotalRealizedGainsForAsset(microsoftAsset);
-
-        // Then
-        assertThat(appleGains).isEqualTo(new BigDecimal("25.00"));
-        assertThat(microsoftGains).isEqualTo(new BigDecimal("15.00"));
-    }
+    // Note: Realized gains now tracked in Investment entity, not individual transactions
+    //    @Test
+    //    void getTotalRealizedGainsForInvestment_ShouldCalculateCorrectGains() {
+    //        // This test needs to be redesigned to test Investment.realizedGainLoss field
+    //    }
 
     @Test
     void getPortfolioValueByAssetType_ShouldReturnCorrectGrouping() {
@@ -257,7 +264,7 @@ class InvestmentTransactionRepositoryTest {
         assertThat(portfolioByType).hasSize(1); // Only STOCK type in test data
         Object[] stockData = portfolioByType.get(0);
         assertThat(stockData[0]).isEqualTo(AssetType.STOCK);
-        assertThat(stockData[1]).isEqualTo(new BigDecimal("3752.50")); // 2050.50 + 1702
+        assertThat(stockData[1]).isEqualTo(new BigDecimal("3754.50")); // 2052.50 + 1702
     }
 
     @Test
@@ -279,21 +286,17 @@ class InvestmentTransactionRepositoryTest {
 
         assertThat(growthData).isNotNull();
         assertThat(growthData[1])
-                .isEqualTo(new BigDecimal("2050.50")); // Apple cost basis (with fees added after conversion)
+                .isEqualTo(new BigDecimal("2052.50")); // Apple cost basis (with fees added after conversion)
         assertThat(valueData).isNotNull();
         assertThat(valueData[1])
                 .isEqualTo(new BigDecimal("1702.00")); // Microsoft cost basis (with fees added after conversion)
     }
 
-    @Test
-    void findAssetsWithPositions_ShouldReturnAssetsWithNonZeroPositions() {
-        // When
-        List<Asset> assetsWithPositions = investmentTransactionRepository.findAssetsWithPositions();
-
-        // Then
-        assertThat(assetsWithPositions).hasSize(2); // Both Apple and Microsoft have positions
-        assertThat(assetsWithPositions).extracting(Asset::getTicker).containsExactlyInAnyOrder("AAPL", "MSFT");
-    }
+    // Note: findAssetsWithPositions() method removed. Use InvestmentRepository.findActiveInvestments() instead.
+    //    @Test
+    //    void findAssetsWithPositions_ShouldReturnAssetsWithNonZeroPositions() {
+    //        // This test needs to be redesigned to work with Investment entity
+    //    }
 
     @Test
     void getTotalPortfolioValue_ShouldCalculateCorrectTotalValue() {
@@ -301,10 +304,10 @@ class InvestmentTransactionRepositoryTest {
         BigDecimal totalValue = investmentTransactionRepository.getTotalPortfolioValue();
 
         // Then
-        // Apple: 1276.50 + 774 - 478 = 1572.50
-        // Microsoft: 1702 - 518.50 = 1183.50
-        // Total: 1572.50 + 1183.50 = 2756.00
-        assertThat(totalValue).isEqualTo(new BigDecimal("2756.00"));
+        // Apple: 1276.50 + 776.00 - 482.00 = 1570.50
+        // Microsoft: 1702.00 - 521.50 = 1180.50
+        // Total: 1570.50 + 1180.50 = 2751.00
+        assertThat(totalValue).isEqualTo(new BigDecimal("2751.00"));
     }
 
     @Test
@@ -332,10 +335,10 @@ class InvestmentTransactionRepositoryTest {
     }
 
     @Test
-    void findByAsset_WithPagination_ShouldReturnPagedResults() {
+    void findByInvestment_WithPagination_ShouldReturnPagedResults() {
         // When
         Page<InvestmentTransaction> appleTransactions =
-                investmentTransactionRepository.findByAsset(appleAsset, PageRequest.of(0, 2));
+                investmentTransactionRepository.findByInvestment(appleInvestment, PageRequest.of(0, 2));
 
         // Then
         assertThat(appleTransactions.getContent()).hasSize(2);

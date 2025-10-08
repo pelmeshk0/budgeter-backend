@@ -35,12 +35,12 @@ public class Investment {
     private BigDecimal totalCost;
 
     @NotNull
-    @DecimalMin(value = "0.00000001")
+    @DecimalMin(value = "0.00")
     @Column(name = "total_units", nullable = false, precision = 15, scale = 8)
     private BigDecimal totalUnits;
 
     @NotNull
-    @DecimalMin(value = "0.00000001")
+    @DecimalMin(value = "0.00")
     @Column(name = "cost_basis", nullable = false, precision = 15, scale = 8)
     private BigDecimal costBasis;
 
@@ -57,8 +57,39 @@ public class Investment {
     @Column(name = "currency", nullable = false, length = 3)
     private Currency currency;
 
-    @Column(name = "realized_gain_loss", precision = 15, scale = 2)
-    private BigDecimal realizedGainLoss;
+    /**
+     * Calculates total realized gain/loss by summing up all SELL transaction gains/losses.
+     * This is a computed field that aggregates data from the transactions list.
+     *
+     * @return The total realized gain/loss across all SELL transactions
+     */
+    public BigDecimal getRealizedGainLoss() {
+        if (transactions == null || transactions.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+
+        return transactions.stream()
+                .filter(t -> t.getRealizedGainLoss() != null)
+                .map(InvestmentTransaction::getRealizedGainLoss)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /**
+     * Static factory method to create a new Investment with initial values.
+     *
+     * @param asset The asset for this investment
+     * @param currency The currency for this investment
+     * @return A new Investment instance
+     */
+    public static Investment createNew(Asset asset, Currency currency) {
+        return Investment.builder()
+                .asset(asset)
+                .totalCost(BigDecimal.ZERO)
+                .totalUnits(BigDecimal.ZERO)
+                .costBasis(BigDecimal.ZERO)
+                .currency(currency)
+                .build();
+    }
 
     /**
      * Updates the cost basis based on current total cost and total units.
@@ -75,7 +106,7 @@ public class Investment {
     /**
      * Adds a transaction to this investment and updates the investment metrics.
      * Fees are included in the total cost calculation to accurately reflect the cost basis.
-     * For SELL transactions, calculates and accumulates realized gain/loss.
+     * For SELL transactions, calculates and sets the realized gain/loss.
      *
      * @param transaction The transaction to add
      */
@@ -84,11 +115,6 @@ public class Investment {
         transaction.setInvestment(this);
 
         BigDecimal fees = transaction.getFees() != null ? transaction.getFees() : BigDecimal.ZERO;
-
-        // Initialize realizedGainLoss if null
-        if (realizedGainLoss == null) {
-            realizedGainLoss = BigDecimal.ZERO;
-        }
 
         // Update total units and total cost based on transaction type
         if (transaction.getTransactionType() == InvestmentTransactionType.BUY) {
@@ -103,8 +129,8 @@ public class Investment {
             BigDecimal transactionGainLoss =
                     saleProceeds.subtract(costOfSoldUnits).subtract(fees);
 
-            // Accumulate to total realized gain/loss
-            realizedGainLoss = realizedGainLoss.add(transactionGainLoss);
+            // Set the realized gain/loss on the transaction
+            transaction.setRealizedGainLoss(transactionGainLoss);
 
             // Update totals
             totalUnits = totalUnits.subtract(transaction.getUnits());

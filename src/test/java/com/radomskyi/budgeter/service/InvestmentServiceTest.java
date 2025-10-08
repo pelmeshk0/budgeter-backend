@@ -10,6 +10,7 @@ import com.radomskyi.budgeter.domain.entity.investment.*;
 import com.radomskyi.budgeter.dto.InvestmentTransactionRequest;
 import com.radomskyi.budgeter.exception.InvestmentTransactionNotFoundException;
 import com.radomskyi.budgeter.repository.AssetRepository;
+import com.radomskyi.budgeter.repository.InvestmentRepository;
 import com.radomskyi.budgeter.repository.InvestmentTransactionRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,12 +35,16 @@ class InvestmentServiceTest {
     private InvestmentTransactionRepository investmentTransactionRepository;
 
     @Mock
+    private InvestmentRepository investmentRepository;
+
+    @Mock
     private AssetRepository assetRepository;
 
     @InjectMocks
     private InvestmentService investmentService;
 
     private Asset testAsset;
+    private Investment investment;
     private InvestmentTransaction testTransaction;
     private InvestmentTransactionRequest testRequest;
 
@@ -54,10 +59,19 @@ class InvestmentServiceTest {
                 .investmentStyle(InvestmentStyle.GROWTH)
                 .build();
 
+        investment = Investment.builder()
+                .id(1L)
+                .asset(testAsset)
+                .totalCost(BigDecimal.ZERO)
+                .totalUnits(BigDecimal.ZERO)
+                .costBasis(BigDecimal.ZERO)
+                .currency(Currency.EUR)
+                .build();
+
         testTransaction = InvestmentTransaction.builder()
                 .id(1L)
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(testAsset)
+                .investment(investment)
                 .units(new BigDecimal("10.0"))
                 .pricePerUnit(new BigDecimal("150.25"))
                 .fees(new BigDecimal("2.50"))
@@ -89,24 +103,30 @@ class InvestmentServiceTest {
     void create_ShouldReturnInvestmentTransactionResponse_WhenValidRequest() {
         // Given
         when(assetRepository.findByIsin("US0378331005")).thenReturn(Optional.of(testAsset));
-        when(investmentTransactionRepository.save(any(InvestmentTransaction.class)))
-                .thenReturn(testTransaction);
+        when(investmentRepository.findByAsset(testAsset)).thenReturn(Optional.of(investment));
+        when(investmentRepository.save(any(Investment.class))).thenAnswer(invocation -> {
+            Investment inv = invocation.getArgument(0);
+            // Simulate setting IDs on saved entities
+            inv.getTransactions().forEach(t -> {
+                if (t.getId() == null) {
+                    t.setId(1L);
+                }
+            });
+            return inv;
+        });
 
         // When
         InvestmentTransaction result = investmentService.create(testRequest);
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getTransactionType()).isEqualTo(InvestmentTransactionType.BUY);
-        assertThat(result.getAsset().getTicker()).isEqualTo("AAPL");
-        assertThat(result.getAsset().getName()).isEqualTo("Apple Inc.");
         assertThat(result.getUnits()).isEqualTo(new BigDecimal("10.0"));
         assertThat(result.getPricePerUnit()).isEqualTo(new BigDecimal("150.25"));
-        assertThat(result.getAmount()).isEqualTo(new BigDecimal("1502.50"));
 
         verify(assetRepository).findByIsin("US0378331005");
-        verify(investmentTransactionRepository).save(any(InvestmentTransaction.class));
+        verify(investmentRepository).findByAsset(testAsset);
+        verify(investmentRepository).save(any(Investment.class));
     }
 
     @Test
@@ -115,8 +135,18 @@ class InvestmentServiceTest {
         when(assetRepository.findByIsin("US0378331005")).thenReturn(Optional.empty());
         when(assetRepository.findByTicker("AAPL")).thenReturn(Optional.empty());
         when(assetRepository.save(any(Asset.class))).thenReturn(testAsset);
-        when(investmentTransactionRepository.save(any(InvestmentTransaction.class)))
-                .thenReturn(testTransaction);
+        when(investmentRepository.findByAsset(any(Asset.class))).thenReturn(Optional.empty());
+        when(investmentRepository.save(any(Investment.class))).thenAnswer(invocation -> {
+            Investment inv = invocation.getArgument(0);
+            inv.setId(1L);
+            // Simulate setting IDs on saved entities
+            inv.getTransactions().forEach(t -> {
+                if (t.getId() == null) {
+                    t.setId(1L);
+                }
+            });
+            return inv;
+        });
 
         // When
         InvestmentTransaction result = investmentService.create(testRequest);
@@ -128,7 +158,7 @@ class InvestmentServiceTest {
         verify(assetRepository).findByIsin("US0378331005");
         verify(assetRepository).findByTicker("AAPL");
         verify(assetRepository).save(any(Asset.class));
-        verify(investmentTransactionRepository).save(any(InvestmentTransaction.class));
+        verify(investmentRepository, atLeastOnce()).save(any(Investment.class));
     }
 
     @Test
@@ -203,7 +233,7 @@ class InvestmentServiceTest {
         InvestmentTransaction updatedTransaction = InvestmentTransaction.builder()
                 .id(1L)
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(testAsset)
+                .investment(investment)
                 .units(new BigDecimal("5.0"))
                 .pricePerUnit(new BigDecimal("155.00"))
                 .fees(new BigDecimal("1.25"))

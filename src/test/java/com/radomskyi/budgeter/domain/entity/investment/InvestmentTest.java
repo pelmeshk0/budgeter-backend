@@ -39,7 +39,7 @@ class InvestmentTest {
         assertThat(investment.getCurrency()).isEqualTo(Currency.USD);
         assertThat(investment.getTransactions()).isEmpty();
         assertThat(investment.getLatestPrice()).isNull();
-        assertThat(investment.getRealizedGainLoss()).isNull();
+        assertThat(investment.getRealizedGainLoss()).isEqualByComparingTo(BigDecimal.ZERO);
     }
 
     @Test
@@ -76,7 +76,7 @@ class InvestmentTest {
     void testAddBuyTransaction() {
         InvestmentTransaction buyTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("10"))
                 .pricePerUnit(new BigDecimal("150.00"))
                 .currency(Currency.USD)
@@ -97,7 +97,7 @@ class InvestmentTest {
     void testAddBuyTransactionWithFees() {
         InvestmentTransaction buyTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("10"))
                 .pricePerUnit(new BigDecimal("150.00"))
                 .fees(new BigDecimal("5.00"))
@@ -118,7 +118,7 @@ class InvestmentTest {
     void testAddMultipleBuyTransactions() {
         InvestmentTransaction buy1 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("10"))
                 .pricePerUnit(new BigDecimal("150.00"))
                 .fees(new BigDecimal("5.00"))
@@ -127,7 +127,7 @@ class InvestmentTest {
 
         InvestmentTransaction buy2 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("5"))
                 .pricePerUnit(new BigDecimal("160.00"))
                 .fees(new BigDecimal("2.50"))
@@ -153,7 +153,7 @@ class InvestmentTest {
         // First buy some shares
         InvestmentTransaction buyTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("10"))
                 .pricePerUnit(new BigDecimal("150.00"))
                 .fees(new BigDecimal("5.00"))
@@ -164,7 +164,7 @@ class InvestmentTest {
         // Then sell some at a higher price
         InvestmentTransaction sellTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("5"))
                 .pricePerUnit(new BigDecimal("170.00"))
                 .fees(new BigDecimal("3.00"))
@@ -192,7 +192,7 @@ class InvestmentTest {
         // First buy some shares
         InvestmentTransaction buyTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("10"))
                 .pricePerUnit(new BigDecimal("150.00"))
                 .fees(new BigDecimal("5.00"))
@@ -203,7 +203,7 @@ class InvestmentTest {
         // Then sell some at a lower price
         InvestmentTransaction sellTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("5"))
                 .pricePerUnit(new BigDecimal("130.00"))
                 .fees(new BigDecimal("2.00"))
@@ -227,7 +227,7 @@ class InvestmentTest {
         // First buy
         InvestmentTransaction buyTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("10"))
                 .pricePerUnit(new BigDecimal("100.00"))
                 .currency(Currency.USD)
@@ -237,7 +237,7 @@ class InvestmentTest {
         // Then sell without fees
         InvestmentTransaction sellTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("5"))
                 .pricePerUnit(new BigDecimal("120.00"))
                 .currency(Currency.USD)
@@ -259,7 +259,7 @@ class InvestmentTest {
         // Buy #1: 10 shares at $150 with $5 fee
         InvestmentTransaction buy1 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("10"))
                 .pricePerUnit(new BigDecimal("150.00"))
                 .fees(new BigDecimal("5.00"))
@@ -271,7 +271,7 @@ class InvestmentTest {
         // Buy #2: 5 shares at $160 with $2.50 fee
         InvestmentTransaction buy2 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("5"))
                 .pricePerUnit(new BigDecimal("160.00"))
                 .fees(new BigDecimal("2.50"))
@@ -283,7 +283,7 @@ class InvestmentTest {
         // Sell #1: 5 shares at $170 with $3 fee
         InvestmentTransaction sell1 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("5"))
                 .pricePerUnit(new BigDecimal("170.00"))
                 .fees(new BigDecimal("3.00"))
@@ -298,7 +298,7 @@ class InvestmentTest {
         // Sell #2: 3 shares at $180 with $2 fee
         InvestmentTransaction sell2 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("3"))
                 .pricePerUnit(new BigDecimal("180.00"))
                 .fees(new BigDecimal("2.00"))
@@ -322,7 +322,7 @@ class InvestmentTest {
     void testRemoveTransaction() {
         InvestmentTransaction buyTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("10"))
                 .pricePerUnit(new BigDecimal("150.00"))
                 .currency(Currency.USD)
@@ -341,7 +341,7 @@ class InvestmentTest {
         // Buy fractional shares
         InvestmentTransaction buyFractional = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("0.5"))
                 .pricePerUnit(new BigDecimal("200.00"))
                 .fees(new BigDecimal("1.00"))
@@ -358,7 +358,7 @@ class InvestmentTest {
         // Sell fractional shares
         InvestmentTransaction sellFractional = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("0.25"))
                 .pricePerUnit(new BigDecimal("220.00"))
                 .fees(new BigDecimal("0.50"))
@@ -421,7 +421,7 @@ class InvestmentTest {
         // Buy 10 shares
         InvestmentTransaction buy = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("10"))
                 .pricePerUnit(new BigDecimal("100.00"))
                 .currency(Currency.USD)
@@ -431,7 +431,7 @@ class InvestmentTest {
         // First sell with gain
         InvestmentTransaction sell1 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("3"))
                 .pricePerUnit(new BigDecimal("120.00"))
                 .currency(Currency.USD)
@@ -443,7 +443,7 @@ class InvestmentTest {
         // Second sell with loss
         InvestmentTransaction sell2 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("2"))
                 .pricePerUnit(new BigDecimal("90.00"))
                 .currency(Currency.USD)
@@ -456,7 +456,7 @@ class InvestmentTest {
         // Third sell with gain
         InvestmentTransaction sell3 = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(asset)
+                .investment(investment)
                 .units(new BigDecimal("5"))
                 .pricePerUnit(new BigDecimal("110.00"))
                 .fees(new BigDecimal("5.00"))

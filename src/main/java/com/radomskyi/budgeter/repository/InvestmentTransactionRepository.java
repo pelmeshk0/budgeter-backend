@@ -11,33 +11,37 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+// todo rename this to InvestmentRepository?
 @Repository
 public interface InvestmentTransactionRepository extends JpaRepository<InvestmentTransaction, Long> {
 
-    // Find all transactions for a specific asset
-    List<InvestmentTransaction> findByAsset(Asset asset);
+    // Find all transactions for a specific investment
+    List<InvestmentTransaction> findByInvestment(Investment investment);
 
-    // Find all transactions for a specific asset with pagination
-    Page<InvestmentTransaction> findByAsset(Asset asset, Pageable pageable);
+    // Find all transactions for a specific investment with pagination
+    Page<InvestmentTransaction> findByInvestment(Investment investment, Pageable pageable);
 
-    // Find all transactions for a specific asset ordered by creation date (oldest first for FIFO)
-    List<InvestmentTransaction> findByAssetOrderByCreatedAtAsc(Asset asset);
+    // Find all transactions for a specific investment ordered by creation date (oldest first for FIFO)
+    List<InvestmentTransaction> findByInvestmentOrderByCreatedAtAsc(Investment investment);
 
-    // Find BUY transactions for an asset (for cost basis calculation)
-    List<InvestmentTransaction> findByAssetAndTransactionTypeOrderByCreatedAtAsc(
-            Asset asset, InvestmentTransactionType transactionType);
+    // Find BUY transactions for an investment (for cost basis calculation)
+    List<InvestmentTransaction> findByInvestmentAndTransactionTypeOrderByCreatedAtAsc(
+            Investment investment, InvestmentTransactionType transactionType);
 
-    // Find SELL transactions for an asset (for realized gains/losses)
-    List<InvestmentTransaction> findByAssetAndTransactionTypeOrderByCreatedAtDesc(
-            Asset asset, InvestmentTransactionType transactionType);
+    // Find SELL transactions for an investment (for realized gains/losses)
+    List<InvestmentTransaction> findByInvestmentAndTransactionTypeOrderByCreatedAtDesc(
+            Investment investment, InvestmentTransactionType transactionType);
 
-    // Find transactions by asset and date range
-    List<InvestmentTransaction> findByAssetAndCreatedAtBetween(
-            Asset asset, LocalDateTime startDate, LocalDateTime endDate);
+    // Find transactions by investment and date range
+    List<InvestmentTransaction> findByInvestmentAndCreatedAtBetween(
+            Investment investment, LocalDateTime startDate, LocalDateTime endDate);
 
-    // Find transactions by asset, type and date range
-    List<InvestmentTransaction> findByAssetAndTransactionTypeAndCreatedAtBetween(
-            Asset asset, InvestmentTransactionType transactionType, LocalDateTime startDate, LocalDateTime endDate);
+    // Find transactions by investment, type and date range
+    List<InvestmentTransaction> findByInvestmentAndTransactionTypeAndCreatedAtBetween(
+            Investment investment,
+            InvestmentTransactionType transactionType,
+            LocalDateTime startDate,
+            LocalDateTime endDate);
 
     // Find transactions by currency
     List<InvestmentTransaction> findByCurrency(Currency currency);
@@ -53,42 +57,37 @@ public interface InvestmentTransactionRepository extends JpaRepository<Investmen
             LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
     // Find transactions by asset type
-    @Query("SELECT it FROM InvestmentTransaction it WHERE it.asset.assetType = :assetType")
+    @Query("SELECT it FROM InvestmentTransaction it WHERE it.investment.asset.assetType = :assetType")
     List<InvestmentTransaction> findByAssetType(@Param("assetType") AssetType assetType);
 
     // Find transactions by investment style
-    @Query("SELECT it FROM InvestmentTransaction it WHERE it.asset.investmentStyle = :investmentStyle")
+    @Query("SELECT it FROM InvestmentTransaction it WHERE it.investment.asset.investmentStyle = :investmentStyle")
     List<InvestmentTransaction> findByInvestmentStyle(@Param("investmentStyle") InvestmentStyle investmentStyle);
 
-    // Calculate total units held for an asset (current position)
+    // Calculate total units held for an investment (current position)
     @Query("SELECT COALESCE(SUM(CASE WHEN it.transactionType = 'BUY' THEN it.units ELSE -it.units END), 0) "
-            + "FROM InvestmentTransaction it WHERE it.asset = :asset")
-    BigDecimal getTotalUnitsForAsset(@Param("asset") Asset asset);
+            + "FROM InvestmentTransaction it WHERE it.investment = :investment")
+    BigDecimal getTotalUnitsForInvestment(@Param("investment") Investment investment);
 
-    // Calculate total cost basis for an asset (sum of all BUY transactions in EUR)
+    // Calculate total cost basis for an investment (sum of all BUY transactions in EUR)
     @Query("SELECT COALESCE(SUM(it.amount), 0) FROM InvestmentTransaction it "
-            + "WHERE it.asset = :asset AND it.transactionType = 'BUY'")
-    BigDecimal getTotalCostBasisForAsset(@Param("asset") Asset asset);
+            + "WHERE it.investment = :investment AND it.transactionType = 'BUY'")
+    BigDecimal getTotalCostBasisForInvestment(@Param("investment") Investment investment);
 
-    // Calculate total realized gains/losses for an asset
+    // Calculate total realized gains/losses for an investment
     @Query("SELECT COALESCE(SUM(it.realizedGainLoss), 0) FROM InvestmentTransaction it "
-            + "WHERE it.asset = :asset AND it.transactionType = 'SELL' AND it.realizedGainLoss IS NOT NULL")
-    BigDecimal getTotalRealizedGainsForAsset(@Param("asset") Asset asset);
+            + "WHERE it.investment = :investment AND it.transactionType = 'SELL' AND it.realizedGainLoss IS NOT NULL")
+    BigDecimal getTotalRealizedGainsForInvestment(@Param("investment") Investment investment);
 
     // Calculate total portfolio value by asset type
-    @Query("SELECT it.asset.assetType, SUM(it.amount) FROM InvestmentTransaction it "
-            + "WHERE it.transactionType = 'BUY' GROUP BY it.asset.assetType")
+    @Query("SELECT it.investment.asset.assetType, SUM(it.amount) FROM InvestmentTransaction it "
+            + "WHERE it.transactionType = 'BUY' GROUP BY it.investment.asset.assetType")
     List<Object[]> getPortfolioValueByAssetType();
 
     // Calculate total portfolio value by investment style
-    @Query("SELECT it.asset.investmentStyle, SUM(it.amount) FROM InvestmentTransaction it "
-            + "WHERE it.transactionType = 'BUY' GROUP BY it.asset.investmentStyle")
+    @Query("SELECT it.investment.asset.investmentStyle, SUM(it.amount) FROM InvestmentTransaction it "
+            + "WHERE it.transactionType = 'BUY' GROUP BY it.investment.asset.investmentStyle")
     List<Object[]> getPortfolioValueByInvestmentStyle();
-
-    // Find all assets with current positions (non-zero units)
-    @Query("SELECT DISTINCT it.asset FROM InvestmentTransaction it "
-            + "GROUP BY it.asset HAVING SUM(CASE WHEN it.transactionType = 'BUY' THEN it.units ELSE -it.units END) > 0")
-    List<Asset> findAssetsWithPositions();
 
     // Calculate current portfolio value in EUR
     @Query("SELECT SUM(CASE WHEN it.transactionType = 'BUY' THEN it.amount ELSE -it.amount END) "

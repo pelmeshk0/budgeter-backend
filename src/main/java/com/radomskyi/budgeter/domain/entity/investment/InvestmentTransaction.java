@@ -28,11 +28,7 @@ public class InvestmentTransaction extends Transaction {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "asset_id", nullable = false)
-    private Asset asset;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "investment_id")
+    @JoinColumn(name = "investment_id", nullable = false)
     private Investment investment;
 
     @NotNull
@@ -66,12 +62,12 @@ public class InvestmentTransaction extends Transaction {
     // Constructor for required fields
     public InvestmentTransaction(
             InvestmentTransactionType transactionType,
-            Asset asset,
+            Investment investment,
             BigDecimal units,
             BigDecimal pricePerUnit,
             Currency currency) {
         this.transactionType = transactionType;
-        this.asset = asset;
+        this.investment = investment;
         this.units = units;
         this.pricePerUnit = pricePerUnit;
         this.currency = currency;
@@ -81,14 +77,14 @@ public class InvestmentTransaction extends Transaction {
     // Constructor with fees and exchange rate
     public InvestmentTransaction(
             InvestmentTransactionType transactionType,
-            Asset asset,
+            Investment investment,
             BigDecimal units,
             BigDecimal pricePerUnit,
             BigDecimal fees,
             Currency currency,
             BigDecimal exchangeRate) {
         this.transactionType = transactionType;
-        this.asset = asset;
+        this.investment = investment;
         this.units = units;
         this.pricePerUnit = pricePerUnit;
         this.fees = fees;
@@ -98,6 +94,8 @@ public class InvestmentTransaction extends Transaction {
     }
 
     // Calculate total amount based on units, price per unit, fees, and exchange rate
+    @PrePersist
+    @PreUpdate
     public void calculateAmount() {
         BigDecimal grossAmount = units.multiply(pricePerUnit);
 
@@ -114,54 +112,13 @@ public class InvestmentTransaction extends Transaction {
         }
     }
 
-    // Custom constructor for Trading212 CSV import
-    // TODO: Consider moving to a separate CsvImportService class for better separation of concerns
-    public static InvestmentTransaction fromTrading212CsvData(
-            String action,
-            String ticker,
-            String name,
-            String isin,
-            BigDecimal units,
-            BigDecimal pricePerUnit,
-            String currencyStr,
-            BigDecimal exchangeRate,
-            BigDecimal fees,
-            BigDecimal grossTotal) {
-        InvestmentTransactionType type;
-        if ("Market buy".equals(action) || "buy".equalsIgnoreCase(action)) {
-            type = InvestmentTransactionType.BUY;
-        } else if ("Market sell".equals(action) || "sell".equalsIgnoreCase(action)) {
-            type = InvestmentTransactionType.SELL;
-        } else if ("dividend".equalsIgnoreCase(action) || action.toLowerCase().contains("dividend")) {
-            type = InvestmentTransactionType.DIVIDEND;
-        } else {
-            type = InvestmentTransactionType.BUY; // Default fallback
-        }
-
-        Currency currency = "EUR".equals(currencyStr) ? Currency.EUR : Currency.USD;
-
-        // Create or find asset (for now, we'll create a minimal asset)
-        Asset asset = Asset.builder()
-                .ticker(ticker)
-                .name(name)
-                .isin(isin)
-                .assetType(AssetType.STOCK) // Default, should be determined from ISIN or other data
-                .investmentStyle(InvestmentStyle.GROWTH) // Default
-                .build();
-
-        return InvestmentTransaction.builder()
-                .transactionType(type)
-                .asset(asset)
-                .units(units)
-                .pricePerUnit(pricePerUnit)
-                .fees(fees)
-                .currency(currency)
-                .exchangeRate(exchangeRate)
-                .amount(grossTotal) // Use provided gross total
-                .name(name + " " + ticker)
-                .description("Imported from CSV: "
-                        + action
-                        + (type == InvestmentTransactionType.DIVIDEND ? " (Dividend)" : ""))
-                .build();
+    /**
+     * Helper method to get the asset from the parent investment.
+     * This is a convenience method to access the asset through the investment relationship.
+     *
+     * @return The asset associated with this transaction's investment
+     */
+    public Asset getAsset() {
+        return investment != null ? investment.getAsset() : null;
     }
 }

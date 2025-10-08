@@ -5,6 +5,7 @@ import com.radomskyi.budgeter.domain.service.InvestmentServiceInterface;
 import com.radomskyi.budgeter.dto.InvestmentTransactionRequest;
 import com.radomskyi.budgeter.exception.InvestmentTransactionNotFoundException;
 import com.radomskyi.budgeter.repository.AssetRepository;
+import com.radomskyi.budgeter.repository.InvestmentRepository;
 import com.radomskyi.budgeter.repository.InvestmentTransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class InvestmentService implements InvestmentServiceInterface {
 
     private final InvestmentTransactionRepository investmentTransactionRepository;
+    private final InvestmentRepository investmentRepository;
     private final AssetRepository assetRepository;
 
     /** Create a new investment transaction */
@@ -34,10 +36,16 @@ public class InvestmentService implements InvestmentServiceInterface {
         // Find or create asset
         Asset asset = findOrCreateAsset(request);
 
+        // Find or create investment for this asset
+        Investment investment = investmentRepository.findByAsset(asset).orElseGet(() -> {
+            Investment newInvestment = Investment.createNew(asset, request.getCurrency());
+            return investmentRepository.save(newInvestment);
+        });
+
         // Create investment transaction
         InvestmentTransaction transaction = InvestmentTransaction.builder()
                 .transactionType(request.getTransactionType())
-                .asset(asset)
+                .investment(investment)
                 .units(request.getUnits())
                 .pricePerUnit(request.getPricePerUnit())
                 .fees(request.getFees())
@@ -47,10 +55,19 @@ public class InvestmentService implements InvestmentServiceInterface {
                 .description(request.getDescription())
                 .build();
 
-        // Calculate the amount after building
-        transaction.calculateAmount();
+        // Add transaction to investment (this updates all metrics)
+        investment.addTransaction(transaction);
 
-        InvestmentTransaction savedTransaction = investmentTransactionRepository.save(transaction);
+        // Save the investment (which cascades to save the transaction)
+        Investment savedInvestment = investmentRepository.save(investment);
+
+        // Get the saved transaction from the investment
+        InvestmentTransaction savedTransaction = savedInvestment.getTransactions().stream()
+                .filter(t -> t.getUnits().equals(request.getUnits())
+                        && t.getPricePerUnit().equals(request.getPricePerUnit()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Failed to retrieve saved transaction"));
+
         log.info("Successfully created investment transaction with id: {}", savedTransaction.getId());
 
         return savedTransaction;
@@ -86,11 +103,28 @@ public class InvestmentService implements InvestmentServiceInterface {
                 .orElseThrow(() ->
                         new InvestmentTransactionNotFoundException("Investment transaction not found with id: " + id));
 
+        // Get the current investment
+        Investment currentInvestment = existingTransaction.getInvestment();
+
         // Find or create asset if ticker/name changed
         Asset asset = findOrCreateAsset(request);
 
+        // Check if asset changed (need to move to different investment)
+        if (!currentInvestment.getAsset().getId().equals(asset.getId())) {
+            // Remove from old investment
+            currentInvestment.removeTransaction(existingTransaction);
+            investmentRepository.save(currentInvestment);
+
+            // Find or create new investment
+            Investment newInvestment = investmentRepository.findByAsset(asset).orElseGet(() -> {
+                Investment inv = Investment.createNew(asset, request.getCurrency());
+                return investmentRepository.save(inv);
+            });
+
+            existingTransaction.setInvestment(newInvestment);
+        }
+
         existingTransaction.setTransactionType(request.getTransactionType());
-        existingTransaction.setAsset(asset);
         existingTransaction.setUnits(request.getUnits());
         existingTransaction.setPricePerUnit(request.getPricePerUnit());
         existingTransaction.setFees(request.getFees());

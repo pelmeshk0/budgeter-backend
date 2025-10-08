@@ -28,6 +28,7 @@ class Trading212CsvImportServiceTest {
     private Trading212CsvImportService csvImportService;
 
     private InvestmentTransaction mockTransaction;
+    private Investment mockInvestment;
 
     @BeforeEach
     void setUp() {
@@ -40,10 +41,19 @@ class Trading212CsvImportServiceTest {
                 .investmentStyle(InvestmentStyle.GROWTH)
                 .build();
 
+        mockInvestment = Investment.builder()
+                .id(1L)
+                .asset(mockAsset)
+                .totalCost(BigDecimal.ZERO)
+                .totalUnits(BigDecimal.ZERO)
+                .costBasis(BigDecimal.ZERO)
+                .currency(Currency.EUR)
+                .build();
+
         mockTransaction = InvestmentTransaction.builder()
                 .id(1L)
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(mockAsset)
+                .investment(mockInvestment)
                 .units(new BigDecimal("10.0"))
                 .pricePerUnit(new BigDecimal("150.25"))
                 .amount(new BigDecimal("1502.50"))
@@ -131,7 +141,7 @@ class Trading212CsvImportServiceTest {
         InvestmentTransaction dividendResponse = InvestmentTransaction.builder()
                 .id(2L)
                 .transactionType(InvestmentTransactionType.DIVIDEND)
-                .asset(dividendAsset)
+                .investment(mockInvestment)
                 .units(new BigDecimal("0.0253888000"))
                 .pricePerUnit(new BigDecimal("0.816000"))
                 .amount(new BigDecimal("0.02"))
@@ -214,7 +224,7 @@ class Trading212CsvImportServiceTest {
         InvestmentTransaction buyResponse = InvestmentTransaction.builder()
                 .id(1L)
                 .transactionType(InvestmentTransactionType.BUY)
-                .asset(buyAsset)
+                .investment(mockInvestment)
                 .units(new BigDecimal("10.0"))
                 .pricePerUnit(new BigDecimal("150.25"))
                 .amount(new BigDecimal("1502.50"))
@@ -226,7 +236,7 @@ class Trading212CsvImportServiceTest {
         InvestmentTransaction sellResponse = InvestmentTransaction.builder()
                 .id(2L)
                 .transactionType(InvestmentTransactionType.SELL)
-                .asset(sellAsset)
+                .investment(mockInvestment)
                 .units(new BigDecimal("5.0"))
                 .pricePerUnit(new BigDecimal("155.00"))
                 .amount(new BigDecimal("775.00"))
@@ -238,7 +248,7 @@ class Trading212CsvImportServiceTest {
         InvestmentTransaction dividendResponse = InvestmentTransaction.builder()
                 .id(3L)
                 .transactionType(InvestmentTransactionType.DIVIDEND)
-                .asset(dividendAsset)
+                .investment(mockInvestment)
                 .units(new BigDecimal("0.0253888000"))
                 .pricePerUnit(new BigDecimal("0.816000"))
                 .amount(new BigDecimal("0.02"))
