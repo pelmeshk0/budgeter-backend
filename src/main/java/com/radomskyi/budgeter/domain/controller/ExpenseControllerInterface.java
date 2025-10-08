@@ -5,8 +5,8 @@ import com.radomskyi.budgeter.dto.ExpenseResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
- * Interface defining operations for Expense management.
- * Provides REST API endpoints for creating, reading, updating, and deleting expenses.
+ * Interface defining operations for Expense management. Provides REST API endpoints for creating,
+ * reading, updating, and deleting expenses.
  */
 @Tag(name = "Expenses", description = "API for managing expenses")
 public interface ExpenseControllerInterface extends BaseController<ExpenseRequest, ExpenseResponse> {

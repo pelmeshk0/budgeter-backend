@@ -1,16 +1,19 @@
 package com.radomskyi.budgeter.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.radomskyi.budgeter.domain.entity.budgeting.IncomeCategory;
 import com.radomskyi.budgeter.domain.entity.budgeting.Tag;
 import com.radomskyi.budgeter.dto.IncomeRequest;
 import com.radomskyi.budgeter.dto.IncomeResponse;
 import com.radomskyi.budgeter.repository.IncomeRepository;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import java.math.BigDecimal;
+import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,13 +24,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureWebMvc
@@ -175,8 +171,7 @@ class IncomeControllerIntegrationTest {
     @Test
     void getById_ShouldReturnNotFound_WhenIncomeDoesNotExist() throws Exception {
         // When & Then
-        mockMvc.perform(get("/api/income/999"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/income/999")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -299,8 +294,7 @@ class IncomeControllerIntegrationTest {
         assertThat(incomeRepository.count()).isEqualTo(1);
 
         // When & Then
-        mockMvc.perform(delete("/api/income/" + incomeId))
-                .andExpect(status().isNoContent());
+        mockMvc.perform(delete("/api/income/" + incomeId)).andExpect(status().isNoContent());
 
         // Verify income was deleted from database
         assertThat(incomeRepository.count()).isEqualTo(0);
@@ -309,8 +303,7 @@ class IncomeControllerIntegrationTest {
     @Test
     void deleteIncome_ShouldReturnNotFound_WhenIncomeDoesNotExist() throws Exception {
         // When & Then
-        mockMvc.perform(delete("/api/income/999"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(delete("/api/income/999")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -364,8 +357,7 @@ class IncomeControllerIntegrationTest {
                 .andExpect(jsonPath("$.content.length()").value(1));
 
         // Delete
-        mockMvc.perform(delete("/api/income/" + incomeId))
-                .andExpect(status().isNoContent());
+        mockMvc.perform(delete("/api/income/" + incomeId)).andExpect(status().isNoContent());
 
         // Verify deletion
         mockMvc.perform(get("/api/income"))

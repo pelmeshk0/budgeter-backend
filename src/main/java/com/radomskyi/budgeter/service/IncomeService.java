@@ -6,10 +6,8 @@ import com.radomskyi.budgeter.dto.IncomeRequest;
 import com.radomskyi.budgeter.dto.IncomeResponse;
 import com.radomskyi.budgeter.exception.IncomeNotFoundException;
 import com.radomskyi.budgeter.repository.IncomeRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,9 +21,7 @@ public class IncomeService implements IncomeServiceInterface {
 
     private final IncomeRepository incomeRepository;
 
-    /**
-     * Create a new income
-     */
+    /** Create a new income */
     @Override
     @Transactional
     public IncomeResponse create(IncomeRequest request) {
@@ -45,22 +41,19 @@ public class IncomeService implements IncomeServiceInterface {
         return mapToResponse(savedIncome);
     }
 
-    /**
-     * Get income by ID
-     */
+    /** Get income by ID */
     @Override
     public IncomeResponse getById(Long id) {
         log.info("Fetching income with id: {}", id);
 
-        Income income = incomeRepository.findById(id)
+        Income income = incomeRepository
+                .findById(id)
                 .orElseThrow(() -> new IncomeNotFoundException("Income not found with id: " + id));
 
         return mapToResponse(income);
     }
 
-    /**
-     * Get all incomes with pagination
-     */
+    /** Get all incomes with pagination */
     @Override
     public Page<IncomeResponse> getAll(Pageable pageable) {
         log.info("Fetching all incomes with pagination: {}", pageable);
@@ -69,15 +62,14 @@ public class IncomeService implements IncomeServiceInterface {
         return incomes.map(this::mapToResponse);
     }
 
-    /**
-     * Update an existing income
-     */
+    /** Update an existing income */
     @Override
     @Transactional
     public IncomeResponse update(Long id, IncomeRequest request) {
         log.info("Updating income with id: {}", id);
 
-        Income existingIncome = incomeRepository.findById(id)
+        Income existingIncome = incomeRepository
+                .findById(id)
                 .orElseThrow(() -> new IncomeNotFoundException("Income not found with id: " + id));
 
         existingIncome.setAmount(request.getAmount());
@@ -92,9 +84,7 @@ public class IncomeService implements IncomeServiceInterface {
         return mapToResponse(updatedIncome);
     }
 
-    /**
-     * Delete an income by ID
-     */
+    /** Delete an income by ID */
     @Override
     @Transactional
     public void delete(Long id) {
@@ -108,9 +98,7 @@ public class IncomeService implements IncomeServiceInterface {
         log.info("Successfully deleted income with id: {}", id);
     }
 
-    /**
-     * Map Income entity to IncomeResponse DTO
-     */
+    /** Map Income entity to IncomeResponse DTO */
     private IncomeResponse mapToResponse(Income income) {
         return IncomeResponse.builder()
                 .id(income.getId())

@@ -4,8 +4,8 @@ import com.radomskyi.budgeter.dto.IncomeRequest;
 import com.radomskyi.budgeter.dto.IncomeResponse;
 
 /**
- * Interface defining operations for Income management.
- * Provides business logic methods for creating, reading, updating, and deleting incomes.
+ * Interface defining operations for Income management. Provides business logic methods for
+ * creating, reading, updating, and deleting incomes.
  */
 public interface IncomeServiceInterface extends BaseService<IncomeRequest, IncomeResponse> {
 

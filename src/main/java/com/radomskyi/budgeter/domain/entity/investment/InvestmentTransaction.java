@@ -1,17 +1,16 @@
 package com.radomskyi.budgeter.domain.entity.investment;
 
+import com.radomskyi.budgeter.domain.entity.budgeting.Transaction;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.DecimalMin;
-import com.radomskyi.budgeter.domain.entity.budgeting.Transaction;
-
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "investment_transaction")
@@ -61,8 +60,12 @@ public class InvestmentTransaction extends Transaction {
     private BigDecimal realizedGainLoss;
 
     // Constructor for required fields
-    public InvestmentTransaction(InvestmentTransactionType transactionType, Asset asset,
-                               BigDecimal units, BigDecimal pricePerUnit, Currency currency) {
+    public InvestmentTransaction(
+            InvestmentTransactionType transactionType,
+            Asset asset,
+            BigDecimal units,
+            BigDecimal pricePerUnit,
+            Currency currency) {
         this.transactionType = transactionType;
         this.asset = asset;
         this.units = units;
@@ -72,9 +75,14 @@ public class InvestmentTransaction extends Transaction {
     }
 
     // Constructor with fees and exchange rate
-    public InvestmentTransaction(InvestmentTransactionType transactionType, Asset asset,
-                               BigDecimal units, BigDecimal pricePerUnit, BigDecimal fees,
-                               Currency currency, BigDecimal exchangeRate) {
+    public InvestmentTransaction(
+            InvestmentTransactionType transactionType,
+            Asset asset,
+            BigDecimal units,
+            BigDecimal pricePerUnit,
+            BigDecimal fees,
+            Currency currency,
+            BigDecimal exchangeRate) {
         this.transactionType = transactionType;
         this.asset = asset;
         this.units = units;
@@ -104,9 +112,17 @@ public class InvestmentTransaction extends Transaction {
 
     // Custom constructor for Trading212 CSV import
     // TODO: Consider moving to a separate CsvImportService class for better separation of concerns
-    public static InvestmentTransaction fromTrading212CsvData(String action, String ticker, String name, String isin,
-                                                             BigDecimal units, BigDecimal pricePerUnit, String currencyStr,
-                                                             BigDecimal exchangeRate, BigDecimal fees, BigDecimal grossTotal) {
+    public static InvestmentTransaction fromTrading212CsvData(
+            String action,
+            String ticker,
+            String name,
+            String isin,
+            BigDecimal units,
+            BigDecimal pricePerUnit,
+            String currencyStr,
+            BigDecimal exchangeRate,
+            BigDecimal fees,
+            BigDecimal grossTotal) {
         InvestmentTransactionType type;
         if ("Market buy".equals(action) || "buy".equalsIgnoreCase(action)) {
             type = InvestmentTransactionType.BUY;
@@ -122,24 +138,26 @@ public class InvestmentTransaction extends Transaction {
 
         // Create or find asset (for now, we'll create a minimal asset)
         Asset asset = Asset.builder()
-            .ticker(ticker)
-            .name(name)
-            .isin(isin)
-            .assetType(AssetType.STOCK) // Default, should be determined from ISIN or other data
-            .investmentStyle(InvestmentStyle.GROWTH) // Default
-            .build();
+                .ticker(ticker)
+                .name(name)
+                .isin(isin)
+                .assetType(AssetType.STOCK) // Default, should be determined from ISIN or other data
+                .investmentStyle(InvestmentStyle.GROWTH) // Default
+                .build();
 
         return InvestmentTransaction.builder()
-            .transactionType(type)
-            .asset(asset)
-            .units(units)
-            .pricePerUnit(pricePerUnit)
-            .fees(fees)
-            .currency(currency)
-            .exchangeRate(exchangeRate)
-            .amount(grossTotal) // Use provided gross total
-            .name(name + " " + ticker)
-            .description("Imported from CSV: " + action + (type == InvestmentTransactionType.DIVIDEND ? " (Dividend)" : ""))
-            .build();
+                .transactionType(type)
+                .asset(asset)
+                .units(units)
+                .pricePerUnit(pricePerUnit)
+                .fees(fees)
+                .currency(currency)
+                .exchangeRate(exchangeRate)
+                .amount(grossTotal) // Use provided gross total
+                .name(name + " " + ticker)
+                .description("Imported from CSV: "
+                        + action
+                        + (type == InvestmentTransactionType.DIVIDEND ? " (Dividend)" : ""))
+                .build();
     }
 }

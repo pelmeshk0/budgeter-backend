@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Base interface defining common CRUD operations for entity controllers.
- * This interface provides a template for standard REST API operations.
+ * Base interface defining common CRUD operations for entity controllers. This interface provides a
+ * template for standard REST API operations.
  *
  * @param <T> The request DTO type
  * @param <R> The response DTO type
@@ -26,10 +26,11 @@ public interface BaseController<T, R> {
      * @return ResponseEntity containing the created entity
      */
     @Operation(summary = "Create entity", description = "Creates a new entity with the provided details")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Entity created successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid request data")
-    })
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "201", description = "Entity created successfully"),
+                @ApiResponse(responseCode = "400", description = "Invalid request data")
+            })
     ResponseEntity<R> create(@Valid @RequestBody T request);
 
     /**
@@ -39,10 +40,11 @@ public interface BaseController<T, R> {
      * @return ResponseEntity containing the entity
      */
     @Operation(summary = "Get entity by ID", description = "Retrieves a specific entity by its ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Entity found"),
-            @ApiResponse(responseCode = "404", description = "Entity not found")
-    })
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "200", description = "Entity found"),
+                @ApiResponse(responseCode = "404", description = "Entity not found")
+            })
     ResponseEntity<R> getById(@Parameter(description = "ID of the entity to retrieve") @PathVariable Long id);
 
     /**
@@ -52,9 +54,7 @@ public interface BaseController<T, R> {
      * @return ResponseEntity containing a page of entities
      */
     @Operation(summary = "Get all entities", description = "Retrieves all entities with optional pagination")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Entities retrieved successfully")
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Entities retrieved successfully")})
     ResponseEntity<Page<R>> getAll(@Parameter(hidden = true) Pageable pageable);
 
     /**
@@ -65,11 +65,12 @@ public interface BaseController<T, R> {
      * @return ResponseEntity containing the updated entity
      */
     @Operation(summary = "Update entity", description = "Updates an existing entity with the provided details")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Entity updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid request data"),
-            @ApiResponse(responseCode = "404", description = "Entity not found")
-    })
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "200", description = "Entity updated successfully"),
+                @ApiResponse(responseCode = "400", description = "Invalid request data"),
+                @ApiResponse(responseCode = "404", description = "Entity not found")
+            })
     ResponseEntity<R> update(
             @Parameter(description = "ID of the entity to update") @PathVariable Long id,
             @Valid @RequestBody T request);
@@ -81,9 +82,10 @@ public interface BaseController<T, R> {
      * @return ResponseEntity indicating the deletion result
      */
     @Operation(summary = "Delete entity", description = "Deletes an entity by its ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Entity deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Entity not found")
-    })
+    @ApiResponses(
+            value = {
+                @ApiResponse(responseCode = "204", description = "Entity deleted successfully"),
+                @ApiResponse(responseCode = "404", description = "Entity not found")
+            })
     ResponseEntity<Void> delete(@Parameter(description = "ID of the entity to delete") @PathVariable Long id);
 }

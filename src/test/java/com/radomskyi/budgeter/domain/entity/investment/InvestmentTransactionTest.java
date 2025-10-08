@@ -1,11 +1,10 @@
 package com.radomskyi.budgeter.domain.entity.investment;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class InvestmentTransactionTest {
 
@@ -122,9 +121,16 @@ class InvestmentTransactionTest {
     @Test
     void testFromCsvDataBuy() {
         InvestmentTransaction csvTransaction = InvestmentTransaction.fromTrading212CsvData(
-                "Market buy", "AAPL", "Apple Inc.", "US0378331005",
-                new BigDecimal("10.0"), new BigDecimal("150.00"), "USD",
-                new BigDecimal("0.85"), new BigDecimal("1.50"), new BigDecimal("1275.00"));
+                "Market buy",
+                "AAPL",
+                "Apple Inc.",
+                "US0378331005",
+                new BigDecimal("10.0"),
+                new BigDecimal("150.00"),
+                "USD",
+                new BigDecimal("0.85"),
+                new BigDecimal("1.50"),
+                new BigDecimal("1275.00"));
 
         assertThat(csvTransaction.getTransactionType()).isEqualTo(InvestmentTransactionType.BUY);
         assertThat(csvTransaction.getUnits()).isEqualTo(new BigDecimal("10.0"));
@@ -141,9 +147,16 @@ class InvestmentTransactionTest {
     @Test
     void testFromCsvDataSell() {
         InvestmentTransaction csvTransaction = InvestmentTransaction.fromTrading212CsvData(
-                "Market sell", "AAPL", "Apple Inc.", "US0378331005",
-                new BigDecimal("5.0"), new BigDecimal("160.00"), "EUR",
-                null, new BigDecimal("2.00"), new BigDecimal("798.00"));
+                "Market sell",
+                "AAPL",
+                "Apple Inc.",
+                "US0378331005",
+                new BigDecimal("5.0"),
+                new BigDecimal("160.00"),
+                "EUR",
+                null,
+                new BigDecimal("2.00"),
+                new BigDecimal("798.00"));
 
         assertThat(csvTransaction.getTransactionType()).isEqualTo(InvestmentTransactionType.SELL);
         assertThat(csvTransaction.getUnits()).isEqualTo(new BigDecimal("5.0"));
@@ -157,9 +170,16 @@ class InvestmentTransactionTest {
     @Test
     void testFromCsvDataDividend() {
         InvestmentTransaction csvTransaction = InvestmentTransaction.fromTrading212CsvData(
-                "Dividend", "AAPL", "Apple Inc.", "US0378331005",
-                new BigDecimal("10.0"), new BigDecimal("0.50"), "EUR",
-                null, new BigDecimal("0.00"), new BigDecimal("5.00"));
+                "Dividend",
+                "AAPL",
+                "Apple Inc.",
+                "US0378331005",
+                new BigDecimal("10.0"),
+                new BigDecimal("0.50"),
+                "EUR",
+                null,
+                new BigDecimal("0.00"),
+                new BigDecimal("5.00"));
 
         assertThat(csvTransaction.getTransactionType()).isEqualTo(InvestmentTransactionType.DIVIDEND);
         assertThat(csvTransaction.getUnits()).isEqualTo(new BigDecimal("10.0"));
@@ -232,7 +252,8 @@ class InvestmentTransactionTest {
                 .build();
 
         // Note: Since these extend Transaction, equals/hashCode is based on the Transaction fields
-        // and the specific fields of InvestmentTransaction. Two transactions with same data should be equal
+        // and the specific fields of InvestmentTransaction. Two transactions with same data should be
+        // equal
         assertThat(transaction1).isEqualTo(transaction2);
         assertThat(transaction1).isNotEqualTo(transaction3);
     }

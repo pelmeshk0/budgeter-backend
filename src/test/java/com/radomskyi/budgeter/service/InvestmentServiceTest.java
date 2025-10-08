@@ -1,10 +1,21 @@
 package com.radomskyi.budgeter.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
+
 import com.radomskyi.budgeter.domain.entity.investment.*;
 import com.radomskyi.budgeter.dto.InvestmentTransactionRequest;
 import com.radomskyi.budgeter.exception.InvestmentTransactionNotFoundException;
 import com.radomskyi.budgeter.repository.AssetRepository;
 import com.radomskyi.budgeter.repository.InvestmentTransactionRepository;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,18 +26,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class InvestmentServiceTest {
@@ -90,7 +89,8 @@ class InvestmentServiceTest {
     void create_ShouldReturnInvestmentTransactionResponse_WhenValidRequest() {
         // Given
         when(assetRepository.findByIsin("US0378331005")).thenReturn(Optional.of(testAsset));
-        when(investmentTransactionRepository.save(any(InvestmentTransaction.class))).thenReturn(testTransaction);
+        when(investmentTransactionRepository.save(any(InvestmentTransaction.class)))
+                .thenReturn(testTransaction);
 
         // When
         InvestmentTransaction result = investmentService.create(testRequest);
@@ -115,7 +115,8 @@ class InvestmentServiceTest {
         when(assetRepository.findByIsin("US0378331005")).thenReturn(Optional.empty());
         when(assetRepository.findByTicker("AAPL")).thenReturn(Optional.empty());
         when(assetRepository.save(any(Asset.class))).thenReturn(testAsset);
-        when(investmentTransactionRepository.save(any(InvestmentTransaction.class))).thenReturn(testTransaction);
+        when(investmentTransactionRepository.save(any(InvestmentTransaction.class)))
+                .thenReturn(testTransaction);
 
         // When
         InvestmentTransaction result = investmentService.create(testRequest);
@@ -217,7 +218,8 @@ class InvestmentServiceTest {
 
         when(investmentTransactionRepository.findById(1L)).thenReturn(Optional.of(testTransaction));
         when(assetRepository.findByIsin("US0378331005")).thenReturn(Optional.of(testAsset));
-        when(investmentTransactionRepository.save(any(InvestmentTransaction.class))).thenReturn(updatedTransaction);
+        when(investmentTransactionRepository.save(any(InvestmentTransaction.class)))
+                .thenReturn(updatedTransaction);
 
         // When
         InvestmentTransaction result = investmentService.update(1L, updateRequest);

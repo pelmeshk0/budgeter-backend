@@ -4,8 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 /**
- * Base interface defining common CRUD operations for entity services.
- * This interface provides a template for standard service operations.
+ * Base interface defining common CRUD operations for entity services. This interface provides a
+ * template for standard service operations.
  *
  * @param <T> The request DTO type
  * @param <R> The response DTO type

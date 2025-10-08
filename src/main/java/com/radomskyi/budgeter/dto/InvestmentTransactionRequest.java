@@ -6,12 +6,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -63,6 +62,9 @@ public class InvestmentTransactionRequest {
     private String name;
 
     @Size(max = 333, message = "Description must not exceed 333 characters")
-    @Schema(description = "Detailed transaction description", example = "Bought Apple shares via broker", maxLength = 333)
+    @Schema(
+            description = "Detailed transaction description",
+            example = "Bought Apple shares via broker",
+            maxLength = 333)
     private String description;
 }

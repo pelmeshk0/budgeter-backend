@@ -4,13 +4,12 @@ import com.radomskyi.budgeter.domain.entity.investment.Currency;
 import com.radomskyi.budgeter.domain.entity.investment.InvestmentTransaction;
 import com.radomskyi.budgeter.domain.entity.investment.InvestmentTransactionType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -67,9 +66,7 @@ public class InvestmentTransactionResponse {
     @Schema(description = "Date and time when the transaction was last updated")
     private LocalDateTime updatedAt;
 
-    /**
-     * Creates an InvestmentTransactionResponse from an InvestmentTransaction entity
-     */
+    /** Creates an InvestmentTransactionResponse from an InvestmentTransaction entity */
     public static InvestmentTransactionResponse fromTransaction(InvestmentTransaction transaction) {
         return InvestmentTransactionResponse.builder()
                 .id(transaction.getId())

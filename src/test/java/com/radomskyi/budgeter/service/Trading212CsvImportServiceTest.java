@@ -1,7 +1,15 @@
 package com.radomskyi.budgeter.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.opencsv.exceptions.CsvException;
 import com.radomskyi.budgeter.domain.entity.investment.*;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,15 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class Trading212CsvImportServiceTest {
@@ -57,16 +56,12 @@ class Trading212CsvImportServiceTest {
     @Test
     void importCsvFile_ShouldImportValidCsvFile_WhenFileContainsValidData() throws IOException, CsvException {
         // Given
-        String csvContent = "Action,Time,ISIN,Ticker,Name,ID,No. of shares,Price / share,Currency (Price / share),Exchange rate,Result,Currency (Result),Gross Total,Currency (Gross Total),Withholding tax,Currency (Withholding tax),Currency conversion fee,Currency (Currency conversion fee)\n" +
-                "Market buy,2025-06-10 07:04:05.631,US0378331005,AAPL,Apple Inc.,EOF33912703811,10.0000000000,150.2500000000,EUR,1.00000000,,EUR,1502.50,EUR,,,,,,\n" +
-                "Market sell,2025-06-11 11:41:39.98,US0378331005,AAPL,Apple Inc.,EOF34000698236,5.0000000000,155.0000000000,EUR,1.00000000,,EUR,775.00,EUR,,,,,,";
+        String csvContent =
+                "Action,Time,ISIN,Ticker,Name,ID,No. of shares,Price / share,Currency (Price / share),Exchange rate,Result,Currency (Result),Gross Total,Currency (Gross Total),Withholding tax,Currency (Withholding tax),Currency conversion fee,Currency (Currency conversion fee)\n"
+                        + "Market buy,2025-06-10 07:04:05.631,US0378331005,AAPL,Apple Inc.,EOF33912703811,10.0000000000,150.2500000000,EUR,1.00000000,,EUR,1502.50,EUR,,,,,,\n"
+                        + "Market sell,2025-06-11 11:41:39.98,US0378331005,AAPL,Apple Inc.,EOF34000698236,5.0000000000,155.0000000000,EUR,1.00000000,,EUR,775.00,EUR,,,,,,";
 
-        MockMultipartFile file = new MockMultipartFile(
-                "file",
-                "test.csv",
-                "text/csv",
-                csvContent.getBytes()
-        );
+        MockMultipartFile file = new MockMultipartFile("file", "test.csv", "text/csv", csvContent.getBytes());
 
         when(investmentService.create(any())).thenReturn(mockTransaction);
 
@@ -83,12 +78,7 @@ class Trading212CsvImportServiceTest {
     void importCsvFile_ShouldThrowException_WhenFileIsEmpty() {
         // Given
         String csvContent = "";
-        MockMultipartFile file = new MockMultipartFile(
-                "file",
-                "empty.csv",
-                "text/csv",
-                csvContent.getBytes()
-        );
+        MockMultipartFile file = new MockMultipartFile("file", "empty.csv", "text/csv", csvContent.getBytes());
 
         // When & Then
         assertThatThrownBy(() -> csvImportService.importCsvFile(file))
@@ -97,19 +87,17 @@ class Trading212CsvImportServiceTest {
     }
 
     @Test
-    void importCsvFile_ShouldHandleMalformedRows_WhenSomeRowsHaveInsufficientColumns() throws IOException, CsvException {
+    void importCsvFile_ShouldHandleMalformedRows_WhenSomeRowsHaveInsufficientColumns()
+            throws IOException, CsvException {
         // Given
-        String csvContent = "Action,Time,ISIN,Ticker,Name,ID,No. of shares,Price / share,Currency (Price / share),Exchange rate,Result,Currency (Result),Gross Total,Currency (Gross Total),Withholding tax,Currency (Withholding tax),Currency conversion fee,Currency (Currency conversion fee)\n" +
-                "Market buy,2025-06-10 07:04:05.631,US0378331005,AAPL,Apple Inc.,EOF33912703811,10.0000000000,150.2500000000,EUR,1.00000000,,EUR,1502.50,EUR,,,,,,\n" +
-                "Invalid Row With Too Few Columns\n" +  // This row will be skipped
-                "Market sell,2025-06-11 11:41:39.98,US0378331005,AAPL,Apple Inc.,EOF34000698236,5.0000000000,155.0000000000,EUR,1.00000000,,EUR,775.00,EUR,,,,,,";
+        String csvContent =
+                "Action,Time,ISIN,Ticker,Name,ID,No. of shares,Price / share,Currency (Price / share),Exchange rate,Result,Currency (Result),Gross Total,Currency (Gross Total),Withholding tax,Currency (Withholding tax),Currency conversion fee,Currency (Currency conversion fee)\n"
+                        + "Market buy,2025-06-10 07:04:05.631,US0378331005,AAPL,Apple Inc.,EOF33912703811,10.0000000000,150.2500000000,EUR,1.00000000,,EUR,1502.50,EUR,,,,,,\n"
+                        + "Invalid Row With Too Few Columns\n"
+                        + // This row will be skipped
+                        "Market sell,2025-06-11 11:41:39.98,US0378331005,AAPL,Apple Inc.,EOF34000698236,5.0000000000,155.0000000000,EUR,1.00000000,,EUR,775.00,EUR,,,,,,";
 
-        MockMultipartFile file = new MockMultipartFile(
-                "file",
-                "test.csv",
-                "text/csv",
-                csvContent.getBytes()
-        );
+        MockMultipartFile file = new MockMultipartFile("file", "test.csv", "text/csv", csvContent.getBytes());
 
         when(investmentService.create(any())).thenReturn(mockTransaction);
 
@@ -125,15 +113,11 @@ class Trading212CsvImportServiceTest {
     @Test
     void importCsvFile_ShouldHandleDividendTransactions_WhenActionContainsDividend() throws IOException, CsvException {
         // Given
-        String csvContent = "Action,Time,ISIN,Ticker,Name,ID,No. of shares,Price / share,Currency (Price / share),Exchange rate,Result,Currency (Result),Gross Total,Currency (Gross Total),Withholding tax,Currency (Withholding tax),Currency conversion fee,Currency (Currency conversion fee)\n" +
-                "Dividend (Dividend),2025-06-11 11:42:39,US0378331005,AAPL,Apple Inc.,,0.0253888000,0.816000,USD,Not available,,,0.02,EUR,0.00,USD,,,";
+        String csvContent =
+                "Action,Time,ISIN,Ticker,Name,ID,No. of shares,Price / share,Currency (Price / share),Exchange rate,Result,Currency (Result),Gross Total,Currency (Gross Total),Withholding tax,Currency (Withholding tax),Currency conversion fee,Currency (Currency conversion fee)\n"
+                        + "Dividend (Dividend),2025-06-11 11:42:39,US0378331005,AAPL,Apple Inc.,,0.0253888000,0.816000,USD,Not available,,,0.02,EUR,0.00,USD,,,";
 
-        MockMultipartFile file = new MockMultipartFile(
-                "file",
-                "dividend.csv",
-                "text/csv",
-                csvContent.getBytes()
-        );
+        MockMultipartFile file = new MockMultipartFile("file", "dividend.csv", "text/csv", csvContent.getBytes());
 
         Asset dividendAsset = Asset.builder()
                 .id(2L)
@@ -171,15 +155,11 @@ class Trading212CsvImportServiceTest {
     @Test
     void importCsvFile_ShouldHandleCurrencyConversion_WhenCurrencyIsNotEUR() throws IOException, CsvException {
         // Given
-        String csvContent = "Action,Time,ISIN,Ticker,Name,ID,No. of shares,Price / share,Currency (Price / share),Exchange rate,Result,Currency (Result),Gross Total,Currency (Gross Total),Withholding tax,Currency (Withholding tax),Currency conversion fee,Currency (Currency conversion fee)\n" +
-                "Market buy,2025-06-10 07:04:05.631,US0378331005,AAPL,Apple Inc.,EOF33912703811,10.0000000000,150.2500000000,USD,1.15000000,,EUR,1727.88,EUR,,,,,,";
+        String csvContent =
+                "Action,Time,ISIN,Ticker,Name,ID,No. of shares,Price / share,Currency (Price / share),Exchange rate,Result,Currency (Result),Gross Total,Currency (Gross Total),Withholding tax,Currency (Withholding tax),Currency conversion fee,Currency (Currency conversion fee)\n"
+                        + "Market buy,2025-06-10 07:04:05.631,US0378331005,AAPL,Apple Inc.,EOF33912703811,10.0000000000,150.2500000000,USD,1.15000000,,EUR,1727.88,EUR,,,,,,";
 
-        MockMultipartFile file = new MockMultipartFile(
-                "file",
-                "usd.csv",
-                "text/csv",
-                csvContent.getBytes()
-        );
+        MockMultipartFile file = new MockMultipartFile("file", "usd.csv", "text/csv", csvContent.getBytes());
 
         when(investmentService.create(any())).thenReturn(mockTransaction);
 
@@ -195,17 +175,13 @@ class Trading212CsvImportServiceTest {
     @Test
     void importCsvFile_ShouldHandleValidData_WhenProcessingCompleteCsvFile() throws IOException, CsvException {
         // Given
-        String csvContent = "Action,Time,ISIN,Ticker,Name,ID,No. of shares,Price / share,Currency (Price / share),Exchange rate,Result,Currency (Result),Gross Total,Currency (Gross Total),Withholding tax,Currency (Withholding tax),Currency conversion fee,Currency (Currency conversion fee)\n" +
-                "Market buy,2025-06-10 07:04:05.631,US0378331005,AAPL,Apple Inc.,EOF33912703811,10.0000000000,150.2500000000,EUR,1.00000000,,EUR,1502.50,EUR,,,,,,\n" +
-                "Market sell,2025-06-11 11:41:39.98,US0378331005,AAPL,Apple Inc.,EOF34000698236,5.0000000000,155.0000000000,EUR,1.00000000,,EUR,775.00,EUR,,,,,,\n" +
-                "Dividend (Dividend),2025-06-11 11:42:39,US0378331005,AAPL,Apple Inc.,,0.0253888000,0.816000,USD,Not available,,,0.02,EUR,0.00,USD,,,";
+        String csvContent =
+                "Action,Time,ISIN,Ticker,Name,ID,No. of shares,Price / share,Currency (Price / share),Exchange rate,Result,Currency (Result),Gross Total,Currency (Gross Total),Withholding tax,Currency (Withholding tax),Currency conversion fee,Currency (Currency conversion fee)\n"
+                        + "Market buy,2025-06-10 07:04:05.631,US0378331005,AAPL,Apple Inc.,EOF33912703811,10.0000000000,150.2500000000,EUR,1.00000000,,EUR,1502.50,EUR,,,,,,\n"
+                        + "Market sell,2025-06-11 11:41:39.98,US0378331005,AAPL,Apple Inc.,EOF34000698236,5.0000000000,155.0000000000,EUR,1.00000000,,EUR,775.00,EUR,,,,,,\n"
+                        + "Dividend (Dividend),2025-06-11 11:42:39,US0378331005,AAPL,Apple Inc.,,0.0253888000,0.816000,USD,Not available,,,0.02,EUR,0.00,USD,,,";
 
-        MockMultipartFile file = new MockMultipartFile(
-                "file",
-                "complete.csv",
-                "text/csv",
-                csvContent.getBytes()
-        );
+        MockMultipartFile file = new MockMultipartFile("file", "complete.csv", "text/csv", csvContent.getBytes());
 
         // Setup mocks for different transaction types
         Asset buyAsset = Asset.builder()

@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 public class ExpenseController implements ExpenseControllerInterface {
-    
+
     private final ExpenseService expenseService;
-    
+
     @PostMapping
     @Override
     public ResponseEntity<ExpenseResponse> create(@Valid @RequestBody ExpenseRequest request) {
@@ -29,7 +29,7 @@ public class ExpenseController implements ExpenseControllerInterface {
         ExpenseResponse response = expenseService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    
+
     @GetMapping("/{id}")
     @Override
     public ResponseEntity<ExpenseResponse> getById(@PathVariable Long id) {
@@ -37,26 +37,23 @@ public class ExpenseController implements ExpenseControllerInterface {
         ExpenseResponse response = expenseService.getById(id);
         return ResponseEntity.ok(response);
     }
-    
+
     @GetMapping
     @Override
-    public ResponseEntity<Page<ExpenseResponse>> getAll(
-            @PageableDefault(size = 20) Pageable pageable) {
+    public ResponseEntity<Page<ExpenseResponse>> getAll(@PageableDefault(size = 20) Pageable pageable) {
         log.info("Received request to get all expenses with pagination: {}", pageable);
         Page<ExpenseResponse> response = expenseService.getAll(pageable);
         return ResponseEntity.ok(response);
     }
-    
+
     @PutMapping("/{id}")
     @Override
-    public ResponseEntity<ExpenseResponse> update(
-            @PathVariable Long id,
-            @Valid @RequestBody ExpenseRequest request) {
+    public ResponseEntity<ExpenseResponse> update(@PathVariable Long id, @Valid @RequestBody ExpenseRequest request) {
         log.info("Received request to update expense with id: {} and data: {}", id, request);
         ExpenseResponse response = expenseService.update(id, request);
         return ResponseEntity.ok(response);
     }
-    
+
     @DeleteMapping("/{id}")
     @Override
     public ResponseEntity<Void> delete(@PathVariable Long id) {

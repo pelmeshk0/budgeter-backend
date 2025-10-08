@@ -3,11 +3,10 @@ package com.radomskyi.budgeter.repository;
 import com.radomskyi.budgeter.domain.entity.investment.Asset;
 import com.radomskyi.budgeter.domain.entity.investment.AssetType;
 import com.radomskyi.budgeter.domain.entity.investment.InvestmentStyle;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AssetRepository extends JpaRepository<Asset, Long> {

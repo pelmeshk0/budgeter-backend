@@ -3,23 +3,20 @@ package com.radomskyi.budgeter.service;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import com.radomskyi.budgeter.domain.entity.investment.Currency;
-import com.radomskyi.budgeter.domain.entity.investment.InvestmentTransactionType;
 import com.radomskyi.budgeter.domain.entity.investment.InvestmentTransaction;
+import com.radomskyi.budgeter.domain.entity.investment.InvestmentTransactionType;
 import com.radomskyi.budgeter.dto.InvestmentTransactionRequest;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -49,11 +46,10 @@ public class Trading212CsvImportService {
     private static final int CURRENCY_CONVERSION_FEE_INDEX = 16;
     private static final int CURRENCY_CURRENCY_CONVERSION_FEE_INDEX = 17;
 
-    private static final DateTimeFormatter TRADING212_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final DateTimeFormatter TRADING212_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
-    /**
-     * Import Trading212 CSV file and create investment transactions
-     */
+    /** Import Trading212 CSV file and create investment transactions */
     @Transactional
     public List<InvestmentTransaction> importCsvFile(MultipartFile file) throws IOException, CsvException {
         log.info("Starting CSV import for file: {}", file.getOriginalFilename());
@@ -92,9 +88,7 @@ public class Trading212CsvImportService {
         return importedTransactions;
     }
 
-    /**
-     * Process a single CSV row and create an investment transaction
-     */
+    /** Process a single CSV row and create an investment transaction */
     private InvestmentTransaction processCsvRow(String[] row) {
         try {
             // Parse basic transaction data
@@ -149,9 +143,7 @@ public class Trading212CsvImportService {
         }
     }
 
-    /**
-     * Parse BigDecimal from string, handling empty/null values
-     */
+    /** Parse BigDecimal from string, handling empty/null values */
     private BigDecimal parseBigDecimal(String value) {
         if (value == null || value.trim().isEmpty() || "null".equalsIgnoreCase(value.trim())) {
             return null;
@@ -167,9 +159,7 @@ public class Trading212CsvImportService {
         }
     }
 
-    /**
-     * Parse currency from string
-     */
+    /** Parse currency from string */
     private Currency parseCurrency(String currencyStr) {
         if (currencyStr == null || currencyStr.trim().isEmpty()) {
             return Currency.EUR; // Default to EUR
@@ -183,9 +173,7 @@ public class Trading212CsvImportService {
         }
     }
 
-    /**
-     * Determine transaction type from action string
-     */
+    /** Determine transaction type from action string */
     private InvestmentTransactionType determineTransactionType(String action) {
         if (action == null || action.trim().isEmpty()) {
             return InvestmentTransactionType.BUY; // Default fallback
@@ -205,9 +193,7 @@ public class Trading212CsvImportService {
         }
     }
 
-    /**
-     * Validate that required transaction data is present
-     */
+    /** Validate that required transaction data is present */
     private void validateTransactionData(InvestmentTransactionRequest request) {
         if (request.getAssetTicker() == null || request.getAssetTicker().trim().isEmpty()) {
             throw new IllegalArgumentException("Asset ticker is required");

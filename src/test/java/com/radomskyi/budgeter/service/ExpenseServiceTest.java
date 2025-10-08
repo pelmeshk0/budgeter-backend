@@ -1,11 +1,22 @@
 package com.radomskyi.budgeter.service;
 
-import com.radomskyi.budgeter.domain.entity.budgeting.ExpenseCategory;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
+
 import com.radomskyi.budgeter.domain.entity.budgeting.Expense;
+import com.radomskyi.budgeter.domain.entity.budgeting.ExpenseCategory;
 import com.radomskyi.budgeter.domain.entity.budgeting.Tag;
 import com.radomskyi.budgeter.dto.ExpenseRequest;
 import com.radomskyi.budgeter.dto.ExpenseResponse;
 import com.radomskyi.budgeter.repository.ExpenseRepository;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,30 +28,18 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class ExpenseServiceTest {
-    
+
     @Mock
     private ExpenseRepository expenseRepository;
-    
+
     @InjectMocks
     private ExpenseService expenseService;
-    
+
     private Expense testExpense;
     private ExpenseRequest testExpenseRequest;
-    
+
     @BeforeEach
     void setUp() {
         testExpense = Expense.builder()
@@ -53,7 +52,7 @@ class ExpenseServiceTest {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
-        
+
         testExpenseRequest = ExpenseRequest.builder()
                 .amount(new BigDecimal("25.50"))
                 .name("Test Expense")
@@ -62,7 +61,7 @@ class ExpenseServiceTest {
                 .tags(Arrays.asList(Tag.FOOD, Tag.BARS_AND_RESTAURANTS))
                 .build();
     }
-    
+
     @Test
     void create_ShouldReturnExpenseResponse_WhenValidRequest() {
         // Given
@@ -82,7 +81,7 @@ class ExpenseServiceTest {
 
         verify(expenseRepository).save(any(Expense.class));
     }
-    
+
     @Test
     void getById_ShouldReturnExpenseResponse_WhenExpenseExists() {
         // Given
@@ -102,43 +101,41 @@ class ExpenseServiceTest {
 
         verify(expenseRepository).findById(1L);
     }
-    
+
     @Test
     void getById_ShouldThrowException_WhenExpenseNotFound() {
         // Given
         when(expenseRepository.findById(999L)).thenReturn(Optional.empty());
-        
+
         // When & Then
         assertThatThrownBy(() -> expenseService.getById(999L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Expense not found with id: 999");
-        
+
         verify(expenseRepository).findById(999L);
     }
-    
+
     @Test
     void getAll_ShouldReturnPageOfExpenseResponses_WhenExpensesExist() {
         // Given
         List<Expense> expenses = Arrays.asList(testExpense);
         Page<Expense> expensePage = new PageImpl<>(expenses);
         Pageable pageable = PageRequest.of(0, 10);
-        
+
         when(expenseRepository.findAll(pageable)).thenReturn(expensePage);
-        
+
         // When
         Page<ExpenseResponse> result = expenseService.getAll(pageable);
-        
+
         // Then
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().get(0).getId()).isEqualTo(1L);
         assertThat(result.getContent().get(0).getAmount()).isEqualTo(new BigDecimal("25.50"));
-        
+
         verify(expenseRepository).findAll(pageable);
     }
-    
 
-    
     @Test
     void update_ShouldReturnUpdatedExpenseResponse_WhenExpenseExists() {
         // Given
@@ -160,13 +157,13 @@ class ExpenseServiceTest {
                 .createdAt(testExpense.getCreatedAt())
                 .updatedAt(LocalDateTime.now())
                 .build();
-        
+
         when(expenseRepository.findById(1L)).thenReturn(Optional.of(testExpense));
         when(expenseRepository.save(any(Expense.class))).thenReturn(updatedExpense);
-        
+
         // When
         ExpenseResponse result = expenseService.update(1L, updateRequest);
-        
+
         // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
@@ -175,51 +172,49 @@ class ExpenseServiceTest {
         assertThat(result.getCategory()).isEqualTo(ExpenseCategory.NEEDS);
         assertThat(result.getDescription()).isEqualTo("Updated expense");
         assertThat(result.getTags()).containsExactly(Tag.TRANSPORT);
-        
+
         verify(expenseRepository).findById(1L);
         verify(expenseRepository).save(any(Expense.class));
     }
-    
+
     @Test
     void update_ShouldThrowException_WhenExpenseNotFound() {
         // Given
         when(expenseRepository.findById(999L)).thenReturn(Optional.empty());
-        
+
         // When & Then
         assertThatThrownBy(() -> expenseService.update(999L, testExpenseRequest))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Expense not found with id: 999");
-        
+
         verify(expenseRepository).findById(999L);
         verify(expenseRepository, never()).save(any(Expense.class));
     }
-    
+
     @Test
     void delete_ShouldDeleteExpense_WhenExpenseExists() {
         // Given
         when(expenseRepository.existsById(1L)).thenReturn(true);
-        
+
         // When
         expenseService.delete(1L);
-        
+
         // Then
         verify(expenseRepository).existsById(1L);
         verify(expenseRepository).deleteById(1L);
     }
-    
+
     @Test
     void delete_ShouldThrowException_WhenExpenseNotFound() {
         // Given
         when(expenseRepository.existsById(999L)).thenReturn(false);
-        
+
         // When & Then
         assertThatThrownBy(() -> expenseService.delete(999L))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Expense not found with id: 999");
-        
+
         verify(expenseRepository).existsById(999L);
         verify(expenseRepository, never()).deleteById(anyLong());
     }
-    
-
 }

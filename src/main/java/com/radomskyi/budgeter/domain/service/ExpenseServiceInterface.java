@@ -4,8 +4,8 @@ import com.radomskyi.budgeter.dto.ExpenseRequest;
 import com.radomskyi.budgeter.dto.ExpenseResponse;
 
 /**
- * Interface defining operations for Expense management.
- * Provides business logic methods for creating, reading, updating, and deleting expenses.
+ * Interface defining operations for Expense management. Provides business logic methods for
+ * creating, reading, updating, and deleting expenses.
  */
 public interface ExpenseServiceInterface extends BaseService<ExpenseRequest, ExpenseResponse> {
 

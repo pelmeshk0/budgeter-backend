@@ -1,20 +1,19 @@
 package com.radomskyi.budgeter.repository;
 
-import com.radomskyi.budgeter.domain.entity.budgeting.ExpenseCategory;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.radomskyi.budgeter.domain.entity.budgeting.Expense;
+import com.radomskyi.budgeter.domain.entity.budgeting.ExpenseCategory;
 import com.radomskyi.budgeter.domain.entity.budgeting.Tag;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -80,8 +79,8 @@ class ExpenseRepositoryTest {
 
     @Test
     void testFindByAmountBetween() {
-        List<Expense> mediumExpenses = expenseRepository.findByAmountBetween(
-                new BigDecimal("20.00"), new BigDecimal("60.00"));
+        List<Expense> mediumExpenses =
+                expenseRepository.findByAmountBetween(new BigDecimal("20.00"), new BigDecimal("60.00"));
         assertThat(mediumExpenses).hasSize(2);
     }
 
@@ -121,13 +120,16 @@ class ExpenseRepositoryTest {
         assertThat(expenses).hasSize(3);
 
         // Verify that all expected expenses are present
-        assertThat(expenses).extracting(Expense::getDescription)
+        assertThat(expenses)
+                .extracting(Expense::getDescription)
                 .containsExactlyInAnyOrder("Rent payment", "Grocery shopping", "Movie tickets");
 
         // Verify that the results are ordered by creation time (newest first)
         // Since creation timestamps might be identical in tests, we verify the overall ordering pattern
-        assertThat(expenses.get(0).getCreatedAt()).isAfterOrEqualTo(expenses.get(1).getCreatedAt());
-        assertThat(expenses.get(1).getCreatedAt()).isAfterOrEqualTo(expenses.get(2).getCreatedAt());
+        assertThat(expenses.get(0).getCreatedAt())
+                .isAfterOrEqualTo(expenses.get(1).getCreatedAt());
+        assertThat(expenses.get(1).getCreatedAt())
+                .isAfterOrEqualTo(expenses.get(2).getCreatedAt());
     }
 
     @Test

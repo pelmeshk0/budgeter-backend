@@ -1,6 +1,10 @@
 package com.radomskyi.budgeter.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.radomskyi.budgeter.domain.entity.investment.*;
+import java.math.BigDecimal;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.math.BigDecimal;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -140,33 +139,39 @@ class InvestmentTransactionRepositoryTest {
 
         // Then
         assertThat(appleTransactions).hasSize(3);
-        assertThat(appleTransactions).extracting(InvestmentTransaction::getAsset)
+        assertThat(appleTransactions)
+                .extracting(InvestmentTransaction::getAsset)
                 .allMatch(asset -> asset.equals(appleAsset));
     }
 
     @Test
     void findByAssetAndTransactionType_ShouldReturnBuyTransactionsForAsset() {
         // When
-        List<InvestmentTransaction> appleBuyTransactions = investmentTransactionRepository
-                .findByAssetAndTransactionTypeOrderByCreatedAtAsc(appleAsset, InvestmentTransactionType.BUY);
+        List<InvestmentTransaction> appleBuyTransactions =
+                investmentTransactionRepository.findByAssetAndTransactionTypeOrderByCreatedAtAsc(
+                        appleAsset, InvestmentTransactionType.BUY);
 
         // Then
         assertThat(appleBuyTransactions).hasSize(2);
-        assertThat(appleBuyTransactions).extracting(InvestmentTransaction::getTransactionType)
+        assertThat(appleBuyTransactions)
+                .extracting(InvestmentTransaction::getTransactionType)
                 .allMatch(type -> type.equals(InvestmentTransactionType.BUY));
-        assertThat(appleBuyTransactions).extracting(InvestmentTransaction::getAsset)
+        assertThat(appleBuyTransactions)
+                .extracting(InvestmentTransaction::getAsset)
                 .allMatch(asset -> asset.equals(appleAsset));
     }
 
     @Test
     void findByAssetAndTransactionType_ShouldReturnSellTransactionsForAsset() {
         // When
-        List<InvestmentTransaction> appleSellTransactions = investmentTransactionRepository
-                .findByAssetAndTransactionTypeOrderByCreatedAtDesc(appleAsset, InvestmentTransactionType.SELL);
+        List<InvestmentTransaction> appleSellTransactions =
+                investmentTransactionRepository.findByAssetAndTransactionTypeOrderByCreatedAtDesc(
+                        appleAsset, InvestmentTransactionType.SELL);
 
         // Then
         assertThat(appleSellTransactions).hasSize(1);
-        assertThat(appleSellTransactions).extracting(InvestmentTransaction::getTransactionType)
+        assertThat(appleSellTransactions)
+                .extracting(InvestmentTransaction::getTransactionType)
                 .allMatch(type -> type.equals(InvestmentTransactionType.SELL));
         assertThat(appleSellTransactions.get(0).getRealizedGainLoss()).isEqualTo(new BigDecimal("25.00"));
     }
@@ -178,31 +183,34 @@ class InvestmentTransactionRepositoryTest {
 
         // Then
         assertThat(usdTransactions).hasSize(2);
-        assertThat(usdTransactions).extracting(InvestmentTransaction::getCurrency)
+        assertThat(usdTransactions)
+                .extracting(InvestmentTransaction::getCurrency)
                 .allMatch(currency -> currency.equals(Currency.USD));
     }
 
     @Test
     void findByAssetType_ShouldReturnTransactionsForGivenAssetType() {
         // When
-        List<InvestmentTransaction> stockTransactions = investmentTransactionRepository
-                .findByAssetType(AssetType.STOCK);
+        List<InvestmentTransaction> stockTransactions =
+                investmentTransactionRepository.findByAssetType(AssetType.STOCK);
 
         // Then
         assertThat(stockTransactions).hasSize(5); // All test transactions are for stocks
-        assertThat(stockTransactions).extracting(t -> t.getAsset().getAssetType())
+        assertThat(stockTransactions)
+                .extracting(t -> t.getAsset().getAssetType())
                 .allMatch(assetType -> assetType.equals(AssetType.STOCK));
     }
 
     @Test
     void findByInvestmentStyle_ShouldReturnTransactionsForGivenInvestmentStyle() {
         // When
-        List<InvestmentTransaction> growthTransactions = investmentTransactionRepository
-                .findByInvestmentStyle(InvestmentStyle.GROWTH);
+        List<InvestmentTransaction> growthTransactions =
+                investmentTransactionRepository.findByInvestmentStyle(InvestmentStyle.GROWTH);
 
         // Then
         assertThat(growthTransactions).hasSize(3); // Apple transactions (GROWTH style)
-        assertThat(growthTransactions).extracting(t -> t.getAsset().getInvestmentStyle())
+        assertThat(growthTransactions)
+                .extracting(t -> t.getAsset().getInvestmentStyle())
                 .allMatch(style -> style.equals(InvestmentStyle.GROWTH));
     }
 
@@ -225,7 +233,8 @@ class InvestmentTransactionRepositoryTest {
 
         // Then
         assertThat(appleCostBasis).isEqualTo(new BigDecimal("2050.50")); // 1276.50 + 774
-        assertThat(microsoftCostBasis).isEqualTo(new BigDecimal("1702.00")); // Only one buy (with fees added after conversion)
+        assertThat(microsoftCostBasis)
+                .isEqualTo(new BigDecimal("1702.00")); // Only one buy (with fees added after conversion)
     }
 
     @Test
@@ -269,9 +278,11 @@ class InvestmentTransactionRepositoryTest {
                 .orElse(null);
 
         assertThat(growthData).isNotNull();
-        assertThat(growthData[1]).isEqualTo(new BigDecimal("2050.50")); // Apple cost basis (with fees added after conversion)
+        assertThat(growthData[1])
+                .isEqualTo(new BigDecimal("2050.50")); // Apple cost basis (with fees added after conversion)
         assertThat(valueData).isNotNull();
-        assertThat(valueData[1]).isEqualTo(new BigDecimal("1702.00")); // Microsoft cost basis (with fees added after conversion)
+        assertThat(valueData[1])
+                .isEqualTo(new BigDecimal("1702.00")); // Microsoft cost basis (with fees added after conversion)
     }
 
     @Test
@@ -281,8 +292,7 @@ class InvestmentTransactionRepositoryTest {
 
         // Then
         assertThat(assetsWithPositions).hasSize(2); // Both Apple and Microsoft have positions
-        assertThat(assetsWithPositions).extracting(Asset::getTicker)
-                .containsExactlyInAnyOrder("AAPL", "MSFT");
+        assertThat(assetsWithPositions).extracting(Asset::getTicker).containsExactlyInAnyOrder("AAPL", "MSFT");
     }
 
     @Test
@@ -317,20 +327,19 @@ class InvestmentTransactionRepositoryTest {
         assertThat(transactions).hasSize(5);
         // The transactions should be ordered by creation date (newest first)
         // Note: Due to test setup complexity, we just verify the correct number and that ordering works
-        assertThat(transactions).isSortedAccordingTo((t1, t2) -> t2.getCreatedAt().compareTo(t1.getCreatedAt()));
+        assertThat(transactions)
+                .isSortedAccordingTo((t1, t2) -> t2.getCreatedAt().compareTo(t1.getCreatedAt()));
     }
 
     @Test
     void findByAsset_WithPagination_ShouldReturnPagedResults() {
         // When
-        Page<InvestmentTransaction> appleTransactions = investmentTransactionRepository
-                .findByAsset(appleAsset, PageRequest.of(0, 2));
+        Page<InvestmentTransaction> appleTransactions =
+                investmentTransactionRepository.findByAsset(appleAsset, PageRequest.of(0, 2));
 
         // Then
         assertThat(appleTransactions.getContent()).hasSize(2);
         assertThat(appleTransactions.getTotalElements()).isEqualTo(3);
         assertThat(appleTransactions.getTotalPages()).isEqualTo(2);
     }
-
-
 }

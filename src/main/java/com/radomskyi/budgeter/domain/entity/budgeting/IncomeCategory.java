@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Categories for income transactions")
 public enum IncomeCategory {
-
     @Schema(description = "Regular salary or wages from employment")
     SALARY,
 

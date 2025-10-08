@@ -7,8 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
-@Tag(name = "Banking documents import controller", description = "Responsible for importing files from apps like Trading212, Trade Repulic, Finanz Guru, etc.")
+@Tag(
+        name = "Banking documents import controller",
+        description = "Responsible for importing files from apps like Trading212, Trade Repulic, Finanz Guru, etc.")
 @RequestMapping("/api/import")
 public interface ImportControllerInterface {
 

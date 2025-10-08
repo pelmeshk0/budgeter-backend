@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Investment styles for portfolio analysis")
 public enum InvestmentStyle {
-
     @Schema(description = "Growth-oriented investments focusing on capital appreciation")
     GROWTH,
 

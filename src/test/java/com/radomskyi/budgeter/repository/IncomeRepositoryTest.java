@@ -1,20 +1,19 @@
 package com.radomskyi.budgeter.repository;
 
-import com.radomskyi.budgeter.domain.entity.budgeting.IncomeCategory;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.radomskyi.budgeter.domain.entity.budgeting.Income;
+import com.radomskyi.budgeter.domain.entity.budgeting.IncomeCategory;
 import com.radomskyi.budgeter.domain.entity.budgeting.Tag;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -96,19 +95,21 @@ class IncomeRepositoryTest {
 
         // Then
         assertThat(highIncomes).hasSize(2);
-        assertThat(highIncomes).extracting(Income::getAmount)
+        assertThat(highIncomes)
+                .extracting(Income::getAmount)
                 .containsExactlyInAnyOrder(new BigDecimal("3000.00"), new BigDecimal("500.00"));
     }
 
     @Test
     void findByAmountBetween_ShouldReturnIncomesInRange() {
         // When
-        List<Income> mediumIncomes = incomeRepository.findByAmountBetween(
-                new BigDecimal("0.00"), new BigDecimal("1000.00"));
+        List<Income> mediumIncomes =
+                incomeRepository.findByAmountBetween(new BigDecimal("0.00"), new BigDecimal("1000.00"));
 
         // Then
         assertThat(mediumIncomes).hasSize(4);
-        assertThat(mediumIncomes).extracting(Income::getAmount)
+        assertThat(mediumIncomes)
+                .extracting(Income::getAmount)
                 .containsExactlyInAnyOrder(
                         new BigDecimal("500.00"),
                         new BigDecimal("100.00"),
@@ -133,8 +134,10 @@ class IncomeRepositoryTest {
 
         // Then
         assertThat(bankingIncomes).hasSize(3);
-        assertThat(bankingIncomes).extracting(Income::getAmount)
-                .containsExactlyInAnyOrder(new BigDecimal("3000.00"), new BigDecimal("100.00"), new BigDecimal("300.00"));
+        assertThat(bankingIncomes)
+                .extracting(Income::getAmount)
+                .containsExactlyInAnyOrder(
+                        new BigDecimal("3000.00"), new BigDecimal("100.00"), new BigDecimal("300.00"));
     }
 
     @Test
@@ -153,7 +156,8 @@ class IncomeRepositoryTest {
 
         // Then
         assertThat(orderedIncomes).hasSize(5);
-        assertThat(orderedIncomes).extracting(Income::getAmount)
+        assertThat(orderedIncomes)
+                .extracting(Income::getAmount)
                 .containsExactly(
                         new BigDecimal("3000.00"),
                         new BigDecimal("500.00"),
@@ -171,21 +175,26 @@ class IncomeRepositoryTest {
         assertThat(orderedIncomes).hasSize(5);
 
         // Verify that all expected incomes are present
-        assertThat(orderedIncomes).extracting(Income::getAmount)
+        assertThat(orderedIncomes)
+                .extracting(Income::getAmount)
                 .containsExactlyInAnyOrder(
                         new BigDecimal("3000.00"), // income1
-                        new BigDecimal("500.00"),  // income2
-                        new BigDecimal("100.00"),  // income3
-                        new BigDecimal("50.00"),   // income4
-                        new BigDecimal("300.00")   // income5
-                );
+                        new BigDecimal("500.00"), // income2
+                        new BigDecimal("100.00"), // income3
+                        new BigDecimal("50.00"), // income4
+                        new BigDecimal("300.00") // income5
+                        );
 
         // Verify that the results are ordered by creation time (newest first)
         // Since creation timestamps might be identical in tests, we verify the overall ordering pattern
         // by checking that earlier persisted entities come after later ones in the list
-        assertThat(orderedIncomes.get(0).getCreatedAt()).isAfterOrEqualTo(orderedIncomes.get(1).getCreatedAt());
-        assertThat(orderedIncomes.get(1).getCreatedAt()).isAfterOrEqualTo(orderedIncomes.get(2).getCreatedAt());
-        assertThat(orderedIncomes.get(2).getCreatedAt()).isAfterOrEqualTo(orderedIncomes.get(3).getCreatedAt());
-        assertThat(orderedIncomes.get(3).getCreatedAt()).isAfterOrEqualTo(orderedIncomes.get(4).getCreatedAt());
+        assertThat(orderedIncomes.get(0).getCreatedAt())
+                .isAfterOrEqualTo(orderedIncomes.get(1).getCreatedAt());
+        assertThat(orderedIncomes.get(1).getCreatedAt())
+                .isAfterOrEqualTo(orderedIncomes.get(2).getCreatedAt());
+        assertThat(orderedIncomes.get(2).getCreatedAt())
+                .isAfterOrEqualTo(orderedIncomes.get(3).getCreatedAt());
+        assertThat(orderedIncomes.get(3).getCreatedAt())
+                .isAfterOrEqualTo(orderedIncomes.get(4).getCreatedAt());
     }
 }

@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Types of investment transactions")
 public enum InvestmentTransactionType {
-
     @Schema(description = "Purchase of investment assets")
     BUY,
 

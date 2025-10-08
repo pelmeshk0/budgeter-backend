@@ -5,8 +5,8 @@ import com.radomskyi.budgeter.dto.IncomeResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
- * Interface defining operations for Income management.
- * Provides REST API endpoints for creating, reading, updating, and deleting incomes.
+ * Interface defining operations for Income management. Provides REST API endpoints for creating,
+ * reading, updating, and deleting incomes.
  */
 @Tag(name = "Incomes", description = "API for managing incomes")
 public interface IncomeControllerInterface extends BaseController<IncomeRequest, IncomeResponse> {

@@ -40,8 +40,7 @@ public class IncomeController implements IncomeControllerInterface {
 
     @GetMapping
     @Override
-    public ResponseEntity<Page<IncomeResponse>> getAll(
-            @PageableDefault(size = 20) Pageable pageable) {
+    public ResponseEntity<Page<IncomeResponse>> getAll(@PageableDefault(size = 20) Pageable pageable) {
         log.info("Received request to get all incomes with pagination: {}", pageable);
         Page<IncomeResponse> response = incomeService.getAll(pageable);
         return ResponseEntity.ok(response);
@@ -49,9 +48,7 @@ public class IncomeController implements IncomeControllerInterface {
 
     @PutMapping("/{id}")
     @Override
-    public ResponseEntity<IncomeResponse> update(
-            @PathVariable Long id,
-            @Valid @RequestBody IncomeRequest request) {
+    public ResponseEntity<IncomeResponse> update(@PathVariable Long id, @Valid @RequestBody IncomeRequest request) {
         log.info("Received request to update income with id: {} and data: {}", id, request);
         IncomeResponse response = incomeService.update(id, request);
         return ResponseEntity.ok(response);

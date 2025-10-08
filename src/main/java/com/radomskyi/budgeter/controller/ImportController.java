@@ -4,24 +4,23 @@ import com.opencsv.exceptions.CsvException;
 import com.radomskyi.budgeter.domain.controller.ImportControllerInterface;
 import com.radomskyi.budgeter.domain.entity.investment.InvestmentTransaction;
 import com.radomskyi.budgeter.service.Trading212CsvImportService;
-
+import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class ImportController implements ImportControllerInterface {
 
-    private final Trading212CsvImportService csvImportService; // rename this variable (and the class) to trading212ImportService/Trading212ImportService.java
+    private final Trading212CsvImportService csvImportService; // rename this variable (and the class) to
+
+    // trading212ImportService/Trading212ImportService.java
 
     @Override
     public ResponseEntity<String> importCsv(MultipartFile file) {
@@ -30,7 +29,8 @@ public class ImportController implements ImportControllerInterface {
         try {
             List<InvestmentTransaction> importedTransactions = csvImportService.importCsvFile(file);
 
-            String message = String.format("Successfully imported %d investment transactions from CSV file '%s'",
+            String message = String.format(
+                    "Successfully imported %d investment transactions from CSV file '%s'",
                     importedTransactions.size(), file.getOriginalFilename());
 
             log.info(message);
@@ -52,5 +52,4 @@ public class ImportController implements ImportControllerInterface {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
     }
-
 }

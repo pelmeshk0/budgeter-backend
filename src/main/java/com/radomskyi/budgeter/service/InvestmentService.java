@@ -6,10 +6,8 @@ import com.radomskyi.budgeter.dto.InvestmentTransactionRequest;
 import com.radomskyi.budgeter.exception.InvestmentTransactionNotFoundException;
 import com.radomskyi.budgeter.repository.AssetRepository;
 import com.radomskyi.budgeter.repository.InvestmentTransactionRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,14 +22,14 @@ public class InvestmentService implements InvestmentServiceInterface {
     private final InvestmentTransactionRepository investmentTransactionRepository;
     private final AssetRepository assetRepository;
 
-    /**
-     * Create a new investment transaction
-     */
+    /** Create a new investment transaction */
     @Override
     @Transactional
     public InvestmentTransaction create(InvestmentTransactionRequest request) {
-        log.info("Creating new investment transaction for asset: {} with amount: {}",
-                request.getAssetName(), request.getUnits().multiply(request.getPricePerUnit()));
+        log.info(
+                "Creating new investment transaction for asset: {} with amount: {}",
+                request.getAssetName(),
+                request.getUnits().multiply(request.getPricePerUnit()));
 
         // Find or create asset
         Asset asset = findOrCreateAsset(request);
@@ -58,21 +56,18 @@ public class InvestmentService implements InvestmentServiceInterface {
         return savedTransaction;
     }
 
-
-    /**
-     * Get investment transaction by ID
-     */
+    /** Get investment transaction by ID */
     @Override
     public InvestmentTransaction getById(Long id) {
         log.info("Fetching investment transaction with id: {}", id);
 
-        return investmentTransactionRepository.findById(id)
-                .orElseThrow(() -> new InvestmentTransactionNotFoundException("Investment transaction not found with id: " + id));
+        return investmentTransactionRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new InvestmentTransactionNotFoundException("Investment transaction not found with id: " + id));
     }
 
-    /**
-     * Get all investment transactions with pagination
-     */
+    /** Get all investment transactions with pagination */
     @Override
     public Page<InvestmentTransaction> getAll(Pageable pageable) {
         log.info("Fetching all investment transactions with pagination: {}", pageable);
@@ -80,16 +75,16 @@ public class InvestmentService implements InvestmentServiceInterface {
         return investmentTransactionRepository.findAll(pageable);
     }
 
-    /**
-     * Update an existing investment transaction
-     */
+    /** Update an existing investment transaction */
     @Override
     @Transactional
     public InvestmentTransaction update(Long id, InvestmentTransactionRequest request) {
         log.info("Updating investment transaction with id: {}", id);
 
-        InvestmentTransaction existingTransaction = investmentTransactionRepository.findById(id)
-                .orElseThrow(() -> new InvestmentTransactionNotFoundException("Investment transaction not found with id: " + id));
+        InvestmentTransaction existingTransaction = investmentTransactionRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new InvestmentTransactionNotFoundException("Investment transaction not found with id: " + id));
 
         // Find or create asset if ticker/name changed
         Asset asset = findOrCreateAsset(request);
@@ -113,9 +108,7 @@ public class InvestmentService implements InvestmentServiceInterface {
         return updatedTransaction;
     }
 
-    /**
-     * Delete an investment transaction by ID
-     */
+    /** Delete an investment transaction by ID */
     @Override
     @Transactional
     public void delete(Long id) {
@@ -129,9 +122,7 @@ public class InvestmentService implements InvestmentServiceInterface {
         log.info("Successfully deleted investment transaction with id: {}", id);
     }
 
-    /**
-     * Find existing asset or create a new one
-     */
+    /** Find existing asset or create a new one */
     private Asset findOrCreateAsset(InvestmentTransactionRequest request) {
         Asset asset = null;
 
@@ -141,7 +132,9 @@ public class InvestmentService implements InvestmentServiceInterface {
         }
 
         // If not found by ISIN, try by ticker
-        if (asset == null && request.getAssetTicker() != null && !request.getAssetTicker().trim().isEmpty()) {
+        if (asset == null
+                && request.getAssetTicker() != null
+                && !request.getAssetTicker().trim().isEmpty()) {
             asset = assetRepository.findByTicker(request.getAssetTicker()).orElse(null);
         }
 
@@ -162,11 +155,8 @@ public class InvestmentService implements InvestmentServiceInterface {
         return asset;
     }
 
-    /**
-     * Recalculate the amount for an investment transaction
-     */
+    /** Recalculate the amount for an investment transaction */
     private void recalculateAmount(InvestmentTransaction transaction) {
         transaction.calculateAmount();
     }
-
 }

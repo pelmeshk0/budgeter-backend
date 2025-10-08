@@ -4,37 +4,36 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Tags for classifying expenses")
 public enum Tag {
-    
     @Schema(description = "Food and groceries")
     FOOD,
 
     @Schema(description = "Bars and restaurants")
     BARS_AND_RESTAURANTS,
-    
+
     @Schema(description = "Transportation and travel expenses")
     TRANSPORT,
-    
+
     @Schema(description = "Entertainment and leisure expenses")
     ENTERTAINMENT,
-    
+
     @Schema(description = "Shopping and retail expenses")
     SHOPPING,
-    
+
     @Schema(description = "Healthcare and medical expenses")
     HEALTH,
-    
+
     @Schema(description = "Education and learning expenses")
     EDUCATION,
-    
+
     @Schema(description = "Housing and accommodation expenses")
     HOUSING,
 
     @Schema(description = "For those fancy sneakers")
     CLOTHING,
-    
+
     @Schema(description = "Your electricity, gas and other utility bills")
     UTILITIES,
-    
+
     @Schema(description = "Hopefully you won't need this")
     INSURANCE,
 
@@ -67,7 +66,7 @@ public enum Tag {
 
     @Schema(description = "Debts and loans")
     DEBT,
-    
+
     @Schema(description = "Other miscellaneous expenses")
     OTHER
 }
