@@ -31,6 +31,10 @@ public class InvestmentTransaction extends Transaction {
     @JoinColumn(name = "asset_id", nullable = false)
     private Asset asset;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "investment_id")
+    private Investment investment;
+
     @NotNull
     @Positive
     @Column(name = "units", nullable = false, precision = 15, scale = 8)
