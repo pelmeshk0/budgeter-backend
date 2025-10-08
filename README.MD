@@ -29,6 +29,16 @@ mvn test
 mvn test jacoco:report
 ```
 
+### Code Quality
+
+```bash
+# Check for formatting issues (CI/CD)
+mvn spotless:check
+
+# Auto-fix formatting issues
+mvn spotless:apply
+```
+
 ## API Documentation
 
 The API includes interactive Swagger documentation:
