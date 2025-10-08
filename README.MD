@@ -66,23 +66,3 @@ The application includes Spring Boot Actuator for monitoring:
 ## CI/CD
 
 - **Basic CI**: `basic-ci.yml` - Run tests on pull requests
-
-## Project Structure
-
-```
-src/
-├── main/
-│   ├── java/com/radomskyi/budgeter/
-│   │   ├── BudgeterApplication.java          # Main application class
-│   │   ├── controller/                       # REST controllers
-│   │   ├── service/                          # Business logic
-│   │   ├── repository/                       # Data access layer
-│   │   ├── domain/                           # Entity models
-│   │   ├── dto/                              # Data transfer objects
-│   │   └── exception/                        # Exception handling
-│   └── resources/
-│       ├── application.properties            # Default configuration
-│       ├── application-docker.properties     # Docker configuration
-│       └── application-production.properties # Production configuration
-└── test/                                     # Test classes
-```
