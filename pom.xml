@@ -29,7 +29,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<spotless.version>2.43.0</spotless.version>
-		<google-java-format.version>1.24.0</google-java-format.version>
+		<palantir-java-format.version>2.77.0</palantir-java-format.version>
 	</properties>
 	<dependencies>
         <!-- Spring -->
@@ -113,10 +113,9 @@
 				<version>${spotless.version}</version>
 				<configuration>
 					<java>
-						<googleJavaFormat>
-							<version>${google-java-format.version}</version>
-							<style>GOOGLE</style>
-						</googleJavaFormat>
+						<palantirJavaFormat>
+							<version>${palantir-java-format.version}</version>
+						</palantirJavaFormat>
 						<removeUnusedImports />
 						<trimTrailingWhitespace />
 						<endWithNewline />
