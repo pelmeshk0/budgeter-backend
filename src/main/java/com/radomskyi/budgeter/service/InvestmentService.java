@@ -38,7 +38,7 @@ public class InvestmentService implements InvestmentServiceInterface {
 
         // Find or create investment for this asset
         Investment investment = investmentRepository.findByAsset(asset).orElseGet(() -> {
-            Investment newInvestment = Investment.createNew(asset, request.getCurrency());
+            Investment newInvestment = Investment.createNew(asset, request.getCurrency(), request.getBrokerage());
             return investmentRepository.save(newInvestment);
         });
 
@@ -117,7 +117,7 @@ public class InvestmentService implements InvestmentServiceInterface {
 
             // Find or create new investment
             Investment newInvestment = investmentRepository.findByAsset(asset).orElseGet(() -> {
-                Investment inv = Investment.createNew(asset, request.getCurrency());
+                Investment inv = Investment.createNew(asset, request.getCurrency(), request.getBrokerage());
                 return investmentRepository.save(inv);
             });
 

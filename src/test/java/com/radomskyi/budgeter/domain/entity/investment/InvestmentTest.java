@@ -27,6 +27,7 @@ class InvestmentTest {
                 .totalUnits(BigDecimal.ZERO)
                 .costBasis(BigDecimal.ZERO)
                 .currency(Currency.USD)
+                .brokerage("TestBroker")
                 .build();
     }
 
@@ -385,6 +386,7 @@ class InvestmentTest {
                 .totalUnits(new BigDecimal("10"))
                 .costBasis(new BigDecimal("150.00"))
                 .currency(Currency.USD)
+                .brokerage("TestBroker")
                 .build();
 
         Investment investment2 = Investment.builder()
@@ -393,6 +395,7 @@ class InvestmentTest {
                 .totalUnits(new BigDecimal("10"))
                 .costBasis(new BigDecimal("150.00"))
                 .currency(Currency.USD)
+                .brokerage("TestBroker")
                 .build();
 
         Asset differentAsset = Asset.builder()
@@ -409,6 +412,7 @@ class InvestmentTest {
                 .totalUnits(new BigDecimal("10"))
                 .costBasis(new BigDecimal("200.00"))
                 .currency(Currency.USD)
+                .brokerage("TestBroker")
                 .build();
 
         assertThat(investment1).isEqualTo(investment2);

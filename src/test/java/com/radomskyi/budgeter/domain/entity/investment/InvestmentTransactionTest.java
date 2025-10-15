@@ -23,7 +23,7 @@ class InvestmentTransactionTest {
                 .investmentStyle(InvestmentStyle.GROWTH)
                 .build();
 
-        investment = Investment.createNew(asset, Currency.USD);
+        investment = Investment.createNew(asset, Currency.USD, "TestBroker");
 
         buyTransaction = InvestmentTransaction.builder()
                 .transactionType(InvestmentTransactionType.BUY)

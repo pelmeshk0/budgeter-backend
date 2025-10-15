@@ -48,6 +48,7 @@ class Trading212CsvImportServiceTest {
                 .totalUnits(BigDecimal.ZERO)
                 .costBasis(BigDecimal.ZERO)
                 .currency(Currency.EUR)
+                .brokerage("Trading212")
                 .build();
 
         mockTransaction = InvestmentTransaction.builder()

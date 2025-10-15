@@ -66,6 +66,9 @@ public class InvestmentTransactionResponse {
     @Schema(description = "Date and time when the transaction was last updated")
     private LocalDateTime updatedAt;
 
+    @Schema(description = "Brokerage company", example = "Trading212")
+    private String brokerage;
+
     /** Creates an InvestmentTransactionResponse from an InvestmentTransaction entity */
     public static InvestmentTransactionResponse fromTransaction(InvestmentTransaction transaction) {
         return InvestmentTransactionResponse.builder()
@@ -85,6 +88,7 @@ public class InvestmentTransactionResponse {
                 .description(transaction.getDescription())
                 .createdAt(transaction.getCreatedAt())
                 .updatedAt(transaction.getUpdatedAt())
+                .brokerage(transaction.getInvestment().getBrokerage())
                 .build();
     }
 }

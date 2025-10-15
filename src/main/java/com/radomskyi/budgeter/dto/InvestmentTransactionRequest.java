@@ -67,4 +67,8 @@ public class InvestmentTransactionRequest {
             example = "Bought Apple shares via broker",
             maxLength = 333)
     private String description;
+
+    @Size(max = 100, message = "Brokerage name must not exceed 100 characters")
+    @Schema(description = "Brokerage company", example = "Trading212", maxLength = 100)
+    private String brokerage;
 }

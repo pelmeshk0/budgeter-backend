@@ -129,6 +129,7 @@ public class Trading212CsvImportService {
                     .exchangeRate(exchangeRate)
                     .name(name + " " + ticker)
                     .description("Imported from Trading212 CSV: " + action)
+                    .brokerage("Trading212")
                     .build();
 
             // Validate required fields

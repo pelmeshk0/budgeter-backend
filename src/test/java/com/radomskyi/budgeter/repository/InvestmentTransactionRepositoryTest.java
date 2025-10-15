@@ -58,8 +58,8 @@ class InvestmentTransactionRepositoryTest {
         entityManager.flush();
 
         // Create test investments
-        appleInvestment = Investment.createNew(appleAsset, Currency.USD);
-        microsoftInvestment = Investment.createNew(microsoftAsset, Currency.USD);
+        appleInvestment = Investment.createNew(appleAsset, Currency.USD, "TestBroker");
+        microsoftInvestment = Investment.createNew(microsoftAsset, Currency.USD, "TestBroker");
 
         entityManager.persist(appleInvestment);
         entityManager.persist(microsoftInvestment);

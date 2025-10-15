@@ -66,6 +66,7 @@ class InvestmentServiceTest {
                 .totalUnits(BigDecimal.ZERO)
                 .costBasis(BigDecimal.ZERO)
                 .currency(Currency.EUR)
+                .brokerage("TestBroker")
                 .build();
 
         testTransaction = InvestmentTransaction.builder()

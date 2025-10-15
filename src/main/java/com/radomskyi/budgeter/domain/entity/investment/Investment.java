@@ -57,6 +57,9 @@ public class Investment {
     @Column(name = "currency", nullable = false, length = 3)
     private Currency currency;
 
+    @Column(name = "brokerage", length = 100)
+    private String brokerage;
+
     /**
      * Calculates total realized gain/loss by summing up all SELL transaction gains/losses.
      * This is a computed field that aggregates data from the transactions list.
@@ -79,15 +82,17 @@ public class Investment {
      *
      * @param asset The asset for this investment
      * @param currency The currency for this investment
+     * @param brokerage The brokerage company holding the portfolio
      * @return A new Investment instance
      */
-    public static Investment createNew(Asset asset, Currency currency) {
+    public static Investment createNew(Asset asset, Currency currency, String brokerage) {
         return Investment.builder()
                 .asset(asset)
                 .totalCost(BigDecimal.ZERO)
                 .totalUnits(BigDecimal.ZERO)
                 .costBasis(BigDecimal.ZERO)
                 .currency(currency)
+                .brokerage(brokerage)
                 .build();
     }
 
